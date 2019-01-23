@@ -12,5 +12,14 @@
         <atom:link href="https://cloudkernels.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
+    <item>
+      <title>About</title>
+      <link>https://cloudkernels.github.io/about/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/about/</guid>
+      <description></description>
+      
+    </item>
+    
   </channel>
 </rss>
