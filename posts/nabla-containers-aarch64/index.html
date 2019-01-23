@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Experiences from porting nabla containers to an ARMv8 board | CloudKernels</title>
+
+
+
+<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="https://cloudkernels.github.io/">
+          <h1 class="brand">CloudKernels</h1>
+        </a>
+      </div>
+      <div class="nav-right">
+        
+        <nav class="nav-item level is-mobile">
+        <ul class="main-menu">
+          
+          <li>
+            <a href="/" title="Home"
+                 class="nav-item">
+               
+                <span>Home</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/about/" title="About"
+                 class="nav-item">
+               
+                <span>About</span>
+            </a>
+          </li>
+		  
+	    </ul>
+		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.com'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+    
+  </svg></i>
+            </span>
+          </a></div>
+        </nav>
+      </div>
+    </nav>
+
+    <nav class="nav">
+      
+
+      
+    </nav>
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container">
+    <hr class="content-sep">
+	
+    <div class="subtitle tags is-6 is-pulled-right">
+      
+    </div>
+    <h2 class="subtitle is-6">January 23, 2019</h2>
+    <h1 class="title">Experiences from porting nabla containers to an ARMv8 board</h1>
+    
+    <div class="content">
+      
+
+<p><a href="https://nabla-containers.github.io">Nabla containers</a> provide a new type of container designed for strong
+isolation on a host system. The foundation of nabla containers lies in three
+main components: <a href="http://rumpkernel.org">rumpkernel</a>, <a href="https://github.com/Solo5/solo5">solo5</a>, and <a href="https://github.com/nabla-containers/runnc">runnc</a>. The <a href="https://nabla-containers.github.io/people">team</a>
+that built nabla containers extended the rumprun unikernel framework to support
+solo5 (instead of hardware/baremetal or xen), so that a rumprun-baked unikernel
+application can be executed on top of a lightweight monitor such as solo5. In
+this post, we describe the steps we took in order to port Nabla containers to
+the ARMv8 architecture.</p>
+
+<h3 id="a-bit-of-background">A bit of background</h3>
+
+<p><a href="https://github.com/rumpkernel/rumprun">Rumprun</a> is a unikernel framework based on <a href="http://rumpkernel.org">rumpkernel</a>, a project that
+provides kernel-quality drivers for various components, e.g. file systems,
+network devices, POSIX system calls. Rump kernel exposes these drivers through
+the <em>rump kernel hypercall interface</em> to higher abstraction layers.  While
+initially, rump kernels were designed to provide &lsquo;userspace&rsquo; <a href="https://wiki.netbsd.org/projects/project/userland_pci">drivers</a>, they
+evolved to become the base of the Rumprun unikernel.</p>
+
+<p>Almost any POSIX-based application can be built into a Rumprun unikernel using
+the following workflow:</p>
+
+<ol>
+<li>Compile and link the application against the POSIX-y interface that Rumprun
+exposes.</li>
+<li><em>Bake</em> the application, in order to add the bits and pieces needed to turn
+it into an image that
+is bootable on the targets that Rumprun runs on top of.</li>
+</ol>
+
+<p>Upstream Rumprun defines the concept of <em>target</em>, i.e. the platforms on which a
+Rumprun unikernel can run on top of. At the moment the upstream Rumprun
+provides two targets:</p>
+
+<ul>
+<li>The <strong>hw</strong> target provides support on raw hardware which includes most
+available hypervisors.</li>
+<li>The <strong>Xen</strong> target is optimized for execution on top of the Xen hypervisor</li>
+</ul>
+
+<figure>
+    <img src="/static/rumprun-solo5.png"/> 
+</figure>
+
+
+<p>The Nabla fork of Rumprun provides a new unikernel target, <a href="https://github.com/Solo5/solo5">Solo5</a>. Solo5
+is, essentially, a hardware abstraction layer that provides a very thin
+interface, or else a <em>minimal attach surface</em>.  Its purpose is to facilitate
+the port of libOS/unikernel frameworks on various hardware platforms, i.e.  a
+unikernel that runs on top of Solo5, runs on top of all the hardware targets,
+or <em>tenders</em>, using the Solo5 terminology, supported by Solo5.</p>
+
+<h3 id="armv8-rumprun-solo5">ARMv8 rumprun solo5</h3>
+
+<p>To port nabla containers to the ARMv8 architecture, one has to provide support
+for each of these components: rumprun, solo5 and runnc. We decided to tackle
+this challenge by separately porting each component and working on integrating
+as much code as possible from upstream repositories.</p>
+
+<h4 id="solo5">Solo5</h4>
+
+<p>For the solo5 port, most of the code was already in upstream solo5, although
+the seccomp tender (as it is now called) provided by nabla didn’t have support
+for aarch64 targets. To implement that, apart from adding the compilation
+target itself, we also had to provide the arch specific lds and add the
+hypercall-to-syscall mechanism used to aarch64. Finally, for everything to
+actually work we implemented reading the cpu timer frequency correctly for
+aarch64 and provided some missing seccomp definitions.
+As of the time of writing this post, an <a href="https://github.com/Solo5/solo5/pull/310">upstream solo5-seccomp tender</a> for
+both x86 and aarch64 is under way and should be merged in really soon.</p>
+
+<h4 id="rumprun">Rumprun</h4>
+
+<p>For rumprun, things were a bit more complicated. Both upstream and nabla
+rumprun repos build necessary NetBSD parts from an old snapshot of the official
+sources. NetBSD has added  aarch64 support fairly recently and with much work
+still being done we decided to base our build on the latest official sources
+instead of the stripped down version provided by rumprun. This presented a
+challenge: integrating the changes to a not actively maintained code base is
+not a walk in the park. First things first, we had to successfully compile the
+whole project: Rump parts of the NetBSD kernel are not actively tested with
+rumprun and so changes being made to related components are not always
+guaranteed to work. After adding the aarch64 platform to the required Makefiles
+for rump in NetBSD source and creating the relevant directories, we encountered
+linking errors pertaining to both double symbols between the provided libc and
+rump and also incorrectly linked for the rump case internal functions of the
+kernel itself. Thankfully similar problems have already been solved for the arm
+32-bit architecture and so we could implement a solution based on existing
+code.</p>
+
+<p>Having successfully compiled NetBSD’s source we then had to implement any
+missing rumpuser parts either for aarch64 or for functions introduced in
+upstream kernel’s rump.</p>
+
+<p>The most challenging part was to understand how thread-level switching happens
+on aarch64 and implement that in the context of rumprun. Upon initial creation
+of “main” threads for the rump components, rumprun stores a “bouncer” function
+on top of their freshly allocated stacks and then switches between them using
+its scheduler. When a thread’s turn comes to run, the “bouncer” function is
+popped from the stack and the actual thread content is executed.</p>
+
+<p>The mechanism doing the actual thread switching is implemented in arch-specific
+assembly. Although a basic implementation for the ARM 32-bit architecture is
+provided with upstream rumprun, porting to 64-bit ARMv8 was not trivial due to
+two main architectural differences of ARMv8: a) one cannot directly modify the
+program counter, and b) storing and retrieving registers to/from the stack has
+to be aligned if they are used for memory access. As a result, push and pop
+functions have to be implemented manually, as no specific instruction exists
+for that purpose. After implementing the actual thread switcher and bouncer, we
+also had to make sure the TLS (Thread-Local Storage) register was set correctly
+in the solo5 platform implementation.</p>
+
+<p>Last but not least, with thread switching in place, the rest of the solo5
+platform arch-specific bits needed to be created: the ldscript for linking, the
+relevant headers and the Makefile modifications for everything to build
+correctly.</p>
+
+<p>NOTE: Stack protection in NetBSD source caused problems in our tests and so
+it’s globally disabled for rumprun pending further investigation.</p>
+
+<h4 id="runnc">runnc</h4>
+
+<p>Since runnc is written in GO, the arch-specific bits were only build related,
+so porting it to aarch64 was as easy as defining the architecture (arm64) and
+pointing to the correct submodule repos.</p>
+
+<p>We are currently working with the <a href="https://nabla-containers.github.io/people">nabla containers team</a> to merge in aarch64
+support. In the meantime, you can <a href="https://github.com/cloudkernels/rumprun">browse</a> <a href="https://github.com/cloudkernels/netbsd-src">through</a> <a href="https://github.com/cloudkernels/rumprun-packages">the</a> <a href="https://github.com/cloudkernels/solo5">code</a>.
+Stay tuned for a tutorial on how to run a rumprun unikernel on a RPi3!</p>
+
+      
+    </div>
+    
+
+  </div>
+</section>
+
+
+<section class="section footer">
+  <div class="container">
+	  <p><small>&copy; CloudKernels 2019</small></p>
+    
+  </div>
+</section>
+
+
+
+</body>
+</html>
+

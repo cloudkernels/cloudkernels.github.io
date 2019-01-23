@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://cloudkernels.github.io/posts/nabla-containers-aarch64/</loc>
+    <lastmod>2019-01-23T14:41:44+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://cloudkernels.github.io/about/</loc>
     <lastmod>2019-01-21T01:05:28+02:00</lastmod>
   </url>
@@ -14,7 +19,13 @@
   
   <url>
     <loc>https://cloudkernels.github.io/</loc>
-    <lastmod>2019-01-21T01:05:28+02:00</lastmod>
+    <lastmod>2019-01-23T14:41:44+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cloudkernels.github.io/posts/</loc>
+    <lastmod>2019-01-23T14:41:44+02:00</lastmod>
     <priority>0</priority>
   </url>
   
