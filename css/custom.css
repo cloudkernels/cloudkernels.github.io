@@ -25,10 +25,7 @@ textarea {
 
 .nav .main-menu {
   text-transform: uppercase;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-direction: column;
-  flex-direction: row;
   padding-right: 4rem;
 }
 .nav .main-menu li a {
@@ -39,10 +36,8 @@ textarea {
 .main-menu .nav-item a,
 .main-menu a.nav-item {
   color: #aaa4a1;
-  -ms-flex-align: right:
   align-items: right;
   -webkit-box-pack: right;
-  -ms-flex-pack: right;
   justify-content: right;
 }
 .main-menu .nav-item a.active,
@@ -60,6 +55,27 @@ textarea {
 .social a.level-item:hover {
   color: #6b6461;
   fill: #e7e5e4;
+}
+
+ul.social-share {
+  text-transform: uppercase;
+  display: inline-flex;
+  font-size: 16px;
+  line-height: 1;
+  /*float: right;*/
+  padding-left: .5rem;
+}
+ul.social-share::before {
+  color: #d3d6db;
+  padding-right: .5rem;
+  content: '\2022';
+}
+ul.social-share li a {
+  padding-right: .5rem;
+  color: #b2b7bd;
+}
+ul.social-share li a:hover {
+  color: #69707a;
 }
 
 .content {
