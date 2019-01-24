@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019</copyright>
-    <lastBuildDate>Wed, 23 Jan 2019 14:41:44 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 24 Jan 2019 00:09:27 +0200</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Run a rumprun unikernel on a RPi3</title>
+      <link>https://cloudkernels.github.io/posts/example-rumprun-solo5-on-aarch64/</link>
+      <pubDate>Thu, 24 Jan 2019 00:09:27 +0200</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/example-rumprun-solo5-on-aarch64/</guid>
+      <description>In this post, we will walk through the steps of compiling, baking, and running an application as a rumprun unikernel on a Rasrberry Pi 3.
+In our previous post, we provided some background for Rumprun/rump kernels and Solo5. In short, Rumprun provides the necessary components to run a POSIX compatible application as a unikernel. Solo5 is, essentially, a hardware abstraction layer that provides a very thin interface, or else a minimal attack surface.</description>
+    </item>
     
     <item>
       <title>Experiences from porting nabla containers to an ARMv8 board</title>
