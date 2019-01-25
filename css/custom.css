@@ -10,6 +10,11 @@ textarea {
   font-family: "Source Sans Pro", sans;
 }
 
+.menu {
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
 .nav .brand {
   font-size: 26px;
   color: #42464c;
@@ -23,10 +28,17 @@ textarea {
   font-weight: 300;
 }
 
+.nav .nav-left,
+.nav .nav-right {
+  flex: 1 1 auto;
+}
+.nav .nav-right {
+  justify-content: right;
+}
+
 .nav .main-menu {
   text-transform: uppercase;
   display: flex;
-  padding-right: 4rem;
 }
 .nav .main-menu li a {
   padding-left: .5rem !important;
@@ -45,6 +57,48 @@ textarea {
 .main-menu a.nav-item.active,
 .main-menu a.nav-item:hover {
   color: #6b6461;
+}
+
+.main-nav {
+  flex: 1 1 60%;
+  justify-content: right;
+}
+
+.main-menu-icon {
+  padding-right: 4rem;
+  align-self: flex-end;
+  display: none;
+}
+
+@media screen and (min-width: 992px) {
+  .responsive {
+    display: flex !important;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .nav .main-menu {
+    flex-direction: column;
+	padding-left: 0;
+  }
+  .nav .main-menu li a {
+    justify-content: left;
+	padding-left: 0 !important;
+  }
+  
+  .main-nav {
+    order: 1;
+	flex: 1 1 100%;
+	padding-left: 0;
+  }
+  
+  .responsive {
+    display: none;
+  }
+
+  .main-menu-icon {
+    display: initial;
+  }
 }
 
 .social .level-item,

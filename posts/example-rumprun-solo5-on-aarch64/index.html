@@ -14,21 +14,21 @@
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
 </head>
 <body>
 
 <section class="section">
   <div class="container">
-    <nav class="nav">
+    <nav class="nav menu">
       <div class="nav-left">
         <a class="nav-item" href="https://cloudkernels.github.io/">
           <h1 class="brand">CloudKernels</h1>
         </a>
       </div>
-      <div class="nav-right">
         
-        <nav class="nav-item level is-mobile">
+        <nav class="nav-item main-nav responsive">
         <ul class="main-menu">
           
           <li>
@@ -48,6 +48,12 @@
           </li>
 		  
 	    </ul>
+		</nav>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+        <a href="#" class="main-menu-icon">
+          <i class="fas fa-bars"></i>
+        </a>
 		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
             target='_blank' rel='noopener'>
             <span class="icon">
@@ -80,7 +86,6 @@
         </nav>
       </div>
     </nav>
-
     <nav class="nav">
       
 
@@ -473,8 +478,9 @@ if (!doNotTrack) {
 
 
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="/js/social-share.js"></script>
+<script src="/js/nav-responsive.js"></script>
 </body>
 </html>
 
