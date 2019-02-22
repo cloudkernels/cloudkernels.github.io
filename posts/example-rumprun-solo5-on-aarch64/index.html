@@ -103,7 +103,12 @@
 	
     
 	<div>
-    <span class="subtitle is-6">January 24, 2019</span><ul class="social-share">
+    
+	<span class="subtitle is-6">
+      January 24, 2019
+      | <span class="font-italic">Last update: Feb 22, 2019</span>
+	</span>
+	<ul class="social-share">
   <li class="twitter">
     <a href="https://twitter.com/intent/tweet/?text=Run%20a%20rumprun%20unikernel%20on%20a%20RPi3&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fexample-rumprun-solo5-on-aarch64%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
       <i class="fab fa-twitter"></i>
@@ -117,7 +122,10 @@
 </ul>
 
 	</div>
-    <h1 class="title">Run a rumprun unikernel on a RPi3</h1>
+	<h1 class="title">
+      <a href="https://cloudkernels.github.io/posts/example-rumprun-solo5-on-aarch64/">Run a rumprun unikernel on a RPi3</a>
+	  
+	</h1>
     
     <div class="content">
       
@@ -149,7 +157,7 @@ favourite ARM board and let us know about your experience!</p>
 <h3 id="hands-on">Hands-on</h3>
 
 <p>First of all, we need the rumprun toolchain to bake our unikernel image. One
-option is to  use our <a href="https://hub.docker.com/r/cloudkernels/ubuntu-rumprun-base">docker image</a> with the
+option is to  use our <a href="https://hub.docker.com/r/cloudkernels/debian-rumprun-build">docker image</a> with the
 toolchain pre-installed.</p>
 
 <p>Another option is to build the rumprun toolchain from source. We will provide
@@ -159,13 +167,13 @@ coming days.</p>
 <p>So, log in to your RPi3 and, after you&rsquo;ve <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu">installed docker-ce</a>, try running
 the following command:</p>
 
-<pre><code>docker run -ti --rm -v /build:/build cloudkernels/ubuntu-rumprun-base:aarch64 /bin/bash σε aarch64
+<pre><code>docker run -ti --rm -v /build:/build cloudkernels/debian-rumprun-build:aarch64 /bin/bash
 </code></pre>
 
 <p>you should be presented with something like the following:</p>
 
-<pre><code>Unable to find image 'cloudkernels/ubuntu-rumprun-base:aarch64' locally
-aarch64: Pulling from cloudkernels/ubuntu-rumprun-base
+<pre><code>Unable to find image 'cloudkernels/debian-rumprun-build:aarch64' locally
+aarch64: Pulling from cloudkernels/debian-rumprun-build
 e10919c546c2: Pull complete 
 6b3f0a4d7b10: Pull complete 
 473e207e8cf0: Pull complete 
@@ -173,7 +181,7 @@ e10919c546c2: Pull complete
 628025a81431: Pull complete 
 25fd95c63d4f: Pull complete 
 Digest: sha256:0221ba1c3a120bde1fd83b6d9c267fb4379c33d8f0012b9a64826afd476faf72
-Status: Downloaded newer image for cloudkernels/ubuntu-rumprun-base:aarch64
+Status: Downloaded newer image for cloudkernels/debian-rumprun-build:aarch64
 root@184fa9ecd15d:/#
 </code></pre>
 
@@ -200,10 +208,10 @@ root@184fa9ecd15d:/build/rumprun-packages# make
 <pre><code># make
 mkdir -p build
 cp src/* build
-make -C build hello.seccomp
+make -C build hello.spt
 make[1]: Entering directory '/build/rumprun-packages/hello/build'
 aarch64-rumprun-netbsd-gcc hello.c -o hello-rumprun
-rumprun-bake solo5_ukvm_seccomp hello.seccomp hello-rumprun
+rumprun-bake solo5_spt hello.spt hello-rumprun
 
 !!!
 !!! NOTE: rumprun-bake is experimental. syntax may change in the future
@@ -211,7 +219,17 @@ rumprun-bake solo5_ukvm_seccomp hello.seccomp hello-rumprun
 
 make[1]: Leaving directory '/build/rumprun-packages/hello/build'
 mkdir -p bin
-cp build/hello.seccomp bin/hello.seccomp
+cp build/hello.spt bin/hello.spt
+rumprun-bake solo5_hvt hello.hvt hello-rumprun
+
+!!!
+!!! NOTE: rumprun-bake is experimental. syntax may change in the future
+!!!
+
+make[1]: Leaving directory '/build/rumprun-packages/hello/build'
+mkdir -p bin
+cp build/hello.hvt bin/hello.hvt
+
 </code></pre>
 
 <p>Now, exit the container (Ctrl-D) and cd into this directory:</p>
@@ -222,27 +240,27 @@ root@rpi3:/build/rumprun-packages/hello#
 
 <p>Make sure there&rsquo;s a dummy file for the disk image, and a tap interface:</p>
 
-<pre><code>root@rpi3:/build/rumprun-packages/hello# touch dummy
+<pre><code>root@rpi3:/build/rumprun-packages/hello# dd if=/dev/zero of=dummy count=1 bs=512
 root@rpi3:/build/rumprun-packages/hello# ip tuntap add tap0 mode tap
 root@rpi3:/build/rumprun-packages/hello# ip link set dev tap0 up
 </code></pre>
 
-<p>And make sure you&rsquo;ve got the ukvm-bin binary (solo5). If not, do the following:</p>
+<p>And make sure you&rsquo;ve got the solo5-hvt/spt binaries (solo5). If not, do the following:</p>
 
-<pre><code>root@rpi3:/build# git clone https://github.com/cloudkernels/solo5
+<pre><code>root@rpi3:/build# git clone https://github.com/solo5/solo5
 root@rpi3:/build# cd solo5
 root@rpi3:/build/solo5# apt-get install libseccomp-dev &amp;&amp; make
 </code></pre>
 
-<p>If everything was successful, you should have a ukvm-bin binary
-(seccomp-tender) at:</p>
+<p>If everything was successful, you should have two binaries: solo5-spt (seccomp-tender) and solo5-hvt (kvm tender) at:</p>
 
-<pre><code>/build/solo5/ukvm/ukvm-bin
+<pre><code>/build/solo5/tenders/spt/solo5-spt
+/build/solo5/tenders/hvt/solo5-hvt
 </code></pre>
 
 <p>So, returning to the previous dir/evn, you can execute the hello unikernel:</p>
 
-<pre><code>root@rpi3:/build/rumprun-packages/hello# /build/solo5/ukvm/ukvm-bin --mem=32 --net=tap0 --disk=dummy ./bin/hello.seccomp 
+<pre><code>root@rpi3:/build/rumprun-packages/hello# /build/solo5/tenders/spt/solo5-spt --mem=32 --net=tap0 --disk=dummy ./bin/hello.spt
             |      ___|
   __|  _ \  |  _ \ __ \
 \__ \ (   | | (   |  ) |
@@ -293,28 +311,19 @@ Solo5: solo5_exit(0) called
 </code></pre>
 
 <p>In case you want to run the non-seccomp tender (KVM_RUN), then all you need to
-do is bake the hello-rumprun binary with solo5_ukvm. Return to the docker env
+do is bake the hello-rumprun binary with solo5_hvt. Return to the docker env
 and bake the file accordingly:</p>
 
-<pre><code>docker run -ti --rm -v /build:/build cloudkernels/ubuntu-rumprun-base:aarch64 /bin/bash σε aarch64
+<pre><code>docker run -ti --rm -v /build:/build cloudkernels/debian-rumprun-build:aarch64 /bin/bash
 root@184fa9ecd15d:/# cd /build/rumprun-packages/hello
-root@184fa9ecd15d:/build/rumprun-packages/hello# rumprun-bake solo5-ukvm-net ./bin/hello.ukvm ./build/hello-rumprun
+root@184fa9ecd15d:/build/rumprun-packages/hello# rumprun-bake solo5-hvt ./bin/hello.hvt ./build/hello-rumprun
 </code></pre>
 
-<p>and now, exit the docker env (Ctrl-D) and checkout the stock solo5 repo,
-selecting v0.3.1:</p>
-
-<pre><code>root@rpi3:/build/# git clone https://github.com/solo5/solo5 solo5-stock
-root@rpi3:/build/# cd solo5-stock
-root@rpi3:/build/solo5-stock# git checkout v0.3.1
-root@rpi3:/build/solo5-stock# make
-</code></pre>
-
-<p>and run the hello.ukvm unikernel image with the newly built ukvm-bin:</p>
+<p>and now, exit the docker env (Ctrl-D) and run the hello.hvt unikernel image with the solo5-hvt binary:</p>
 
 <pre><code>root@rpi3:~# cd /build/rumprun-packages/hello
-root@rpi3:~/build/rumprun-packages/hello# /build/solo5-stock/ukvm/ukvm-bin --mem=32 --net=tap0 --disk=dummy ./bin/hello.ukvm 
-ukvm-bin: ./bin/hello.ukvm: Warning: phdr[0] requests WRITE and EXEC permissions
+root@rpi3:~/build/rumprun-packages/hello# /build/solo5/tenders/hvt/solo5-hvt --mem=32 --net=tap0 --disk=dummy ./bin/hello.hvt
+solo5-hvt: ./bin/hello.hvt: Warning: phdr[0] requests WRITE and EXEC permissions
             |      ___|
   __|  _ \  |  _ \ __ \
 \__ \ (   | | (   |  ) |

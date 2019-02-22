@@ -108,7 +108,11 @@
       <div class="subtitle tags is-6 is-pulled-right">
         
       </div>
-      <span class="subtitle is-6">January 24, 2019</span><ul class="social-share">
+      <span class="subtitle is-6">
+        January 24, 2019
+		| <span class="font-italic">Last update: Feb 18, 2019</span>
+	  </span>
+	  <ul class="social-share">
   <li class="twitter">
     <a href="https://twitter.com/intent/tweet/?text=Building%20the%20Nabla%20containers%20toolchain%20for%20aarch64&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fbuilding-nabla-aarch64%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
       <i class="fab fa-twitter"></i>
@@ -121,11 +125,14 @@
   </li>
 </ul>
 
-      <h1 class="title"><a href="https://cloudkernels.github.io/posts/building-nabla-aarch64/">Building the Nabla containers toolchain for aarch64</a></h1>
+	  <h1 class="title">
+        <a href="https://cloudkernels.github.io/posts/building-nabla-aarch64/">Building the Nabla containers toolchain for aarch64</a>
+		
+	  </h1>
       <div class="content">
-        In previous posts, we covered a bit of background on rumprun, the nabla containers fork and our port on aarch64. In this post, we describe how to build everything from source. In order to build a rumprun unikernel for aarch64, the first step is to build the rumprun toolchain.
+        UPDATE: Revise instructions and links to use latest upstream nabla repo with merged aarch64 support. In previous posts, we covered a bit of background on rumprun, the nabla containers fork and our port on aarch64. In this post, we describe how to build everything from source. In order to build a rumprun unikernel for aarch64, the first step is to build the rumprun toolchain.
 Clone the relevant repositories:
-git clone https://github.com/cloudkernels/rumprun git clone https://github.com/cloudkernels/rumprun-packages git clone https://github.com/cloudkernels/solo5 git clone https://github.com/solo5/solo5 solo5_stock  cd rumprun git submodule update --init  Build rumprun with:
+git clone https://github.
       </div>
       
         <a class="read-more" href="https://cloudkernels.github.io/posts/building-nabla-aarch64/">
@@ -138,7 +145,11 @@ git clone https://github.com/cloudkernels/rumprun git clone https://github.com/c
       <div class="subtitle tags is-6 is-pulled-right">
         
       </div>
-      <span class="subtitle is-6">January 24, 2019</span><ul class="social-share">
+      <span class="subtitle is-6">
+        January 24, 2019
+		| <span class="font-italic">Last update: Feb 22, 2019</span>
+	  </span>
+	  <ul class="social-share">
   <li class="twitter">
     <a href="https://twitter.com/intent/tweet/?text=Run%20a%20rumprun%20unikernel%20on%20a%20RPi3&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fexample-rumprun-solo5-on-aarch64%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
       <i class="fab fa-twitter"></i>
@@ -151,7 +162,10 @@ git clone https://github.com/cloudkernels/rumprun git clone https://github.com/c
   </li>
 </ul>
 
-      <h1 class="title"><a href="https://cloudkernels.github.io/posts/example-rumprun-solo5-on-aarch64/">Run a rumprun unikernel on a RPi3</a></h1>
+	  <h1 class="title">
+        <a href="https://cloudkernels.github.io/posts/example-rumprun-solo5-on-aarch64/">Run a rumprun unikernel on a RPi3</a>
+		
+	  </h1>
       <div class="content">
         In this post, we will walk through the steps of compiling, baking, and running an application as a rumprun unikernel on a Rasrberry Pi 3.
 In our previous post, we provided some background for Rumprun/rump kernels and Solo5. In short, Rumprun provides the necessary components to run a POSIX compatible application as a unikernel. Solo5 is, essentially, a hardware abstraction layer that provides a very thin interface, or else a minimal attack surface.
@@ -167,7 +181,11 @@ In our previous post, we provided some background for Rumprun/rump kernels and S
       <div class="subtitle tags is-6 is-pulled-right">
         
       </div>
-      <span class="subtitle is-6">January 23, 2019</span><ul class="social-share">
+      <span class="subtitle is-6">
+        January 23, 2019
+		| <span class="font-italic">Last update: Feb 18, 2019</span>
+	  </span>
+	  <ul class="social-share">
   <li class="twitter">
     <a href="https://twitter.com/intent/tweet/?text=Experiences%20from%20porting%20nabla%20containers%20to%20an%20ARMv8%20board&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fnabla-containers-aarch64%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
       <i class="fab fa-twitter"></i>
@@ -180,9 +198,12 @@ In our previous post, we provided some background for Rumprun/rump kernels and S
   </li>
 </ul>
 
-      <h1 class="title"><a href="https://cloudkernels.github.io/posts/nabla-containers-aarch64/">Experiences from porting nabla containers to an ARMv8 board</a></h1>
+	  <h1 class="title">
+        <a href="https://cloudkernels.github.io/posts/nabla-containers-aarch64/">Experiences from porting nabla containers to an ARMv8 board</a>
+		
+	  </h1>
       <div class="content">
-        Nabla containers provide a new type of container designed for strong isolation on a host system. The foundation of nabla containers lies in three main components: rumpkernel, solo5, and runnc. The team that built nabla containers extended the rumprun unikernel framework to support solo5 (instead of hardware/baremetal or xen), so that a rumprun-baked unikernel application can be executed on top of a lightweight monitor such as solo5. In this post, we describe the steps we took in order to port Nabla containers to the ARMv8 architecture.
+        UPDATE: Rumprun aarch64 support has now been merged in upstream nabla. Nabla containers provide a new type of container designed for strong isolation on a host system. The foundation of nabla containers lies in three main components: rumpkernel, solo5, and runnc. The team that built nabla containers extended the rumprun unikernel framework to support solo5 (instead of hardware/baremetal or xen), so that a rumprun-baked unikernel application can be executed on top of a lightweight monitor such as solo5.
       </div>
       
         <a class="read-more" href="https://cloudkernels.github.io/posts/nabla-containers-aarch64/">

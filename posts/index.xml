@@ -18,9 +18,9 @@
       <pubDate>Thu, 24 Jan 2019 16:17:51 +0200</pubDate>
       
       <guid>https://cloudkernels.github.io/posts/building-nabla-aarch64/</guid>
-      <description>In previous posts, we covered a bit of background on rumprun, the nabla containers fork and our port on aarch64. In this post, we describe how to build everything from source. In order to build a rumprun unikernel for aarch64, the first step is to build the rumprun toolchain.
+      <description>UPDATE: Revise instructions and links to use latest upstream nabla repo with merged aarch64 support. In previous posts, we covered a bit of background on rumprun, the nabla containers fork and our port on aarch64. In this post, we describe how to build everything from source. In order to build a rumprun unikernel for aarch64, the first step is to build the rumprun toolchain.
 Clone the relevant repositories:
-git clone https://github.com/cloudkernels/rumprun git clone https://github.com/cloudkernels/rumprun-packages git clone https://github.com/cloudkernels/solo5 git clone https://github.com/solo5/solo5 solo5_stock  cd rumprun git submodule update --init  Build rumprun with:</description>
+git clone https://github.</description>
     </item>
     
     <item>
@@ -39,7 +39,7 @@ In our previous post, we provided some background for Rumprun/rump kernels and S
       <pubDate>Wed, 23 Jan 2019 14:41:44 +0200</pubDate>
       
       <guid>https://cloudkernels.github.io/posts/nabla-containers-aarch64/</guid>
-      <description>Nabla containers provide a new type of container designed for strong isolation on a host system. The foundation of nabla containers lies in three main components: rumpkernel, solo5, and runnc. The team that built nabla containers extended the rumprun unikernel framework to support solo5 (instead of hardware/baremetal or xen), so that a rumprun-baked unikernel application can be executed on top of a lightweight monitor such as solo5. In this post, we describe the steps we took in order to port Nabla containers to the ARMv8 architecture.</description>
+      <description>UPDATE: Rumprun aarch64 support has now been merged in upstream nabla. Nabla containers provide a new type of container designed for strong isolation on a host system. The foundation of nabla containers lies in three main components: rumpkernel, solo5, and runnc. The team that built nabla containers extended the rumprun unikernel framework to support solo5 (instead of hardware/baremetal or xen), so that a rumprun-baked unikernel application can be executed on top of a lightweight monitor such as solo5.</description>
     </item>
     
   </channel>

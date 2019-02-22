@@ -156,8 +156,15 @@ pre, pre code {
   background-color: #f4f7fa;
 }
 
-small {
-  font-size: 80%;
+small, .small {
+  font-size: 70%;
+}
+.small {
+  font-weight: inherit;
+}
+
+.font-italic {
+  font-style: italic;
 }
 
 .content h1:not(:first-child),

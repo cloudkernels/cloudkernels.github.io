@@ -103,7 +103,12 @@
 	
     
 	<div>
-    <span class="subtitle is-6">January 23, 2019</span><ul class="social-share">
+    
+	<span class="subtitle is-6">
+      January 23, 2019
+      | <span class="font-italic">Last update: Feb 18, 2019</span>
+	</span>
+	<ul class="social-share">
   <li class="twitter">
     <a href="https://twitter.com/intent/tweet/?text=Experiences%20from%20porting%20nabla%20containers%20to%20an%20ARMv8%20board&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fnabla-containers-aarch64%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
       <i class="fab fa-twitter"></i>
@@ -117,10 +122,17 @@
 </ul>
 
 	</div>
-    <h1 class="title">Experiences from porting nabla containers to an ARMv8 board</h1>
+	<h1 class="title">
+      <a href="https://cloudkernels.github.io/posts/nabla-containers-aarch64/">Experiences from porting nabla containers to an ARMv8 board</a>
+	  
+	</h1>
     
     <div class="content">
       
+
+<p><strong>UPDATE:</strong> Rumprun aarch64 support has now been merged in <a href="https://github.com/nabla-containers/rumprun">upstream nabla</a>.
+<br>
+<br></p>
 
 <p><a href="https://nabla-containers.github.io">Nabla containers</a> provide a new type of container designed for strong
 isolation on a host system. The foundation of nabla containers lies in three
@@ -248,7 +260,7 @@ so porting it to aarch64 was as easy as defining the architecture (arm64) and
 pointing to the correct submodule repos.</p>
 
 <p>We are currently working with the <a href="https://nabla-containers.github.io/people">nabla containers team</a> to merge in aarch64
-support. In the meantime, you can <a href="https://github.com/cloudkernels/rumprun">browse</a> <a href="https://github.com/cloudkernels/netbsd-src">through</a> <a href="https://github.com/cloudkernels/rumprun-packages">the</a> <a href="https://github.com/cloudkernels/solo5">code</a>.
+support. In the meantime, you can <a href="https://github.com/cloudkernels/rumprun-aarch64">browse</a> <a href="https://github.com/cloudkernels/src-netbsd">through</a> <a href="https://github.com/cloudkernels/rumprun-packages">the</a> <a href="https://github.com/cloudkernels/solo5">code</a>.
 Stay tuned for a tutorial on how to run a rumprun unikernel on a RPi3!</p>
 
       
