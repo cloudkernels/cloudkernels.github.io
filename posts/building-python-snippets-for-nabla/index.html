@@ -149,7 +149,7 @@ for x86 and <a href="/posts/nabla-containers-aarch64/">aarch64</a>.</p>
 
 <h3 id="building-python3-5-as-a-unikernel">Building Python3.5 as a unikernel</h3>
 
-<p>Once we have <a href="{{relref &quot;building-nabla-aarch64.md&quot;&gt;}}">built</a> the rumprun toolchain
+<p>Once we have <a href="/posts/building-nabla-aarch64/">built</a> the rumprun toolchain
 we can build and bake Python3.5 in a Rumprun unikernel following these steps:</p>
 
 <pre><code>git clone https://github.com/cloudkernels/rumprun-packages.git
@@ -158,7 +158,7 @@ cd rumprun-packages
 # Setting up the rumprun-packages build environment
 cp config.mk.dist config.mk
 
-# Iff we are building for aarch64 we should also run:
+# If we are building for aarch64 we should also run:
 echo &quot;RUMPRUN_TOOLCHAIN_TUPLE=aarch64-rumprun-netbsd&quot; &gt;&gt; config.mk
 
 cd python3
