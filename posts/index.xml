@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019</copyright>
-    <lastBuildDate>Sat, 23 Feb 2019 14:41:40 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 23 Feb 2019 18:17:51 +0200</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to build a python snippet for running in a Nabla container</title>
+      <link>https://cloudkernels.github.io/posts/building-python-snippets-for-nabla/</link>
+      <pubDate>Sat, 23 Feb 2019 18:17:51 +0200</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/building-python-snippets-for-nabla/</guid>
+      <description>In our previous posts, we saw how to build the toolchain for a Nabla container, and also how we can use this toolchain to run applications as unikernels using Nabla.
+In this post, we will be focusing on the steps we need to take into running something actually useful using Nabla. More specifically, we will go through all the steps for building Python3 into a Rumprun unikernel, suitable for running in a Nabla container, and cooking a filesystem that includes a Python script that we wish to run within.</description>
+    </item>
     
     <item>
       <title>Build a Nabla Docker Image</title>
