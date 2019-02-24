@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019</copyright>
-    <lastBuildDate>Thu, 24 Jan 2019 16:17:51 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 23 Feb 2019 14:41:40 +0200</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Build a Nabla Docker Image</title>
+      <link>https://cloudkernels.github.io/posts/build-a-nabla-docker-image/</link>
+      <pubDate>Sat, 23 Feb 2019 14:41:40 +0200</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/build-a-nabla-docker-image/</guid>
+      <description>In this post, we go through the basic steps for containerizing a unikernel application and running it on nabla runnc. Checkout nabla containers and in particular runnc.
+How to In order to build a docker image for nabla containers, we have to build:
+ the nabla toolstack the unikernel image the docker image  Build the nabla toolstack There&amp;rsquo;s an informative blog post on how to build the nabla rumprun toolstack here.</description>
+    </item>
     
     <item>
       <title>Building the Nabla containers toolchain for aarch64</title>
