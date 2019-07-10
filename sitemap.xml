@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://cloudkernels.github.io/posts/rpi4-64bit-virt/</loc>
+    <lastmod>2019-07-10T14:41:44+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://cloudkernels.github.io/posts/building-python-snippets-for-nabla/</loc>
     <lastmod>2019-02-24T12:37:57+02:00</lastmod>
   </url>
@@ -39,13 +44,13 @@
   
   <url>
     <loc>https://cloudkernels.github.io/</loc>
-    <lastmod>2019-02-24T12:37:57+02:00</lastmod>
+    <lastmod>2019-07-10T14:41:44+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cloudkernels.github.io/posts/</loc>
-    <lastmod>2019-02-24T12:37:57+02:00</lastmod>
+    <lastmod>2019-07-10T14:41:44+02:00</lastmod>
     <priority>0</priority>
   </url>
   

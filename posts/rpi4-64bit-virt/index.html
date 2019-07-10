@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Playing with a Raspberry Pi 4 64-bit | CloudKernels</title>
+
+
+
+<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+    <nav class="nav menu">
+      <div class="nav-left">
+        <a class="nav-item" href="https://cloudkernels.github.io/">
+          <h1 class="brand">CloudKernels</h1>
+        </a>
+      </div>
+        
+        <nav class="nav-item main-nav responsive">
+        <ul class="main-menu">
+          
+          <li>
+            <a href="/" title="Home"
+                 class="nav-item">
+               
+                <span>Home</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/about/" title="About"
+                 class="nav-item">
+               
+                <span>About</span>
+            </a>
+          </li>
+		  
+	    </ul>
+		</nav>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+        <a href="#" class="main-menu-icon">
+          <i class="fas fa-bars"></i>
+        </a>
+		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+    
+  </svg></i>
+            </span>
+          </a></div>
+        </nav>
+      </div>
+    </nav>
+    <nav class="nav">
+      
+
+      
+    </nav>
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container">
+    <hr class="content-sep">
+	
+    
+	<div>
+    
+	<span class="subtitle is-6">
+      July 10, 2019
+      
+	</span>
+	<ul class="social-share">
+  <li class="twitter">
+    <a href="https://twitter.com/intent/tweet/?text=Playing%20with%20a%20Raspberry%20Pi%204%2064-bit&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2frpi4-64bit-virt%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
+      <i class="fab fa-twitter"></i>
+    </a>
+  </li>
+  <li class="twitter">
+    <a href="https://reddit.com/submit?title=Playing%20with%20a%20Raspberry%20Pi%204%2064-bit&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2frpi4-64bit-virt%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
+      <i class="fab fa-reddit"></i>
+    </a>
+  </li>
+</ul>
+
+	</div>
+	<h1 class="title">
+      <a href="https://cloudkernels.github.io/posts/rpi4-64bit-virt/">Playing with a Raspberry Pi 4 64-bit</a>
+	  
+	</h1>
+    
+    <div class="content">
+      <p>Lightweight virtualization is a natural fit for low power devices and, so,
+seeing that the extremely popular Raspberry Pi line got an upgrade, we were
+very keen on trying the newly released Raspberry Pi 4 model B.</p>
+
+<p>Getting the board up and running with a 64bit kernel (and a 64bit userland)
+proved to be kind of a challenge, given that currently there is a number of
+<a href="https://github.com/raspberrypi/linux/commit/cdb78ce891f6c6367a69c0a46b5779a58164bd4b#diff-634f284364ba43ef69912111615b08ef">limitations</a> (SD card not fully working for &gt; 1GB RAM, coherent memory
+allocations etc.).
+With the help of some <a href="https://andrei.gherzan.ro/linux/raspbian-rpi-64/">very</a> useful <a href="https://andrei.gherzan.ro/linux/raspbian-rpi4-64/">posts</a> we were able to successfully
+boot a 64bit kernel with KVM support. Please note we also had to enable KVM &amp;
+VIRTIO options in the kernel config to support QEMU/KVM &amp; solo5-hvt instances.</p>
+
+<p>For now, we can safely boot it with 1GB of RAM and play with our various
+configurations.</p>
+
+<p>What&rsquo;s interesting about the RPI4, as far as virtualization is concerned, is
+that it now comes with ARM&rsquo;s standard GIC (Generic Interrupt Controller). Thus,
+unlike previous RPI generations that were wired with custom interrupt handling,
+virtualization is supported natively without any patching needed for interrupt
+emulation (and the overhead that this can incur&hellip;).</p>
+
+<p>To get a first taste of the performance of different virtualization options we
+ran a simple set of benchmarks for common use-case scenarios: a simple
+key-value store (REDIS), and a popular web server (NGINX). We used the stock
+tool for redis (redis-benchmark) and the apache-benchmark (ab), both running on
+the host OS.</p>
+
+<p>The figures below show measurements from the following configurations: native
+(bare-metal execution on the linux host), nabla (or solo5-spt, runnc with SPT
+backend), solo5-hvt (runnc with HVT backend), and QEMU/KVM (generic linux
+guest, running Debian Buster with vhost enabled).</p>
+
+<p>First we ran the full redis-benchmark test on a RPi3 &amp; a RPi4, for the various
+configurations above. Results for the linux guest are shown below:</p>
+
+<figure>
+    <img src="/static/redis-linux-guest.png"/> 
+</figure>
+
+
+<p>Clearly, apart from the A72 vs A53 upgrade, the GIC addition boosted the
+guests&rsquo; performance significantly.</p>
+
+<p>To dig into the virtualization internals we tried running a rumprun unikernel
+on top of solo5-hvt &amp; solo5-spt (nabla). To facilitate deployment we used a
+<a href="https://github.com/cloudkernels/runnc/tree/hvt%2Bvolumes">modified</a> version of <a href="https://github.com/nabla-containers/runnc">runnc</a> that includes a solo5-hvt backend and the
+ability to &ldquo;mount&rdquo; host fs files/directories in the container.</p>
+
+<figure>
+    <img src="/static/redis-unikernel-containers.png"/> 
+</figure>
+
+
+<p>The performance is much better than in the Linux guest. To further investigate the overhead of running virtualized workloads on such SoCs, we examined the SET case. The figure below shows results from native, nabla, solo5-hvt and qemu/KVM cases.</p>
+
+<figure>
+    <img src="/static/redis-set.png"/> 
+</figure>
+
+
+<p><a href="https://nabla-containers.github.io/">Nabla containers</a> exhibit the lowest overhead of all cases (~20%): this is
+expected as there is no virtualization involved, just seccomp filtering. The
+source of the overhead is the minimal I/O interface that solo5-spt offers.
+Solo5-hvt exhibits significant overhead (~40%), mainly due to the unoptimized
+I/O interface. In addition to that, trapping into user-space to handle I/O
+requests could possible be the main source of overhead. Qemu/KVM runs at 41% of
+the boards capabilities, albeit the use of the vhost mechanism which removes
+unnecessary traps to user-space for I/O handling.</p>
+
+<p>Finally, we plot the apache-benchmark results we got from an NGINX web server,
+running on a linux guest and a solo5-hvt unikernel.</p>
+
+<figure>
+    <img src="/static/nginx-ab.png"/> 
+</figure>
+
+
+<p>We had fun playing with a RPi4 and its systems support! Clearly there is a need
+to study the systems stack and optimize the various missing pieces to be able
+to reduce or even eliminate the overheads for simple, lightweight workload
+execution.</p>
+
+<p>Evaluating virtualization options in the diverse low power SoC ecosystem is a
+non-trivial task; the popularity and the evolvement of such systems makes them
+very interesting to explore, especially when it comes to identifying the
+bottlenecks and providing optimizations that help the community design and
+implement energy-efficient, low-footprint, and high-performance solutions.</p>
+
+      
+    </div>
+    
+
+  </div>
+</section>
+
+
+<section class="section footer">
+  <div class="container">
+	  <p><small>&copy; CloudKernels 2019</small></p>
+    
+  </div>
+</section>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-121797730-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="/js/social-share.js"></script>
+<script src="/js/nav-responsive.js"></script>
+</body>
+</html>
+
