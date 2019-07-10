@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019</copyright>
-    <lastBuildDate>Sat, 23 Feb 2019 18:17:51 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 10 Jul 2019 14:41:44 +0200</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Playing with a Raspberry Pi 4 64-bit</title>
+      <link>https://cloudkernels.github.io/posts/rpi4-64bit-virt/</link>
+      <pubDate>Wed, 10 Jul 2019 14:41:44 +0200</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/rpi4-64bit-virt/</guid>
+      <description>Lightweight virtualization is a natural fit for low power devices and, so, seeing that the extremely popular Raspberry Pi line got an upgrade, we were very keen on trying the newly released Raspberry Pi 4 model B.
+Getting the board up and running with a 64bit kernel (and a 64bit userland) proved to be kind of a challenge, given that currently there is a number of limitations (SD card not fully working for &amp;gt; 1GB RAM, coherent memory allocations etc.</description>
+    </item>
     
     <item>
       <title>How to build a python snippet for running in a Nabla container</title>
