@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019</copyright>
-    <lastBuildDate>Wed, 10 Jul 2019 14:41:44 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jul 2019 00:09:27 +0200</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Build a 64bit bootable image for a Raspberry Pi 4</title>
+      <link>https://cloudkernels.github.io/posts/rpi4-64bit-image/</link>
+      <pubDate>Sun, 14 Jul 2019 00:09:27 +0200</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/rpi4-64bit-image/</guid>
+      <description>Given the traction our previous post got, we thought we should jot down the steps to build a 64-bit bootable image for a RPi4. The distro we&amp;rsquo;re most familiar with is Debian, so we&amp;rsquo;ll go with a debian-like distro like Ubuntu. If you don&amp;rsquo;t feel like playing with kernel compilation and FS images, just grab the binary and dd it to an SD card!
+First step, download the 64-bit ubuntu server distro for the RPi3:</description>
+    </item>
     
     <item>
       <title>Playing with a Raspberry Pi 4 64-bit</title>
