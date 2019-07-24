@@ -192,3 +192,7 @@ small, .small {
   background-color: transparent;
   margin-top: 4rem;
 }
+
+.pager {
+  margin-top: 2rem;
+}
