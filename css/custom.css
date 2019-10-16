@@ -119,17 +119,36 @@ ul.social-share {
   /*float: right;*/
   padding-left: .5rem;
 }
-ul.social-share::before {
+ul.social-team {
+  display: inline-flex;
+  font-size: 16px;
+  line-height: 1;
+  /*padding-left: .5rem;*/
+  list-style: none;
+  margin: 0;
+}
+
+ul.social-share::before,
+ul.social-team::before {
   color: #d3d6db;
   padding-right: .5rem;
-  content: '\2022';
+  /*content: '\2022';*/
 }
-ul.social-share li a {
+ul.social-team::before {
+  padding-left: .3rem;
+}
+ul.social-share li a,
+ul.social-team li a {
+  border-bottom: none !important;
   padding-right: .5rem;
   color: #b2b7bd;
 }
-ul.social-share li a:hover {
+ul.social-share li a:hover,
+ul.social-team li a:hover {
   color: #69707a;
+}
+ul.social-team li + li {
+  margin-top: 0;
 }
 
 .content {
@@ -184,6 +203,10 @@ small, .small {
   margin-bottom: 1rem;
 }
 
+.content p {
+  text-align: left;
+}
+
 .read-more {
   font-size: 14px;
 }
@@ -195,4 +218,29 @@ small, .small {
 
 .pager {
   margin-top: 2rem;
+}
+
+.team-member:before {
+  content: "~";
+  display: flex;
+  align-self: start;
+  padding-right: .5rem;
+}
+.team-member {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.team-member img {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.team-member .team-member-text p:not(:last-child) {
+  margin-bottom: .1rem;
 }
