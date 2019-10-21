@@ -244,3 +244,7 @@ small, .small {
 .team-member .team-member-text p:not(:last-child) {
   margin-bottom: .1rem;
 }
+
+.highlight {
+  font-size: 90%;
+}

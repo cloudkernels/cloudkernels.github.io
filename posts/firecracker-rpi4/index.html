@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Porting Firecracker to a Raspberry Pi 4 | CloudKernels</title>
+
+
+
+<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+    <nav class="nav menu">
+      <div class="nav-left">
+        <a class="nav-item" href="https://cloudkernels.github.io/">
+          <h1 class="brand">CloudKernels</h1>
+        </a>
+      </div>
+        
+        <nav class="nav-item main-nav responsive">
+        <ul class="main-menu">
+          
+          <li>
+            <a href="/" title="Home"
+                 class="nav-item">
+               
+                <span>Home</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/about/" title="About"
+                 class="nav-item">
+               
+                <span>About</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/team/" title="Team"
+                 class="nav-item">
+               
+                <span>Team</span>
+            </a>
+          </li>
+		  
+	    </ul>
+		</nav>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+        <a href="#" class="main-menu-icon">
+          <i class="fas fa-bars"></i>
+        </a>
+		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+    
+  </svg></i>
+            </span>
+          </a></div>
+        </nav>
+      </div>
+    </nav>
+    <nav class="nav">
+      
+
+      
+    </nav>
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container">
+    <hr class="content-sep">
+	
+    
+	<div>
+    
+	<span class="subtitle is-6">
+      October 21, 2019
+      
+	</span>
+	<ul class="social-share">
+  <li class="twitter">
+    <a href="https://twitter.com/intent/tweet/?text=Porting%20Firecracker%20to%20a%20Raspberry%20Pi%204&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2ffirecracker-rpi4%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
+      <i class="fab fa-twitter"></i>
+    </a>
+  </li>
+  <li class="twitter">
+    <a href="https://reddit.com/submit?title=Porting%20Firecracker%20to%20a%20Raspberry%20Pi%204&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2ffirecracker-rpi4%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
+      <i class="fab fa-reddit"></i>
+    </a>
+  </li>
+</ul>
+
+	</div>
+	<h1 class="title">
+      <a href="https://cloudkernels.github.io/posts/firecracker-rpi4/">Porting Firecracker to a Raspberry Pi 4</a>
+	  
+	</h1>
+    
+    <div class="content">
+      
+
+<p>Since we got our hands on the new Raspberry Pi 4, we started exploring how
+various virtualization technologies behave on the board. First thing we tried is how to run <a href="https://cloudkernels.github.io/posts/rpi4-64bit-virt/">Nabla</a> on it and how it compares to native KVM.</p>
+
+<p>Next thing we wanted to try is <a href="https://github.com/firecracker-microvm/firecracker">firecracker</a>, the notorious micro-VMM that
+Amazon Lambda &amp; Fargate run on. To our disappointment, firecracker was not
+<a href="https://github.com/firecracker-microvm/firecracker/issues/1196">yet</a> running on RPi4. So we started looking into coding in the necessary
+changes :)</p>
+
+<p>After a bit of investigation, we figured out that the key missing piece is
+support for the GICv2 ARM interrupt controller. In fact, firecracker only
+supports GIC version 3 since it was open-sourced, but not version 2, which is
+the version appearing in the Raspberry Pi series, as well as in other popular
+boards, like the Hikey 970 we got our hands on, or Khadas VIM3. A bit more
+digging into the internals of firecracker and the Linux kernel, helped us
+work out the details and open a <a href="https://github.com/firecracker-microvm/firecracker/pull/1235">pull-request</a> which adds support for the
+missing parts.</p>
+
+<h4 id="changes-in-firecracker">Changes in Firecracker</h4>
+
+<p>The Generic Interrupt Controller (GIC) is the IP block in the ARM processors
+that implements interrupt handling. The Linux kernel supports user- and
+kernel-space emulation for GICv2 as well as GICv3 and v4. However, Firecracker
+only handles the GICv3-related configuration of the virtual GIC (VGIC).
+Similarly, setting up the FDT for the guest microVM from Firecracker only
+handles GIC-v3 devices.</p>
+
+<p>In terms of code organization, the GIC related code currently exposes a function
+for setting up GICv3 performing the corresponding <code>ioctl</code> KVM commands. The
+first part of our PR changes this by introducing a GIC Trait which defines the
+common interface for all GIC implementations. Even though it is still under
+discussion, what exactly will be in the Trait in its final form, it will be
+something along the following lines:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rs" data-lang="rs"><span style="color:#d14">/// Trait for GIC devices.
+</span><span style="color:#d14"></span><span style="color:#000;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">trait</span><span style="color:#bbb"> </span>GICDevice<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#d14">/// Returns the GIC version of the device
+</span><span style="color:#d14"></span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">version</span>(<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#999">self</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#458;font-weight:bold">u32</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#d14">/// Returns the file descriptor of the GIC device
+</span><span style="color:#d14"></span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">device_fd</span>(<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#999">self</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#458;font-weight:bold">DeviceFd</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#d14">/// Returns an array with GIC device properties
+</span><span style="color:#d14"></span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">device_properties</span>(<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#999">self</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#000;font-weight:bold">&amp;</span>[<span style="color:#458;font-weight:bold">u64</span>];<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div>
+<p>With this in place, we can define objects per GIC version, which implement this
+Trait, and still have the rest of the code deal with the <code>GICDevice</code> Trait,
+which is transparent to the GIC version.</p>
+
+<p>The implementations for each version, implement the Trait and a <code>new</code> function
+which is used to create the new object:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rs" data-lang="rs"><span style="color:#000;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">new</span>(vm: <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#458;font-weight:bold">VmFd</span>,<span style="color:#bbb"> </span>vcpu_count: <span style="color:#458;font-weight:bold">u64</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#0086b3">Result</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#0086b3">Box</span><span style="color:#000;font-weight:bold">&lt;</span>GICDevice<span style="color:#000;font-weight:bold">&gt;&gt;</span><span style="color:#bbb">
+</span></code></pre></div>
+<p>The differentiation between the two versions lays in the VGIC register
+attributes that each device exposes. As a result, the work we need to do is essentially to <code>mmap</code> their addresses.</p>
+
+<p>GICv2 relevant addresses include the <strong>distributor</strong> and <strong>cpu</strong> groups:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rs" data-lang="rs"><span style="color:#998;font-style:italic">/* Setting up the distributor attribute.
+</span><span style="color:#998;font-style:italic"> We are placing the GIC below 1GB so we need to substract the size of the distributor.
+</span><span style="color:#998;font-style:italic">*/</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>set_device_attribute(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>vgic_fd,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>kvm_bindings::KVM_DEV_ARM_VGIC_GRP_ADDR,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#458;font-weight:bold">u64</span>::from(kvm_bindings::KVM_VGIC_V2_ADDR_TYPE_DIST),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>get_dist_addr()<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#000;font-weight:bold">const</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#000;font-weight:bold">?</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#998;font-style:italic">/* Setting up the CPU attribute.
+</span><span style="color:#998;font-style:italic"> */</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>set_device_attribute(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>vgic_fd,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>kvm_bindings::KVM_DEV_ARM_VGIC_GRP_ADDR,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#458;font-weight:bold">u64</span>::from(kvm_bindings::KVM_VGIC_V2_ADDR_TYPE_CPU),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>get_cpu_addr()<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#000;font-weight:bold">const</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#000;font-weight:bold">?</span>;<span style="color:#bbb">
+</span></code></pre></div>
+<p>whereas the GICv3 includes the <strong>distributor</strong> and <strong>redistributor</strong> groups:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rs" data-lang="rs"><span style="color:#998;font-style:italic">/* Setting up the distributor attribute.
+</span><span style="color:#998;font-style:italic"> We are placing the GIC below 1GB so we need to substract the size of the distributor.
+</span><span style="color:#998;font-style:italic">*/</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>set_device_attribute(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>vgic_fd,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>kvm_bindings::KVM_DEV_ARM_VGIC_GRP_ADDR,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#458;font-weight:bold">u64</span>::from(kvm_bindings::KVM_VGIC_V3_ADDR_TYPE_DIST),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>get_dist_addr()<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#000;font-weight:bold">const</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#000;font-weight:bold">?</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#998;font-style:italic">/* Setting up the redistributors&#39; attribute.
+</span><span style="color:#998;font-style:italic">We are calculating here the start of the redistributors address. We have one per CPU.
+</span><span style="color:#998;font-style:italic">*/</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>set_device_attribute(<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>vgic_fd,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>kvm_bindings::KVM_DEV_ARM_VGIC_GRP_ADDR,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#458;font-weight:bold">u64</span>::from(kvm_bindings::KVM_VGIC_V3_ADDR_TYPE_REDIST),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">&amp;</span>get_redists_addr(<span style="color:#458;font-weight:bold">u64</span>::from(vcpu_count))<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#000;font-weight:bold">const</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>)<span style="color:#000;font-weight:bold">?</span>;<span style="color:#bbb">
+</span></code></pre></div>
+<p>Finally, for both versions of GIC we finalize the device initialization by
+setting the number of supported interrupts and the <em>control_init</em> group.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rs" data-lang="rs"><span style="color:#d14">/// Finalize the setup of a GIC device
+</span><span style="color:#d14"></span><span style="color:#000;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">finalize_device</span>(fd: <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#458;font-weight:bold">DeviceFd</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#0086b3">Result</span><span style="color:#000;font-weight:bold">&lt;</span>()<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#998;font-style:italic">/* We need to tell the kernel how many irqs to support with this vgic.
+</span><span style="color:#998;font-style:italic">     * See the `layout` module for details.
+</span><span style="color:#998;font-style:italic">     */</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">let</span><span style="color:#bbb"> </span>nr_irqs: <span style="color:#458;font-weight:bold">u32</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">super</span>::layout::IRQ_MAX<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">super</span>::layout::IRQ_BASE<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">+</span><span style="color:#bbb"> </span><span style="color:#099">1</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#000;font-weight:bold">let</span><span style="color:#bbb"> </span>nr_irqs_ptr<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">&amp;</span>nr_irqs<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">*</span><span style="color:#000;font-weight:bold">const</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u32</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>set_device_attribute(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>fd,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>kvm_bindings::KVM_DEV_ARM_VGIC_GRP_NR_IRQS,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>nr_irqs_ptr<span style="color:#bbb"> </span><span style="color:#000;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#458;font-weight:bold">u64</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>)<span style="color:#000;font-weight:bold">?</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#998;font-style:italic">/* Finalize the GIC.
+</span><span style="color:#998;font-style:italic">     * See https://code.woboq.org/linux/linux/virt/kvm/arm/vgic/vgic-kvm-device.c.html#211.
+</span><span style="color:#998;font-style:italic">     */</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>set_device_attribute(<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>fd,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>kvm_bindings::KVM_DEV_ARM_VGIC_GRP_CTRL,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#458;font-weight:bold">u64</span>::from(kvm_bindings::KVM_DEV_ARM_VGIC_CTRL_INIT),<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>)<span style="color:#000;font-weight:bold">?</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#0086b3">Ok</span>(())<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div>
+<p>Regarding the FDT creation, there are differences between v2 and v3 regarding
+the interrupt controller <code>intc</code> node.</p>
+
+<p>First, we need to define the GICv2 <code>compatible</code> property to be <code>arm,gic-400</code>,
+since it is the GIC-400 chip which implements GICv2. Next is the <code>reg</code>
+property of the FDT, which includes the addresses and the corresponding sizes of
+the GIC registers, i.e. distributor and CPU for GICv2, distributor and
+redistributor for GICv3. Finally, we fix the <code>interrupts</code> property which
+determines the interrupt source of the VGIC maintenance interrupt. The
+corresponding values for GICv2 were taken from the respective <a href="https://github.com/torvalds/linux/blob/master/Documentation/devicetree/bindings/interrupt-controller/arm%2Cgic.yaml">Linux Kernel entries</a>.</p>
+
+<h4 id="build-firecracker-with-rpi4-support">Build firecracker with RPi4 support</h4>
+
+<p>While waiting for the patch to merge upstream you can go ahead and check out it
+yourself.</p>
+
+<p>Clone and build our fork of firecracker (keep in mind that while the PR review
+is going on, we might force-update the branch).</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/cloudkernels/firecracker.git
+$ <span style="color:#0086b3">cd</span> firecracker
+$ ./tools/devtool build</code></pre></div>
+<p>Next you need a kernel image and a root filesystem to run with your firecracker
+build. You can grab the pre-built kernel image and rootfs here:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wget https://s3.amazonaws.com/spec.ccfc.min/img/aarch64/ubuntu_with_ssh/kernel/vmlinux.bin
+$ wget https://s3.amazonaws.com/spec.ccfc.min/img/aarch64/ubuntu_with_ssh/fsfiles/xenial.rootfs.ext4 </code></pre></div>
+<p>Alternatively, you can build your own kernel and rootfs using the following
+steps provided by the firecracker docs
+<a href="https://github.com/cloudkernels/firecracker/blob/master/docs/rootfs-and-kernel-setup.md">here</a></p>
+
+<h4 id="launch-our-image">Launch our image</h4>
+
+<p>To launch our image we will use the <a href="https://github.com/firecracker-microvm/firectl">firectl</a> tool. We need, to setup a tap
+device for the networking or our firecracker microVM.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ sudo ip tuntap add dev tap0 mode tap
+$ sudo ip addr add <span style="color:#099">172</span>.16.0.1/24 dev tap0
+$ sudo ip link <span style="color:#0086b3">set</span> tap0 up</code></pre></div>
+<p>And we launch the microVM using firectl:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">firectl --firecracker-binary<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">${</span><span style="color:#008080">PATH_TO_FC_BIN</span><span style="color:#d14">}</span> --kernel<span style="color:#000;font-weight:bold">=</span>vmlinux.bin <span style="color:#d14">\
+</span><span style="color:#d14"></span>	--tap-device<span style="color:#000;font-weight:bold">=</span>tap0/aa:fc:00:00:00:01 <span style="color:#d14">\
+</span><span style="color:#d14"></span>	--kernel-opts<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;console=ttyS0 reboot=k panic=1 pci=off ip=172.16.0.42::172.16.0.1:255.255.255.0::eth0:off&#34;</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>	--root-drive<span style="color:#000;font-weight:bold">=</span>./nginx_fc.ext4</code></pre></div>
+<p>Here, we used here the <code>ip</code> kernel boot parameter to give the <code>172.16.0.42</code>.</p>
+
+<p>Finally, we try out our nginx server:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">curl 172.16.0.42
+<span style="color:#999;font-weight:bold;font-style:italic">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#000080">html</span>&gt;
+&lt;<span style="color:#000080">head</span>&gt;
+&lt;<span style="color:#000080">title</span>&gt;Welcome to nginx!&lt;/<span style="color:#000080">title</span>&gt;
+&lt;<span style="color:#000080">style</span>&gt;
+    <span style="color:#000080">body</span> {
+        <span style="color:#000;font-weight:bold">width</span>: <span style="color:#099">35</span><span style="color:#458;font-weight:bold">em</span>;
+        <span style="color:#000;font-weight:bold">margin</span>: <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">auto</span>;
+        <span style="color:#000;font-weight:bold">font-family</span>: Tahoma, Verdana, Arial, <span style="color:#000;font-weight:bold">sans-serif</span>;
+    }
+&lt;/<span style="color:#000080">style</span>&gt;
+&lt;/<span style="color:#000080">head</span>&gt;
+&lt;<span style="color:#000080">body</span>&gt;
+&lt;<span style="color:#000080">h1</span>&gt;Welcome to nginx!&lt;/<span style="color:#000080">h1</span>&gt;
+&lt;<span style="color:#000080">p</span>&gt;If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.&lt;/<span style="color:#000080">p</span>&gt;
+
+&lt;<span style="color:#000080">p</span>&gt;For online documentation and support please refer to
+&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;http://nginx.org/&#34;</span>&gt;nginx.org&lt;/<span style="color:#000080">a</span>&gt;.&lt;<span style="color:#000080">br</span>/&gt;
+Commercial support is available at
+&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;http://nginx.com/&#34;</span>&gt;nginx.com&lt;/<span style="color:#000080">a</span>&gt;.&lt;/<span style="color:#000080">p</span>&gt;
+
+&lt;<span style="color:#000080">p</span>&gt;&lt;<span style="color:#000080">em</span>&gt;Thank you for using nginx.&lt;/<span style="color:#000080">em</span>&gt;&lt;/<span style="color:#000080">p</span>&gt;
+&lt;/<span style="color:#000080">body</span>&gt;
+&lt;/<span style="color:#000080">html</span>&gt;</code></pre></div>
+      
+    </div>
+    
+
+  </div>
+</section>
+
+
+<section class="section footer">
+  <div class="container">
+	  <p><small>&copy; CloudKernels 2019</small></p>
+    
+  </div>
+</section>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-121797730-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="/js/social-share.js"></script>
+<script src="/js/nav-responsive.js"></script>
+</body>
+</html>
+

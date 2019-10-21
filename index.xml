@@ -12,19 +12,19 @@
     
     
     <item>
-      <title>Team</title>
-      <link>https://cloudkernels.github.io/team/</link>
+      <title>Posts</title>
+      <link>https://cloudkernels.github.io/posts/</link>
       <author></author>
-      <guid>https://cloudkernels.github.io/team/</guid>
+      <guid>https://cloudkernels.github.io/posts/</guid>
       <description></description>
       
     </item>
     
     <item>
-      <title>Posts</title>
-      <link>https://cloudkernels.github.io/posts/</link>
+      <title>Team</title>
+      <link>https://cloudkernels.github.io/team/</link>
       <author></author>
-      <guid>https://cloudkernels.github.io/posts/</guid>
+      <guid>https://cloudkernels.github.io/team/</guid>
       <description></description>
       
     </item>
