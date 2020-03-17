@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019-2020</copyright>
-    <lastBuildDate>Mon, 21 Oct 2019 10:02:51 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 26 Feb 2020 20:10:38 +0000</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Fosdem 2020</title>
+      <link>https://cloudkernels.github.io/posts/fosdem-2020/</link>
+      <pubDate>Wed, 26 Feb 2020 20:10:38 +0000</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/fosdem-2020/</guid>
+      <description>Earlier this month we visited FOSDEM, an absolutely open and free event for developers, open-source vendors and enthusiasts to meet, share their ideas and news, and discuss the latest in open source. Talks at FOSDEM are usually organized within several sections: Keynotes, Main tracks, Developer rooms and Lightning talks.
+Some people from our team had visited before, but for most of us first timers it was really exciting. Packed keynotes, busy dev rooms, people chatting outside, over coffee, beer, or snacks!</description>
+    </item>
     
     <item>
       <title>Build a single-app rootfs for Firecracker MicroVMs</title>
