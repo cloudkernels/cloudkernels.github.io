@@ -8,16 +8,6 @@
   </url>
   
   <url>
-    <loc>https://cloudkernels.github.io/</loc>
-    <lastmod>2019-10-21T10:02:51+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cloudkernels.github.io/posts/</loc>
-    <lastmod>2019-10-21T10:02:51+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://cloudkernels.github.io/posts/firecracker-rpi4/</loc>
     <lastmod>2019-10-21T09:58:31+02:00</lastmod>
   </url>
@@ -69,10 +59,24 @@
   
   <url>
     <loc>https://cloudkernels.github.io/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cloudkernels.github.io/</loc>
+    <lastmod>2019-10-21T10:02:51+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cloudkernels.github.io/posts/</loc>
+    <lastmod>2019-10-21T10:02:51+01:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cloudkernels.github.io/tags/</loc>
+    <priority>0</priority>
   </url>
   
 </urlset>

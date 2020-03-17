@@ -198,8 +198,8 @@ $ docker --rm -ti -v <span style="color:#000;font-weight:bold">$(</span><span st
 <p>As the final step, we will substitute the <code>/sbin/init</code> binary of our rootfs with
 the following script which launches the nginx binary:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat nginx_init
-<span style="color:#998;font-style:italic">#!/bin/sh</span>
-
+<span style="color:#999;font-weight:bold;font-style:italic">#!/bin/sh
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
 mkdir -p /var/log/nginx
 
 <span style="color:#998;font-style:italic"># the init process should never exit</span>
@@ -490,7 +490,7 @@ Commercial support is available at
 
 <section class="section footer">
   <div class="container">
-	  <p><small>&copy; CloudKernels 2019</small></p>
+	  <p><small>&copy; CloudKernels 2019-2020</small></p>
     
   </div>
 </section>

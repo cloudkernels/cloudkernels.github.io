@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>CloudKernels</title>
@@ -6,16 +7,25 @@
     <generator>Hugo - gohugo.io</generator>
     <language>en</language>
     <contact></contact>
-    <copyright>&copy; CloudKernels 2019</copyright>
+    <copyright>&copy; CloudKernels 2019-2020</copyright>
     
         <atom:link href="https://cloudkernels.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Posts</title>
-      <link>https://cloudkernels.github.io/posts/</link>
+      <title>Build a single-app rootfs for Firecracker MicroVMs</title>
+      <link>https://cloudkernels.github.io/posts/fc-rootfs/</link>
       <author></author>
-      <guid>https://cloudkernels.github.io/posts/</guid>
+      <guid>https://cloudkernels.github.io/posts/fc-rootfs/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Porting Firecracker to a Raspberry Pi 4</title>
+      <link>https://cloudkernels.github.io/posts/firecracker-rpi4/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/firecracker-rpi4/</guid>
       <description></description>
       
     </item>
@@ -25,6 +35,69 @@
       <link>https://cloudkernels.github.io/team/</link>
       <author></author>
       <guid>https://cloudkernels.github.io/team/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Build a 64bit bootable image for a Raspberry Pi 4</title>
+      <link>https://cloudkernels.github.io/posts/rpi4-64bit-image/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/rpi4-64bit-image/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Playing with a Raspberry Pi 4 64-bit</title>
+      <link>https://cloudkernels.github.io/posts/rpi4-64bit-virt/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/rpi4-64bit-virt/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>How to build a python snippet for running in a Nabla container</title>
+      <link>https://cloudkernels.github.io/posts/building-python-snippets-for-nabla/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/building-python-snippets-for-nabla/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Build a Nabla Docker Image</title>
+      <link>https://cloudkernels.github.io/posts/build-a-nabla-docker-image/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/build-a-nabla-docker-image/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Building the Nabla containers toolchain for aarch64</title>
+      <link>https://cloudkernels.github.io/posts/building-nabla-aarch64/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/building-nabla-aarch64/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Run a rumprun unikernel on a RPi3</title>
+      <link>https://cloudkernels.github.io/posts/example-rumprun-solo5-on-aarch64/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/example-rumprun-solo5-on-aarch64/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Experiences from porting nabla containers to an ARMv8 board</title>
+      <link>https://cloudkernels.github.io/posts/nabla-containers-aarch64/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/nabla-containers-aarch64/</guid>
       <description></description>
       
     </item>
