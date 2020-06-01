@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019-2020</copyright>
-    <lastBuildDate>Wed, 26 Feb 2020 20:10:38 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 01 Jun 2020 20:29:17 +0000</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hardware acceleration in the Serverless era</title>
+      <link>https://cloudkernels.github.io/posts/vaccel/</link>
+      <pubDate>Mon, 01 Jun 2020 20:29:17 +0000</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/vaccel/</guid>
+      <description>The debate on how to deploy applications, monoliths or micro services, is in full swing. Part of this discussion relates to how the new paradigm incorporates support for accessing accelerators, e.g. GPUs, FPGAs. That kind of support has been made available to traditional programming models the last couple of decades and its tooling has evolved to be stable and standardized.
+On the other hand, what does it mean for a serverless setup to access an accelerator?</description>
+    </item>
     
     <item>
       <title>Fosdem 2020</title>

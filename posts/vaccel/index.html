@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Hardware acceleration in the Serverless era | CloudKernels</title>
+
+
+
+<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+    <nav class="nav menu">
+      <div class="nav-left">
+        <a class="nav-item" href="https://cloudkernels.github.io/">
+          <h1 class="brand">CloudKernels</h1>
+        </a>
+      </div>
+        
+        <nav class="nav-item main-nav responsive">
+        <ul class="main-menu">
+          
+          <li>
+            <a href="/" title="Home"
+                 class="nav-item">
+               
+                <span>Home</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/about/" title="About"
+                 class="nav-item">
+               
+                <span>About</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/team/" title="Team"
+                 class="nav-item">
+               
+                <span>Team</span>
+            </a>
+          </li>
+		  
+	    </ul>
+		</nav>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+        <a href="#" class="main-menu-icon">
+          <i class="fas fa-bars"></i>
+        </a>
+		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+    
+  </svg></i>
+            </span>
+          </a></div>
+        </nav>
+      </div>
+    </nav>
+    <nav class="nav">
+      
+
+      
+    </nav>
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container">
+    <hr class="content-sep">
+	
+    
+	<div>
+    
+	<span class="subtitle is-6">
+      June 1, 2020
+      
+	</span>
+	<ul class="social-share">
+  <li class="twitter">
+    <a href="https://twitter.com/intent/tweet/?text=Hardware%20acceleration%20in%20the%20Serverless%20era&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fvaccel%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
+      <i class="fab fa-twitter"></i>
+    </a>
+  </li>
+  <li class="twitter">
+    <a href="https://reddit.com/submit?title=Hardware%20acceleration%20in%20the%20Serverless%20era&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fvaccel%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
+      <i class="fab fa-reddit"></i>
+    </a>
+  </li>
+</ul>
+
+	</div>
+	<h1 class="title">
+      <a href="https://cloudkernels.github.io/posts/vaccel/">Hardware acceleration in the Serverless era</a>
+	  
+	</h1>
+    
+    <div class="content">
+      
+
+<p>The debate on how to deploy applications, monoliths or micro services, is in
+full swing. Part of this discussion relates to how the new paradigm
+incorporates support for accessing accelerators, e.g. GPUs, FPGAs. That kind
+of support has been made available to traditional programming models the last
+couple of decades and its tooling has evolved to be stable and standardized.</p>
+
+<p>On the other hand, what does it mean for a serverless setup to access an
+accelerator? Should the function invoked to classify an image, for instance,
+link against the whole acceleration runtime and program the hardware device
+itself? It seems quite counter-intuitive to create such bloated functions.</p>
+
+<p>Things get more complicated when we consider the low-level layers of the
+service architecture. How does the system itself get access to the
+acceleration hardware? Docker allows exposing a GPU device inside a container
+for some time now, so serverless systems based on top of it can expose GPU
+devices to running functions. Virtual Machine-based setups rely on the
+monitor, e.g. QEMU or <a href="https://firecracker-microvm.github.io/">Firecracker</a>, to expose acceleration devices to the
+guest.</p>
+
+<p>There are several techniques used to expose a device from the host to a guest
+VM. Passthrough mode exposes the hardware accelerator as is inside the guest.
+This mode provides native performance using the accelerator from inside the VM,
+however it does cause issues with sharing the device across multiple VMs.  API
+remoting, e.g. <a href="http://rcuda.net/">rCUDA</a>, is another option, where requests are being
+forwarded to the accelerator device over the network. Finally, there is the
+option of paravirtual interfaces where the monitor exposes a generic device to
+the guest, with a very simple API. Applications in the guest send requests to
+the paravirtual device which are then passed to the hypervisor and dispatched
+by the latter to an accelerator device on the host.</p>
+
+<p>VirtIO drivers are an example of such paravirtualized frameworks. VirtIO
+exposes simple front-end device drivers to the guest, rather than emulating
+complex devices and offloads the complexity of interacting with the hardware
+to the back-end that lives in the Virtual Machine Monitor (VMM).</p>
+
+<h3 id="virtio-crypto">virtio-crypto</h3>
+
+<p>One of the devices described in the VirtIO spec is the <a href="https://github.com/gongleiarei/virtio">virtio-crypto</a>
+<a href="https://github.com/gongleiarei/virtio-crypto-linux-driver">device</a>. The guest chooses the cryptographic operation to perform and
+passes a pointer to the data that will be manipulated. The actual operation is
+offloaded through the VMM to the host crypto acceleration device.</p>
+
+<p>A VM is able to use a crypto device by using a combination of
+<em>cryptodev</em> and <em>virtio-crypto</em>. Requests for encryption /
+decryption originating from the VM, get forwarded to the backend, get injected
+to the <em>cryptodev</em> device and end up being handled by the host Linux
+kernel. Figure 1 presents an overview of the <em>virtio-crypto</em>
+architecture.</p>
+
+<figure>
+    <img src="/static/vaccel/virtio-crypto.png#center"
+         alt="Figure 1: VirtIO-crypto architecture overview" width="60%"/> <figcaption>
+            <p>
+						<center><em>Figure 1: VirtIO-crypto architecture overview</em></center></p><br>
+        </figcaption>
+</figure>
+
+
+<p>In the context of micro-services (FaaS/Serverless) cryptographic operations are
+quite common, presented to the user as language/library abstractions.
+Integrating an off-loading mechanism of these CPU-intensive operations seems
+like an interesting optimization. To showcase the potential of paravirtual
+accelerated devices, we  implemented a <em>virtio-crypto</em> backend driver
+for AWS Firecracker. Since <em>virtio-crypto</em>&rsquo;s frontend is already present
+in the Linux kernel, all we had to do is implement the corresponding back-end
+in the Firecracker code base. This effort was relatively straight-forward since
+Firecracker already provides a number of VirtIO devices, e.g. net and block,
+which means that all the machinery for communication with the guest was in
+place.</p>
+
+<p>Figure 2 shows the performance our <em>virtio-crypto</em> driver achieves (dark
+bars) compared to running the computation in the guest kernel using the
+<em>cryptodev-linux</em> driver (light bars), when running the AES-CBC cipher.
+Unfortunately, we have not been able to get our hands on a crypto acceleration
+device, so <em>virtio-crypto</em> is using the same <em>cryptodev-linux</em>
+device in the host (the CPU). This means that we do not actually accelerate the
+operation, but our experiment is quite useful to see the VirtIO overhead of
+offloading the operation to the host. As expected, the larger the block size of
+the blob we are encrypting, the better we are able to hide the cost of moving
+data from the userland of the guest to the kernel of the host.</p>
+
+<figure>
+    <img src="/static/vaccel/aes_results.png#center"
+         alt="Figure 2: Host and Guest Throughput for AES-CBC-128 vs chunk size" width="80%"/> <figcaption>
+            <p>
+						<center><em>Figure 2: Host and Guest Throughput for AES-CBC-128 vs chunk size</em></center></p><br>
+        </figcaption>
+</figure>
+
+
+<p>This is encouraging; once there is a hardware accelerator for computation,
+acceleration capabilities are automatically exposed inside a Firecracker VM in
+a secure way with reasonably low overhead. Which inevitably leads us to the
+thought, <em>why only crypto?</em> The <em>virtio-crypto</em> example showcases a
+simple interface through which we can achieve hardware acceleration, so why not
+generalize this to other types of acceleration?</p>
+
+<p>This gave us the idea to define a simple, hardware-agnostic API to accelerate
+any operation, as long as the host supports it. We believe that an API at this
+granularity is the right abstraction for serverless frameworks, since it moves
+the complexity of accelerating operations from the guest to the host.</p>
+
+<h3 id="vaccel">vAccel</h3>
+
+<p>Let us consider a simple use-case: matrix multiplication. It is a common
+operation, used in numerous applications, in HPC, Machine Learning, and Big
+Data.  In the generic case, the user running the application on a VM would
+have to either have access to the GPU hardware and enjoy hardware acceleration,
+or perform the operation on the CPU, wasting time and CPU cycles.</p>
+
+<p>Instead of passing through the GPU hardware, we choose a different
+path: we introduce vAccel, a simple paravirtual framework that forwards
+operation requests to the monitor, which, in turn, uses native calls to an
+acceleration framework, taking advantage of the hardware capabilities of the
+host.</p>
+
+<p>The vAccel framework allows workloads that execute on Virtual Machines to
+offload compute-intensive functions to backends provided by the hypervisor. To
+achieve this, the system presents a number of host-side accelerator functions
+to the guest kernel, which are backed by hardware accelerators (FPGAs, GPUs,
+specialized crypto engines etc.).</p>
+
+<p>vAccel consists of three main parts: the frontend driver, the backend driver
+and the runtime. An overview of the system architecture is shown in Figure 3.</p>
+
+<figure>
+    <img src="/static/vaccel/vaccel.png#center"
+         alt="Figure 3: vAccel architecture overview" width="70%"/> <figcaption>
+            <p>
+						<center><em>Figure 3: vAccel architecture overview</em></center></p><br>
+        </figcaption>
+</figure>
+
+
+<p>Frontend and Backend drivers implement the transport layer. We base our
+implementation on VirtIO, and follow the generic VirtIO spec, using a single
+queue for control and data exchange.</p>
+
+<p>The runtime includes two components: a <em>host library</em> that handles
+offload requests, and a <em>guest library</em> that intercepts the actual
+offload-able user calls and creates those requests.</p>
+
+<p>The basic API is given below:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#000;font-weight:bold">typedef</span> uint8_t vaccel_op_t;
+
+<span style="color:#998;font-style:italic">/* Get available accelerate-able operations from the backend */</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">vaccel_get_operations</span>(uint8_t <span style="color:#000;font-weight:bold">*</span>available_operations);
+
+<span style="color:#998;font-style:italic">/* Start a new session */</span>
+vaccel_session_t <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">create_vaccel_session</span>();
+
+<span style="color:#998;font-style:italic">/* Invoke an acceleration operation */</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">do_operation</span>(vaccel_session_t <span style="color:#000;font-weight:bold">*</span>handle, vaccel_op_t operation, <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>input, <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>output);
+
+<span style="color:#998;font-style:italic">/* End a running session */</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">destory_vaccel_session</span>(vaccel_session_t <span style="color:#000;font-weight:bold">*</span>handle);</code></pre></div>
+<p>To study the potential overhead of such an approach on a common function, we
+deploy a generic QEMU/KVM VM on an x86 host, using an FPGA card as the
+accelerator (<a href="http://www.netlib.org/lapack/explore-html/db/dc9/group__single__blas__level3_gafe51bacb54592ff5de056acabd83c260.html">SGEMM</a>, implemented with OpenCL). We run the stencil on the host to
+obtain a baseline, and then we execute the same benchmark on the vAccel-enabled
+guest and capture the results.</p>
+
+<figure>
+    <img src="/static/vaccel/sgemm.png#center"
+         alt="Figure 4: SGEMM Host / Guest results vs matrix size" width="80%"/> <figcaption>
+            <p>
+						<center><em>Figure 4: SGEMM Host / Guest results vs matrix size</em></center></p><br>
+        </figcaption>
+</figure>
+
+
+<p>Figure 4 presents the performance of SGEMM on a single core VM (dark bars)
+against the respective run on the host (light bars) for various matrix sizes.
+On the Y axis we plot the MFlops achieved by the SGEMM stencil, while on the X
+axis we lay the size of the matrices tested. For large matrix sizes (&gt;
+128x128), the overhead perceived by the user is minimal, ranging from 16% to
+even &lt;3%.</p>
+
+<h3 id="inference-at-the-edge">Inference at the edge</h3>
+
+<p>Let us now consider a more complicated scenario: image classification. From the
+user perspective it is a simple operation: (i) provide an image as input, (ii)
+define which model will be used to classify the image, (iii) wait for the
+result. However, the system internals are a bit more complicated: the image has
+to be preprocessed, fed to a pre-trained classification model, and mapped to a
+given set of labels. This abstraction is already provided by common frameworks
+such as Tensorflow, Caffe etc. However, these frameworks perform optimally with
+direct access to hardware accelerators. Figure 5 presents the path to the
+hardware accelerator from the VM&rsquo;s userspace.</p>
+
+<figure>
+    <img src="/static/vaccel/ml_legacy.png#center"
+         alt="Figure 5: Inference use-case" width="80%"/> <figcaption>
+            <p>
+						<center><em>Figure 5: Inference use-case</em></center></p><br>
+        </figcaption>
+</figure>
+
+
+<p>We use vAccel to expose accelerated inference capabilities to a guest VM.
+Specifically, we expose one basic function, image classification. The guest
+simply issues a request with the image to be classified and the model to be
+used for inference. The backend forwards this request to vAccel-runtime, which,
+in turn, calls wrapper functions on top of the Tensorflow runtime to classify
+the image. The result is copied back to the guest synchronously. Figure 6
+presents the vAccel-enabled path.</p>
+
+<figure>
+    <img src="/static/vaccel/ml_vaccel.png#center"
+         alt="Figure 6: Inference use-case with vAccel" width="80%"/> <figcaption>
+            <p>
+						<center><em>Figure 6: Inference use-case with vAccel</em></center></p><br>
+        </figcaption>
+</figure>
+
+
+<p>Figure 7 plots the total execution time of an image classification operation
+for various image sizes deployed on a generic QEMU/KVM VM on an <a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/">NVIDIA Jetson
+Nano</a>. Dark bars indicate the time required to complete the operation on
+the host, whereas light bars show the respective time spent on the guest.
+Clearly, the overhead is minimal: the average overhead across all cases is 1%.</p>
+
+<figure>
+    <img src="/static/vaccel/ml_results.png#center"
+         alt="Figure 7: Image classification with vAccel" width="80%"/> <figcaption>
+            <p>
+						<center><em>Figure 7: Image classification with vAccel</em></center></p><br>
+        </figcaption>
+</figure>
+
+
+<p>As execution moves to the Edge, following the Serverless paradigm, efficiency
+is key to provide low power consumption, while at the same time increase the
+quality and the diversity of services offered to the end user. Offloading
+computation to specialized units is one of the most important aspects to
+balance trade-offs related to resource utilization and energy-efficiency and
+to minimize request-response latency.</p>
+
+<p><em>vAccel is being developed jointly by the <a href="http://research.cslab.ece.ntua.gr">Computing Systems Laboratory</a> of
+the <a href="https://www.ntua.gr">National Technical University of Athens</a> and <a href="https://nubificus.co.uk">Nubificus LTD</a>.
+vAccel is open-source and WiP; we plan to provide an RFC for the frontend
+driver to be upstreamed, as well as respective RFCs for the backends (QEMU,
+Firecracker etc.).</em></p>
+
+      
+    </div>
+    
+
+  </div>
+</section>
+
+
+<section class="section footer">
+  <div class="container">
+	  <p><small>&copy; CloudKernels 2019-2020</small></p>
+    
+  </div>
+</section>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-121797730-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="/js/social-share.js"></script>
+<script src="/js/nav-responsive.js"></script>
+</body>
+</html>
+
