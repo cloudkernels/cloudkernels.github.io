@@ -208,9 +208,9 @@ Firecracker already provides a number of VirtIO devices, e.g. net and block,
 which means that all the machinery for communication with the guest was in
 place.</p>
 
-<p>Figure 2 shows the performance our <em>virtio-crypto</em> driver achieves (dark
+<p>Figure 2 shows the performance our <em>virtio-crypto</em> driver achieves (light
 bars) compared to running the computation in the guest kernel using the
-<em>cryptodev-linux</em> driver (light bars), when running the AES-CBC cipher.
+<em>cryptodev-linux</em> driver (dark bars), when running the AES-CBC cipher.
 Unfortunately, we have not been able to get our hands on a crypto acceleration
 device, so <em>virtio-crypto</em> is using the same <em>cryptodev-linux</em>
 device in the host (the CPU). This means that we do not actually accelerate the
@@ -309,8 +309,8 @@ guest and capture the results.</p>
 </figure>
 
 
-<p>Figure 4 presents the performance of SGEMM on a single core VM (dark bars)
-against the respective run on the host (light bars) for various matrix sizes.
+<p>Figure 4 presents the performance of SGEMM on a single core VM (light bars)
+against the respective run on the host (dark bars) for various matrix sizes.
 On the Y axis we plot the MFlops achieved by the SGEMM stencil, while on the X
 axis we lay the size of the matrices tested. For large matrix sizes (&gt;
 128x128), the overhead perceived by the user is minimal, ranging from 16% to
