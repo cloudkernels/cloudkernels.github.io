@@ -18,7 +18,7 @@
       <pubDate>Fri, 04 Dec 2020 14:14:04 +0100</pubDate>
       
       <guid>https://cloudkernels.github.io/posts/vaccel_v2/</guid>
-      <description>In our previous post we spoke about the potential solutions for deploying serverless offererings with hardware acceleration support. With the increasing adoption of the serverless and FaaS paradigms, providers will need to offer some form of hardware acceleration semantics.
+      <description>In our previous post we spoke about the potential solutions for deploying serverless offerings with hardware acceleration support. With the increasing adoption of the serverless and FaaS paradigms, providers will need to offer some form of hardware acceleration semantics.
 For some time now, Amazon has identifed this as a &amp;ldquo;compelling use case&amp;rdquo; for their AWS Firecracker hypervisor which powers the Amazon Lambda service. What is more, they identify traditional techniques for GPU support in VMs such as GPU passthrough comes with limitations and significantly increases the attack surface of the hypervisor.</description>
     </item>
     
