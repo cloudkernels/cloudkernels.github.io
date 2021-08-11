@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>Running containers on Firecracker microVMs using kata on kubernetes</title>
+      <link>https://cloudkernels.github.io/posts/kata-fc-k3s-k8s/</link>
+      <author></author>
+      <guid>https://cloudkernels.github.io/posts/kata-fc-k3s-k8s/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
       <title>Hardware acceleration in the Age of Functions (vol II)</title>
       <link>https://cloudkernels.github.io/posts/vaccel_v2/</link>
       <author></author>

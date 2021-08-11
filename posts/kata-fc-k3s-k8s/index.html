@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Running containers on Firecracker microVMs using kata on kubernetes | CloudKernels</title>
+
+
+
+<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+    <nav class="nav menu">
+      <div class="nav-left">
+        <a class="nav-item" href="https://cloudkernels.github.io/">
+          <h1 class="brand">CloudKernels</h1>
+        </a>
+      </div>
+        
+        <nav class="nav-item main-nav responsive">
+        <ul class="main-menu">
+          
+          <li>
+            <a href="/" title="Home"
+                 class="nav-item">
+               
+                <span>Home</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/about/" title="About"
+                 class="nav-item">
+               
+                <span>About</span>
+            </a>
+          </li>
+		  
+          <li>
+            <a href="/team/" title="Team"
+                 class="nav-item">
+               
+                <span>Team</span>
+            </a>
+          </li>
+		  
+	    </ul>
+		</nav>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+        <a href="#" class="main-menu-icon">
+          <i class="fas fa-bars"></i>
+        </a>
+		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+    
+  </svg></i>
+            </span>
+          </a></div>
+        </nav>
+      </div>
+    </nav>
+    <nav class="nav">
+      
+
+      
+    </nav>
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container">
+    <hr class="content-sep">
+	
+    
+	<div>
+    
+	<span class="subtitle is-6">
+      July 9, 2021
+      
+	</span>
+	<ul class="social-share">
+  <li class="twitter">
+    <a href="https://twitter.com/intent/tweet/?text=Running%20containers%20on%20Firecracker%20microVMs%20using%20kata%20on%20kubernetes&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fkata-fc-k3s-k8s%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
+      <i class="fab fa-twitter"></i>
+    </a>
+  </li>
+  <li class="twitter">
+    <a href="https://reddit.com/submit?title=Running%20containers%20on%20Firecracker%20microVMs%20using%20kata%20on%20kubernetes&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fkata-fc-k3s-k8s%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
+      <i class="fab fa-reddit"></i>
+    </a>
+  </li>
+</ul>
+
+	</div>
+	<h1 class="title">
+      <a href="https://cloudkernels.github.io/posts/kata-fc-k3s-k8s/">Running containers on Firecracker microVMs using kata on kubernetes</a>
+	  
+	</h1>
+    
+    <div class="content">
+      
+
+<p>This is the first of a number of posts regarding the orchestration, deployment
+and scaling of containerized applications in VM sandboxes using kubernetes,
+kata-containers and AWS Firecracker microVMs. We have gathered some notes
+during the installation and configuration of the necessary components and we
+thought they might be useful to the community, especially with regards to the
+major pain points in trying out recent open-source projects and technologies.</p>
+
+<h3 id="about-orchestration-the-edge-and-kata-containers">About Orchestration, the Edge, and Kata Containers</h3>
+
+<p>To manage and orchestrate containers in a cluster, the community is using
+<a href="https://kubernetes.io/">kubernetes</a> (k8s), a powerful, open-source system for automating the
+deployment, scaling and management of containerized applications. To
+accommodate the vast majority of options and use-cases, k8s supports a number
+of container runtimes: the piece of software that sets up all the necessary
+components in the system to run the containerized application. For more
+information on the container runtime support or k8s visit the <a href="https://kubernetes.io/docs/home/">official
+documentation</a>.</p>
+
+<h4 id="k8s-at-the-edge">k8s at the edge</h4>
+
+<p>A stripped down version of k8s is available through <a href="https://k3s.io/">K3s</a>, a kubernetes
+distribution designed for production workloads in unattended,
+resource-constrained, remote locations or inside IoT appliances. K3s is
+packaged as a single &lt;40MB binary that reduces the dependencies and steps
+needed to install, run and auto-update a production Kubernetes cluster. K3s
+supports various architectures (amd64, ARMv8, ARMv8) with binaries and
+multiarch images available for all. K3s works great from something as small as
+a Raspberry Pi to an AWS a1.4xlarge 32GiB server. K3s is also great for trying
+out k8s on a local machine without messing up the OS.</p>
+
+<h4 id="container-sandboxing">container sandboxing</h4>
+
+<p><a href="https://katacontainers.io">Kata Containers</a> enable containers to be seamlessly executed in Virtual
+Machines. Kata Containers are as light and fast as containers and integrate
+with the container management layers, while also delivering the security
+advantages of VMs. Kata Containers is the result of merging two existing open
+source projects: <a href="https://software.intel.com/content/www/us/en/develop/articles/intel-clear-containers-1-the-container-landscape.html">Intel Clear Containers</a> and <a href="https://github.com/hyperhq/runv">Hyper runV</a>.</p>
+
+<p>Kata Containers integrate with k8s easily; however, there are some (minor) pain
+points when adding more options to the mix. For instance, choosing AWS
+Firecracker as the VMM for the sandbox environment, brings a storage backend
+dependency: device mapper. In this post, we will be going through the steps
+needed to setup kata containers with Firecracker, focusing on the device mapper
+setup for k8s and k3s.</p>
+
+<h3 id="kata-containers-and-containerd">Kata containers and containerd</h3>
+
+<p>First, lets start of by installing kata containers and add the relevant handler
+to containerd. Following the <a href="https://github.com/kata-containers/kata-containers/tree/main/docs/install#readme">docs</a> is pretty straightforward,
+especially <a href="https://github.com/kata-containers/kata-containers/blob/main/docs/how-to/containerd-kata.md">this</a> one. To make sure everything is working
+as expected, you could try out a couple of examples found
+<a href="https://github.com/kata-containers/kata-containers/blob/main/docs/how-to/containerd-kata.md#run">here</a>.</p>
+
+<p>In short, the needed steps are:</p>
+
+<h5 id="install-kata-binaries">install kata binaries</h5>
+
+<p>Download a release from: <code>https://github.com/kata-containers/kata-containers/releases</code></p>
+
+<p>(using v2.1.1, released in June 2021):</p>
+
+<pre><code>$ wget https://github.com/kata-containers/kata-containers/releases/download/2.1.1/kata-static-2.1.1-x86_64.tar.xz
+</code></pre>
+
+<p>Unpack the binary</p>
+
+<pre><code>$ xzcat kata-static-2.1.1-x86_64.tar.xz | sudo tar -xvf - -C /
+</code></pre>
+
+<p>by default, kata is being installed in <code>/opt/kata</code>. Check the installed version by running:</p>
+
+<pre><code>$ /opt/kata/bin/kata-runtime --version
+</code></pre>
+
+<p>It should output something like the following:</p>
+
+<pre><code>$ /opt/kata/bin/kata-runtime --version
+kata-runtime  : 2.1.1
+   commit   : 0e2be438bdd6d213ac4a3d7d300a5757c4137799
+   OCI specs: 1.0.1-dev
+</code></pre>
+
+<p>It is recommended you add a symbolic link to <code>/opt/kata/bin/kata-runtime</code> and
+<code>/opt/kata/bin/containerd-shim-kata-v2</code> in order for containerd to reach these
+binaries from the default system <code>PATH</code>.</p>
+
+<pre><code>$ sudo ln -s /opt/kata/bin/kata-runtime /usr/local/bin
+$ sudo ln -s /opt/kata/bin/containerd-shim-kata-v2 /usr/local/bin
+</code></pre>
+
+<h5 id="install-containerd">install containerd</h5>
+
+<p>To install containerd, you can grab a release from
+<code>https://github.com/containerd/containerd/releases</code> or use the package manager
+of your distro:</p>
+
+<pre><code>$ sudo apt-get install containerd
+</code></pre>
+
+<p>A fairly recent containerd version is recommended (e.g. we&rsquo;ve only tested with
+containerd versions <code>v1.3.9</code> and above).</p>
+
+<p>Add the kata configuration to containerd&rsquo; <code>config.toml</code> (<code>/etc/containerd/config.toml</code>):</p>
+
+<pre><code>[plugins]
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;]
+    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]
+      default_runtime_name = &quot;kata&quot;
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.kata]
+          runtime_type = &quot;io.containerd.kata.v2&quot;
+</code></pre>
+
+<p>If <code>/etc/containerd/config.toml</code> is not present, create it using the following
+command:</p>
+
+<pre><code>$ sudo containerd config default &gt; /etc/containerd/config.toml
+</code></pre>
+
+<p>and add the above snippet to the relevant section.</p>
+
+<h5 id="test-kata-with-containerd">test kata with containerd</h5>
+
+<p>Now, after we restart containerd:</p>
+
+<pre><code>sudo systemctl restart containerd
+</code></pre>
+
+<p>we should be able to launch a Ubuntu test container using kata containers and
+containerd:</p>
+
+<pre><code>$ sudo ctr image pull docker.io/library/ubuntu:latest
+docker.io/library/ubuntu:latest:                                                  resolved       |++++++++++++++++++++++++++++++++++++++| 
+index-sha256:82becede498899ec668628e7cb0ad87b6e1c371cb8a1e597d83a47fac21d6af3:    done           |++++++++++++++++++++++++++++++++++++++| 
+manifest-sha256:1e48201ccc2ab83afc435394b3bf70af0fa0055215c1e26a5da9b50a1ae367c9: done           |++++++++++++++++++++++++++++++++++++++| 
+layer-sha256:16ec32c2132b43494832a05f2b02f7a822479f8250c173d0ab27b3de78b2f058:    done           |++++++++++++++++++++++++++++++++++++++| 
+config-sha256:1318b700e415001198d1bf66d260b07f67ca8a552b61b0da02b3832c778f221b:   done           |++++++++++++++++++++++++++++++++++++++| 
+elapsed: 7.2 s                                                                    total:  27.2 M (3.8 MiB/s)                                       
+unpacking linux/amd64 sha256:82becede498899ec668628e7cb0ad87b6e1c371cb8a1e597d83a47fac21d6af3...
+done
+$ ctr run --runtime io.containerd.run.kata.v2 -t --rm docker.io/library/ubuntu:latest ubuntu-kata-test /bin/bash
+root@clr-d25fa567d2f440df9eb4316de1699b51:/# uname -a
+Linux clr-d25fa567d2f440df9eb4316de1699b51 5.10.25 #1 SMP Fri Apr 9 18:18:14 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+
+<h4 id="kata-containers-and-aws-firecracker">Kata containers and AWS Firecracker</h4>
+
+<p>The above example is using the QEMU/KVM hypervisor. To use a different
+hypervisor (eg. AWS Firecracker), we need to make sure we honor all the needed
+prerequisites, so that the VM sandbox is spawned correctly and is able to host
+the containerized application we want to run. Let&rsquo;s take a step back and see how
+kata containers fetch the container image and run the application in the
+sandboxed environment.</p>
+
+<h5 id="kata-containers-execution-flow">kata containers execution flow</h5>
+
+<p>As mentioned earlier, Kata containers provide a way for containerized
+application to run inside a VM sandbox. Additionally, kata containers manage
+the container execution via a runtime system on the Host and an agent running
+in the sandbox.  The containerized application is packaged in a container
+image, which is pulled outside the sandbox environment, along with its metadata
+description (the <code>json</code> file). These two components comprise the <em>container
+bundle</em>. In order to run the container inside the sandbox environment (that is,
+the VM) the container rootfs (the layer stack) must be somehow exposed from the
+host to the VM. Then, the <em>kata agent</em>, which runs inside the VM, creates a
+container from the exposed rootfs.</p>
+
+<p>In the case of QEMU/KVM, the container rootfs is exposed using a virtiofs
+shared directory between the host and the guest. In the case of AWS
+Firecracker, however, virtiofs is <a href="https://github.com/firecracker-microvm/firecracker/pull/1351">not supported</a>. So, the only
+option is to use a virtio block device.</p>
+
+<h5 id="devmapper">devmapper</h5>
+
+<p>In order to expose the container inside an AWS Firecracker sandbox environment,
+the kata runtime system expects that containerd uses the <a href="https://pkg.go.dev/github.com/containerd/containerd/snapshots/devmapper">devmapper
+snapshotter</a>. Essentially, the container rootfs is a device
+mapper snapshot, hot-plugged to AWS Firecracker as a virtio block device. The
+<em>kata agent</em> running in the VM finds the mount point inside the guest and
+issues the relevant command to libcontainerd to create and spawn the container.</p>
+
+<p>So, in order to glue all the above together, we need containerd configured with
+the devmapper snapshotter. The first step is to setup a device mapper
+thin-pool. On a local dev environment you can use loopback devices.</p>
+
+<p>A simple script from the <a href="https://pkg.go.dev/github.com/containerd/containerd/snapshots/devmapper">devmapper snapshotter</a> documentation
+is show below:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#0086b3">set</span> -ex
+
+<span style="color:#008080">DATA_DIR</span><span style="color:#000;font-weight:bold">=</span>/var/lib/containerd/io.containerd.snapshotter.v1.devmapper
+<span style="color:#008080">POOL_NAME</span><span style="color:#000;font-weight:bold">=</span>containerd-pool
+
+mkdir -p <span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span>
+
+<span style="color:#998;font-style:italic"># Create data file</span>
+sudo touch <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/data&#34;</span>
+sudo truncate -s 100G <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/data&#34;</span>
+
+<span style="color:#998;font-style:italic"># Create metadata file</span>
+sudo touch <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/meta&#34;</span>
+sudo truncate -s 40G <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/meta&#34;</span>
+
+<span style="color:#998;font-style:italic"># Allocate loop devices</span>
+<span style="color:#008080">DATA_DEV</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>sudo losetup --find --show <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/data&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#008080">META_DEV</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>sudo losetup --find --show <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/meta&#34;</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#998;font-style:italic"># Define thin-pool parameters.</span>
+<span style="color:#998;font-style:italic"># See https://www.kernel.org/doc/Documentation/device-mapper/thin-provisioning.txt for details.</span>
+<span style="color:#008080">SECTOR_SIZE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">512</span>
+<span style="color:#008080">DATA_SIZE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#000;font-weight:bold">$(</span>sudo blockdev --getsize64 -q <span style="color:#d14">${</span><span style="color:#008080">DATA_DEV</span><span style="color:#d14">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#d14">&#34;</span>
+<span style="color:#008080">LENGTH_IN_SECTORS</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>bc <span style="color:#000;font-weight:bold">&lt;&lt;&lt;</span> <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_SIZE</span><span style="color:#d14">}</span><span style="color:#d14">/</span><span style="color:#d14">${</span><span style="color:#008080">SECTOR_SIZE</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#008080">DATA_BLOCK_SIZE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">128</span>
+<span style="color:#008080">LOW_WATER_MARK</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">32768</span>
+
+<span style="color:#998;font-style:italic"># Create a thin-pool device</span>
+sudo dmsetup create <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">POOL_NAME</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>    --table <span style="color:#d14">&#34;0 </span><span style="color:#d14">${</span><span style="color:#008080">LENGTH_IN_SECTORS</span><span style="color:#d14">}</span><span style="color:#d14"> thin-pool </span><span style="color:#d14">${</span><span style="color:#008080">META_DEV</span><span style="color:#d14">}</span><span style="color:#d14"> </span><span style="color:#d14">${</span><span style="color:#008080">DATA_DEV</span><span style="color:#d14">}</span><span style="color:#d14"> </span><span style="color:#d14">${</span><span style="color:#008080">DATA_BLOCK_SIZE</span><span style="color:#d14">}</span><span style="color:#d14"> </span><span style="color:#d14">${</span><span style="color:#008080">LOW_WATER_MARK</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span>
+
+cat <span style="color:#d14">&lt;&lt; EOF
+</span><span style="color:#d14">#
+</span><span style="color:#d14"># Add this to your config.toml configuration file and restart containerd daemon
+</span><span style="color:#d14">#
+</span><span style="color:#d14">[plugins]
+</span><span style="color:#d14">  [plugins.devmapper]
+</span><span style="color:#d14">    pool_name = &#34;${POOL_NAME}&#34;
+</span><span style="color:#d14">    root_path = &#34;${DATA_DIR}&#34;
+</span><span style="color:#d14">    base_image_size = &#34;40GB&#34;
+</span><span style="color:#d14">EOF</span></code></pre></div>
+<p>This script needs to be run only once, while setting up the devmapper
+snapshotter for containerd. Afterwards, make sure that on each reboot, the
+thin-pool is initialized from the same data dir. Otherwise, all the fetched
+containers (or the ones that you&rsquo;ve created will be re-initialized). As simple
+script that re-creates the thin-pool from the same data dir is show below:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#0086b3">set</span> -ex
+
+<span style="color:#008080">DATA_DIR</span><span style="color:#000;font-weight:bold">=</span>/var/lib/containerd/io.containerd.snapshotter.v1.devmapper
+<span style="color:#008080">POOL_NAME</span><span style="color:#000;font-weight:bold">=</span>containerd-pool
+
+<span style="color:#998;font-style:italic"># Allocate loop devices</span>
+<span style="color:#008080">DATA_DEV</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>sudo losetup --find --show <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/data&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#008080">META_DEV</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>sudo losetup --find --show <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_DIR</span><span style="color:#d14">}</span><span style="color:#d14">/meta&#34;</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#998;font-style:italic"># Define thin-pool parameters.</span>
+<span style="color:#998;font-style:italic"># See https://www.kernel.org/doc/Documentation/device-mapper/thin-provisioning.txt for details.</span>
+<span style="color:#008080">SECTOR_SIZE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">512</span>
+<span style="color:#008080">DATA_SIZE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#000;font-weight:bold">$(</span>sudo blockdev --getsize64 -q <span style="color:#d14">${</span><span style="color:#008080">DATA_DEV</span><span style="color:#d14">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#d14">&#34;</span>
+<span style="color:#008080">LENGTH_IN_SECTORS</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>bc <span style="color:#000;font-weight:bold">&lt;&lt;&lt;</span> <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">DATA_SIZE</span><span style="color:#d14">}</span><span style="color:#d14">/</span><span style="color:#d14">${</span><span style="color:#008080">SECTOR_SIZE</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#008080">DATA_BLOCK_SIZE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">128</span>
+<span style="color:#008080">LOW_WATER_MARK</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">32768</span>
+
+<span style="color:#998;font-style:italic"># Create a thin-pool device</span>
+sudo dmsetup create <span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">POOL_NAME</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#d14">\
+</span><span style="color:#d14"></span>    --table <span style="color:#d14">&#34;0 </span><span style="color:#d14">${</span><span style="color:#008080">LENGTH_IN_SECTORS</span><span style="color:#d14">}</span><span style="color:#d14"> thin-pool </span><span style="color:#d14">${</span><span style="color:#008080">META_DEV</span><span style="color:#d14">}</span><span style="color:#d14"> </span><span style="color:#d14">${</span><span style="color:#008080">DATA_DEV</span><span style="color:#d14">}</span><span style="color:#d14"> </span><span style="color:#d14">${</span><span style="color:#008080">DATA_BLOCK_SIZE</span><span style="color:#d14">}</span><span style="color:#d14"> </span><span style="color:#d14">${</span><span style="color:#008080">LOW_WATER_MARK</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span></code></pre></div>
+<p>After a containerd restart (<code>systemctl restart containerd</code>), we should be able
+to see the plugin registered and working correctly:</p>
+
+<pre><code>$ ctr plugins ls |grep devmapper
+io.containerd.snapshotter.v1    devmapper                linux/amd64    ok     
+</code></pre>
+
+<h5 id="containerd-handler-setup">containerd handler setup</h5>
+
+<p>The last step to setup AWS Firecracker with kata and containerd, is add the
+relevant handler to containerd <code>config.toml</code>. To use a separate handler and
+keep both QEMU/KVM and AWS Firecracker options as the hypervisor for kata
+containers, we create a simple script that calls the kata containers runtime
+with a different config file. Add a file in your path (eg.
+<code>/usr/local/bin/containerd-shim-kata-fc-v2</code>) with the following contents:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#008080">KATA_CONF_FILE</span><span style="color:#000;font-weight:bold">=</span>/opt/kata/share/defaults/kata-containers/configuration-fc.toml /opt/kata/bin/containerd-shim-kata-v2 <span style="color:#008080">$@</span></code></pre></div>
+<p>make it executable:</p>
+
+<pre><code>$ chmod +x /usr/local/bin/containerd-shim-kata-fc-v2
+</code></pre>
+
+<p>and add the relevant section in containerd&rsquo;s <code>config.toml</code> file (<code>/etc/containerd/config.toml</code>):</p>
+
+<pre><code>[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes]
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.kata-fc]
+    runtime_type = &quot;io.containerd.kata-fc.v2&quot;
+</code></pre>
+
+<p>After a containerd restart (<code>systemctl restart containerd</code>), we should be able
+to launch a Ubuntu test container using kata containers and AWS Firecracker:</p>
+
+<pre><code>root@nuc8:~# ctr images pull --snapshotter devmapper docker.io/library/ubuntu:latest
+docker.io/library/ubuntu:latest:                                                  resolved       |++++++++++++++++++++++++++++++++++++++| 
+index-sha256:82becede498899ec668628e7cb0ad87b6e1c371cb8a1e597d83a47fac21d6af3:    done           |++++++++++++++++++++++++++++++++++++++| 
+manifest-sha256:1e48201ccc2ab83afc435394b3bf70af0fa0055215c1e26a5da9b50a1ae367c9: done           |++++++++++++++++++++++++++++++++++++++| 
+config-sha256:1318b700e415001198d1bf66d260b07f67ca8a552b61b0da02b3832c778f221b:   done           |++++++++++++++++++++++++++++++++++++++| 
+layer-sha256:16ec32c2132b43494832a05f2b02f7a822479f8250c173d0ab27b3de78b2f058:    done           |++++++++++++++++++++++++++++++++++++++| 
+elapsed: 7.9 s                                                                    total:  27.2 M (3.4 MiB/s)                                       
+unpacking linux/amd64 sha256:82becede498899ec668628e7cb0ad87b6e1c371cb8a1e597d83a47fac21d6af3...
+done
+root@nuc8:~# ctr run --snapshotter devmapper --runtime io.containerd.run.kata-fc.v2 -t --rm docker.io/library/ubuntu:latest ubuntu-kata-fc-test uname -a
+Linux clr-f083d4640978470da04f091181bb9e95 5.10.25 #1 SMP Fri Apr 9 18:18:14 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+
+<h3 id="configure-k8s-to-use-aws-firecracker-with-kata-containers">Configure k8s to use AWS Firecracker with kata containers</h3>
+
+<p>Following the above steps, integrating kata containers with k8s is a piece of
+cake ;-)</p>
+
+<p>Two things are needed to create a pod with kata and AWS Firecracker:</p>
+
+<ul>
+<li>make the containerd snapshotter default</li>
+<li>add the kata containers runtime class to k8s</li>
+</ul>
+
+<p>To configure the devmapper snapshotter as the default snapshotter in containerd add the following lines to <code>/etc/containerd/config.toml</code>:</p>
+
+<pre><code>[plugins.cri.containerd]
+  snapshotter = &quot;devmapper&quot;
+</code></pre>
+
+<p>To add the kata containers runtime class to k8s, we need to create a simple YAML file (<code>kata-fc-rc.yaml</code>) containing the name of the <code>kata-fc</code> handler we configured earlier:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion:<span style="color:#bbb"> </span>node.k8s.io/v1<span style="color:#bbb">
+</span><span style="color:#bbb"></span>kind:<span style="color:#bbb"> </span>RuntimeClass<span style="color:#bbb">
+</span><span style="color:#bbb"></span>metadata:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>name:<span style="color:#bbb"> </span>kata-fc<span style="color:#bbb">
+</span><span style="color:#bbb"></span>handler:<span style="color:#bbb"> </span>kata-fc</code></pre></div>
+<p>and apply it to our k8s cluster:</p>
+
+<pre><code>$ kubectl apply -f kata-fc-rc.yaml
+</code></pre>
+
+<p>After a containerd restart (<code>systemctl restart containerd</code>), we should be able to create a pod
+to see the plugin registered and working correctly. Take for instance the following YAML file (<code>nginx-kata-fc.yaml</code>):</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion:<span style="color:#bbb"> </span>v1<span style="color:#bbb">
+</span><span style="color:#bbb"></span>kind:<span style="color:#bbb"> </span>Pod<span style="color:#bbb">
+</span><span style="color:#bbb"></span>metadata:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>name:<span style="color:#bbb"> </span>nginx-kata-fc<span style="color:#bbb">
+</span><span style="color:#bbb"></span>spec:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>runtimeClassName:<span style="color:#bbb"> </span>kata-fc<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>containers:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>-<span style="color:#bbb"> </span>name:<span style="color:#bbb"> </span>nginx<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>image:<span style="color:#bbb"> </span>nginx</code></pre></div>
+<p>and apply it:</p>
+
+<pre><code>$ kubectl apply -f nginx-kata-fc.yaml
+</code></pre>
+
+<p>the output should be something like the following:</p>
+
+<pre><code>$ kubectl apply -f nginx-kata-fc.yaml
+pod/nginx-kata-fc created
+</code></pre>
+
+<p>Inspecting the pod in the node created should give us the following:</p>
+
+<pre><code>$ kubectl describe pod nginx-kata-fc
+Name:         nginx-kata-fc
+[snipped]
+Containers:
+  nginx:
+    Container ID:   containerd://bbb6dc73c3a0c727dae81b4be0b93d853c9e2a7843e3f037b934bcb5aea89ece
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:8f335768880da6baf72b70c701002b45f4932acae8d574dedfddaf967fc3ac90
+    Port:           &lt;none&gt;
+    Host Port:      &lt;none&gt;
+    State:          Running
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-psxw6 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-psxw6:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       &lt;nil&gt;
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              katacontainers.io/kata-runtime=true
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason   Age   From     Message
+  ----    ------   ----  ----     -------
+  Normal  Pulling  107s  kubelet  Pulling image &quot;nginx&quot;
+  Normal  Pulled   87s   kubelet  Successfully pulled image &quot;nginx&quot; in 20.37180329s
+  Normal  Created  87s   kubelet  Created container nginx
+  Normal  Started  87s   kubelet  Started container nginx
+</code></pre>
+
+<p>Digging in a bit deeper:</p>
+
+<pre><code>$ ps -ef |grep firecracker
+root     2705170 2705157  1 [snipped] ?        00:00:00 /opt/kata/bin/firecracker --api-sock /run/vc/firecracker/00fedc54a0bb0e55bd0513e0cf3c551f/root/run/firecracker.socket --config-file /run/vc/firecracker/00fedc54a0bb0e55bd0513e0cf3c551f/root/fcConfig.json
+$ kubectl exec -it nginx-kata-fc -- /bin/bash
+root@nginx-kata-fc:/# uname -a
+Linux nginx-kata-fc 5.10.25 #1 SMP Fri Apr 9 18:18:14 UTC 2021 x86_64 GNU/Linux
+root@nginx-kata-fc:/# cat /proc/cpuinfo |head -n 10
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Xeon(R) Processor @ 3.00GHz
+stepping	: 10
+microcode	: 0x1
+cpu MHz		: 3000.054
+cache size	: 4096 KB
+physical id	: 0
+root@nginx-kata-fc:/# cat /proc/meminfo |head -n 10
+MemTotal:        2043696 kB
+MemFree:         1988208 kB
+MemAvailable:    1997152 kB
+Buffers:            2172 kB
+Cached:            31224 kB
+SwapCached:            0 kB
+Active:            16336 kB
+Inactive:          21264 kB
+Active(anon):         40 kB
+Inactive(anon):     4204 kB
+</code></pre>
+
+<p>Looking into the container id via <code>ctr</code>, we can see that is using the kata-fc handler:</p>
+
+<pre><code>$ ctr -n k8s.io c ls |grep bbb6dc73c3a0c727dae81b4be0b93d853c9e2a7843e3f037b934bcb5aea89ece
+bbb6dc73c3a0c727dae81b4be0b93d853c9e2a7843e3f037b934bcb5aea89ece docker.io/library/nginx:latest  io.containerd.kata-fc.v2          
+</code></pre>
+
+<p>As a side note, containerd matches the handler notation with an executable like this:</p>
+
+<pre><code>io.containerd.kata-fc.v2 -&gt; containerd-shim-kata-fc-v2
+</code></pre>
+
+<p>so the name of the script we created above
+(<code>/usr/local/bin/containerd-shim-kata-fc-v2</code>) must match the name of the
+handler in containerd <code>config.toml</code> using the above notation.</p>
+
+<h3 id="configure-k3s-to-use-aws-firecracker-with-kata-containers">Configure k3s to use AWS Firecracker with kata containers</h3>
+
+<p>k3s ships with a minimal version of containerd where the devmapper snapshotter
+plugin is not included.</p>
+
+<p>As a result, in order to add AWS Firecracker support to k3s, we either need to
+configure k3s to use a different containerd binary or build k3s-containerd from
+<a href="https://github.com/k3s-io/k3s">source</a>, patch it and inject it to
+<code>/var/lib/rancher/k3s/data/current/bin</code>.</p>
+
+<h4 id="use-external-containerd">Use external containerd</h4>
+
+<p>Make sure you have configured containerd to use the cri devmapper plugin
+correctly (see above). Then just install k3s using the system&rsquo;s containerd.</p>
+
+<pre><code>curl -sfL https://get.k3s.io  | INSTALL_K3S_EXEC=&quot;--container-runtime-endpoint unix:///run/containerd/containerd.sock&quot; sh -
+</code></pre>
+
+<h4 id="build-k3s-containerd">Build k3s&rsquo; containerd</h4>
+
+<p>To build k3s&rsquo; containerd we need to patch the source in order to enable the devmapper snapshotter. So:</p>
+
+<p>(i) get the source:</p>
+
+<pre><code>$ git clone https://github.com/k3s-io/k3s
+</code></pre>
+
+<p>(ii) patch with the following file (<code>devmapper_patch.txt</code>):</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#999">diff --git a/pkg/containerd/builtins_linux.go b/pkg/containerd/builtins_linux.go
+</span><span style="color:#999">index 280b09ce..89c700eb 100644
+</span><span style="color:#999"></span><span style="color:#000;background-color:#fdd">--- a/pkg/containerd/builtins_linux.go
+</span><span style="color:#000;background-color:#fdd"></span><span style="color:#000;background-color:#dfd">+++ b/pkg/containerd/builtins_linux.go
+</span><span style="color:#000;background-color:#dfd"></span><span style="color:#aaa">@@ -25,5 +25,6 @@ import (
+</span><span style="color:#aaa"></span>        _ &#34;github.com/containerd/containerd/runtime/v2/runc/options&#34;
+        _ &#34;github.com/containerd/containerd/snapshots/native&#34;
+        _ &#34;github.com/containerd/containerd/snapshots/overlay&#34;
+<span style="color:#000;background-color:#dfd">+       _ &#34;github.com/containerd/containerd/snapshots/devmapper&#34;
+</span><span style="color:#000;background-color:#dfd"></span>        _ &#34;github.com/containerd/fuse-overlayfs-snapshotter/plugin&#34;
+ )
+<span style="color:#999">diff --git a/vendor/modules.txt b/vendor/modules.txt
+</span><span style="color:#999">index 91554f14..054d04bf 100644
+</span><span style="color:#999"></span><span style="color:#000;background-color:#fdd">--- a/vendor/modules.txt
+</span><span style="color:#000;background-color:#fdd"></span><span style="color:#000;background-color:#dfd">+++ b/vendor/modules.txt
+</span><span style="color:#000;background-color:#dfd"></span><span style="color:#aaa">@@ -307,6 +307,8 @@ github.com/containerd/containerd/services/snapshots
+</span><span style="color:#aaa"></span> github.com/containerd/containerd/services/tasks
+ github.com/containerd/containerd/services/version
+ github.com/containerd/containerd/snapshots
+<span style="color:#000;background-color:#dfd">+github.com/containerd/containerd/snapshots/devmapper
+</span><span style="color:#000;background-color:#dfd">+github.com/containerd/containerd/snapshots/devmapper/dmsetup
+</span><span style="color:#000;background-color:#dfd"></span> github.com/containerd/containerd/snapshots/native
+ github.com/containerd/containerd/snapshots/overlay
+ github.com/containerd/containerd/snapshots/proxy
+</code></pre></div>
+<pre><code>$ cd k3s
+$ patch -p1 &lt; ../devmapper_patch.txt
+patching file pkg/containerd/builtins_linux.go
+patching file vendor/modules.txt
+</code></pre>
+
+<p>and (iii) build:</p>
+
+<pre><code>$ sudo apt-get install btrfs-progs libbtrfs-dev
+$ mkdir -p build/data &amp;&amp; ./scripts/download &amp;&amp; go generate
+$ go get -d github.com/containerd/containerd/snapshots/devmapper
+$ SKIP_VALIDATE=true make # because we have local changes
+</code></pre>
+
+<p>Hopefully, you&rsquo;ll be presented with a k3s binary ;-)</p>
+
+<h4 id="install-kata-containers-on-k3s">install kata-containers on k3s</h4>
+
+<p>After a successful build &amp; run of k3s, you should be able to list the available nodes for your local cluster:</p>
+
+<pre><code>$ k3s kubectl get nodes --show-labels
+NAME                     STATUS   ROLES                  AGE   VERSION        LABELS
+mycluster.localdomain   Ready    control-plane,master   11m   v1.21.3+k3s1   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/instance-type=k3s,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=mycluster.localdomain,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=true,node-role.kubernetes.io/master=true,node.kubernetes.io/instance-type=k3s
+</code></pre>
+
+<p>Apart from the manual install we saw above for k8s, we could just use the
+well documented process in the <a href="https://github.com/kata-containers/kata-containers/tree/main/tools/packaging/kata-deploy">kata-deploy</a> section of the
+kata-containers repo.</p>
+
+<p>So, just run the following:</p>
+
+<pre><code>$ k3s kubectl apply -f https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/kata-rbac/base/kata-rbac.yaml
+serviceaccount/kata-label-node created
+clusterrole.rbac.authorization.k8s.io/node-labeler created
+clusterrolebinding.rbac.authorization.k8s.io/kata-label-node-rb created
+$ k3s kubectl apply -f https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/kata-deploy/base/kata-deploy.yaml
+daemonset.apps/kata-deploy created
+</code></pre>
+
+<p>This will fetch the necessary binaries and install them on /opt/kata (via the
+daemonset). It will also add the relevant handlers on
+<code>/etc/containerd/config.toml</code>. However, in order to use these handlers we need to
+create the respective <a href="https://kubernetes.io/docs/concepts/containers/runtime-class/#runtime-class">runtime classes</a>. To add them run the following:</p>
+
+<pre><code>$ k3s kubectl apply -f https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/runtimeclasses/kata-runtimeClasses.yaml
+runtimeclass.node.k8s.io/kata-qemu-virtiofs created
+runtimeclass.node.k8s.io/kata-qemu created
+runtimeclass.node.k8s.io/kata-clh created
+runtimeclass.node.k8s.io/kata-fc created
+</code></pre>
+
+<p>Query the system to see if kata-deploy was successful:</p>
+
+<pre><code>$ k3s kubectl get nodes --show-labels
+NAME                     STATUS   ROLES                  AGE   VERSION        LABELS
+mycluster.localdomain   Ready    control-plane,master   62m   v1.21.3+k3s1   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/instance-type=k3s,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=mycluster.localdomain,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=true,node-role.kubernetes.io/master=true,node.kubernetes.io/instance-type=k3s,katacontainers.io/kata-runtime=true
+</code></pre>
+
+<p>See the last label? its there because kata containers installation was successful! So we&rsquo;re ready to spawn a sandboxed container on k3s:</p>
+
+<pre><code>$ k3s kubectl apply -f https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/examples/test-deploy-kata-fc.yaml
+deployment.apps/php-apache-kata-fc created
+service/php-apache-kata-fc created
+</code></pre>
+
+<p>Lets see what has been created:</p>
+
+<pre><code>$ k3s kubectl get pods
+NAME                                 READY   STATUS    RESTARTS   AGE
+php-apache-kata-fc-5ccb8df89-v8hqj   1/1     Running   0          31s
+</code></pre>
+
+<pre><code>$ ps -ef |grep firecracker
+root      128201  128187  3 15:21 ?        00:00:02 /opt/kata/bin/firecracker --api-sock /run/vc/firecracker/2050be93ed33df24537f6f8274e3c66c/root/run/firecracker.socket --config-file /run/vc/firecracker/2050be93ed33df24537f6f8274e3c66c/root/fcConfig.json
+</code></pre>
+
+<pre><code>$ k3s kubectl describe pod php-apache-kata-fc-5ccb8df89-v8hqj
+Name:         php-apache-kata-fc-5ccb8df89-v8hqj
+Namespace:    default
+Priority:     0
+Node:         mycluster.localdomain
+Labels:       pod-template-hash=5ccb8df89
+              run=php-apache-kata-fc
+Annotations:  &lt;none&gt;
+Status:       Running
+IP:           10.42.0.192
+IPs:
+  IP:           10.42.0.192
+Controlled By:  ReplicaSet/php-apache-kata-fc-5ccb8df89
+Containers:
+  php-apache:
+    Container ID:   containerd://13718fd3820efb1c0260ec9d88c039c37325a1e76a3edca943c62e6dab02c549
+    Image:          k8s.gcr.io/hpa-example
+    Image ID:       k8s.gcr.io/hpa-example@sha256:581697a37f0e136db86d6b30392f0db40ce99c8248a7044c770012f4e8491544
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:        200m
+    Environment:  &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-k62m5 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-k62m5:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       &lt;nil&gt;
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              katacontainers.io/kata-runtime=true
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  82s   default-scheduler  Successfully assigned default/php-apache-kata-fc-5ccb8df89-v8hqj to mycluster.localdomain
+  Normal  Pulling    80s   kubelet            Pulling image &quot;k8s.gcr.io/hpa-example&quot;
+  Normal  Pulled     80s   kubelet            Successfully pulled image &quot;k8s.gcr.io/hpa-example&quot; in 745.344896ms
+  Normal  Created    80s   kubelet            Created container php-apache
+  Normal  Started    79s   kubelet            Started container php-apache
+</code></pre>
+
+<p>To tear things down on k3s run the following:</p>
+
+<pre><code>$ k3s kubectl delete -f https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/examples/test-deploy-kata-fc.yaml
+deployment.apps &quot;php-apache-kata-fc&quot; deleted
+service &quot;php-apache-kata-fc&quot; deleted
+$ k3s kubectl delete -f  https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/runtimeclasses/kata-runtimeClasses.yaml
+runtimeclass.node.k8s.io &quot;kata-qemu-virtiofs&quot; deleted
+runtimeclass.node.k8s.io &quot;kata-qemu&quot; deleted
+runtimeclass.node.k8s.io &quot;kata-clh&quot; deleted
+runtimeclass.node.k8s.io &quot;kata-fc&quot; deleted
+$ k3s kubectl delete -f https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/kata-deploy/base/kata-deploy.yaml
+daemonset.apps &quot;kata-deploy&quot; deleted
+$ k3s kubectl delete -f https://raw.githubusercontent.com/kata-containers/kata-containers/main/tools/packaging/kata-deploy/kata-rbac/base/kata-rbac.yaml
+serviceaccount &quot;kata-label-node&quot; deleted
+clusterrole.rbac.authorization.k8s.io &quot;node-labeler&quot; deleted
+clusterrolebinding.rbac.authorization.k8s.io &quot;kata-label-node-rb&quot; deleted
+</code></pre>
+
+<p>This concludes a first take on running containers as microVMs in k8s using
+Kata Containers and AWS Firecracker. In the next posts we will explore hardware
+acceleration options, serverless frameworks and unikernel execution! Stay tuned
+for more!</p>
+
+<p>NOTE I: <em>If you choose the first option for k3s, you&rsquo;ll need to manually
+append the handlers in <code>/etc/containerd/config.toml</code> as the k3s denotes a
+relative path for containerd&rsquo;s config file, so it resides in
+<code>/var/lib/rancher/k3s/agent/etc/containerd/config.toml</code>. The easiest way to
+work around this is</em>:</p>
+
+<pre><code>cat /var/lib/rancher/k3s/agent/etc/containerd/config.toml &gt;&gt; /etc/containerd/config.toml
+systemctl restart containerd
+</code></pre>
+
+<p>NOTE II: <em>If you are already running k8s/k3s with a different containerd
+snapshotter, after configuring devmapper and restarting containerd, you
+probably need to restart kubelet/k3s services and make sure that all the
+containers running in <code>k8s.io</code> containerd namespace are now running using
+devicemapper.</em></p>
+
+      
+    </div>
+    
+
+  </div>
+</section>
+
+
+<section class="section footer">
+  <div class="container">
+	  <p><small>&copy; CloudKernels 2019-2020</small></p>
+    
+  </div>
+</section>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-121797730-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="/js/social-share.js"></script>
+<script src="/js/nav-responsive.js"></script>
+</body>
+</html>
+

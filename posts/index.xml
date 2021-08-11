@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; CloudKernels 2019-2020</copyright>
-    <lastBuildDate>Fri, 04 Dec 2020 14:14:04 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 09 Jul 2021 10:14:04 +0100</lastBuildDate>
     
 	<atom:link href="https://cloudkernels.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Running containers on Firecracker microVMs using kata on kubernetes</title>
+      <link>https://cloudkernels.github.io/posts/kata-fc-k3s-k8s/</link>
+      <pubDate>Fri, 09 Jul 2021 10:14:04 +0100</pubDate>
+      
+      <guid>https://cloudkernels.github.io/posts/kata-fc-k3s-k8s/</guid>
+      <description>This is the first of a number of posts regarding the orchestration, deployment and scaling of containerized applications in VM sandboxes using kubernetes, kata-containers and AWS Firecracker microVMs. We have gathered some notes during the installation and configuration of the necessary components and we thought they might be useful to the community, especially with regards to the major pain points in trying out recent open-source projects and technologies.
+About Orchestration, the Edge, and Kata Containers To manage and orchestrate containers in a cluster, the community is using kubernetes (k8s), a powerful, open-source system for automating the deployment, scaling and management of containerized applications.</description>
+    </item>
     
     <item>
       <title>Hardware acceleration in the Age of Functions (vol II)</title>
