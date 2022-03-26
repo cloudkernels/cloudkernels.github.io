@@ -1,516 +1,287 @@
-<!DOCTYPE html>
-<html  lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<title>Build a single-app rootfs for Firecracker MicroVMs | CloudKernels</title>
-
-
-
-<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
-</head>
-<body>
-
-<section class="section">
-  <div class="container">
-    <nav class="nav menu">
-      <div class="nav-left">
-        <a class="nav-item" href="https://cloudkernels.github.io/">
-          <h1 class="brand">CloudKernels</h1>
-        </a>
-      </div>
-        
-        <nav class="nav-item main-nav responsive">
-        <ul class="main-menu">
-          
-          <li>
-            <a href="/" title="Home"
-                 class="nav-item">
-               
-                <span>Home</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/about/" title="About"
-                 class="nav-item">
-               
-                <span>About</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/team/" title="Team"
-                 class="nav-item">
-               
-                <span>Team</span>
-            </a>
-          </li>
-		  
-	    </ul>
-		</nav>
-      <div class="nav-right">
-        <nav class="nav-item level is-mobile">
-        <a href="#" class="main-menu-icon">
-          <i class="fas fa-bars"></i>
-        </a>
-		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-    
-  </svg></i>
-            </span>
-          </a></div>
-        </nav>
-      </div>
-    </nav>
-    <nav class="nav">
-      
-
-      
-    </nav>
-
-  </div>
-</section>
-
-
-
-<section class="section">
-  <div class="container">
-    <hr class="content-sep">
-	
-    
-	<div>
-    
-	<span class="subtitle is-6">
-      October 21, 2019
-      
-	</span>
-	<ul class="social-share">
-  <li class="twitter">
-    <a href="https://twitter.com/intent/tweet/?text=Build%20a%20single-app%20rootfs%20for%20Firecracker%20MicroVMs&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2ffc-rootfs%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
-      <i class="fab fa-twitter"></i>
-    </a>
-  </li>
-  <li class="twitter">
-    <a href="https://reddit.com/submit?title=Build%20a%20single-app%20rootfs%20for%20Firecracker%20MicroVMs&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2ffc-rootfs%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
-      <i class="fab fa-reddit"></i>
-    </a>
-  </li>
-</ul>
-
-	</div>
-	<h1 class="title">
-      <a href="https://cloudkernels.github.io/posts/fc-rootfs/">Build a single-app rootfs for Firecracker MicroVMs</a>
-	  
-	</h1>
-    
-    <div class="content">
-      
-
-<p>Spawning applications in the cloud has been made super easy using container frameworks such as docker. For instance running a simple command like the following</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run --rm -v /path/to/nginx-files:/etc/nginx nginx</code></pre></div>
-<p>spawns an NGINX web server, provided you customize config files and the actual HTML files to be served.</p>
-
-<p>This process, inherits NGINX&rsquo;s stock docker hub rootfs, and spawns it as a docker container in a generic Linux container host.</p>
-
-<p>However, what happens when someone wants to create the absolute mimimum rootfs for such a process?</p>
-
-<p>In what follows we describe two straightforward approaches that came up handy when playing with firecraker and qemu rootfs images on low-power devices, where resources are scarse (memory footprint, storage footprint, bw etc.).</p>
-
-<h4 id="option-1-base-the-rootfs-on-a-minimal-linux-container-distro">Option 1: base the rootfs on a minimal linux container distro</h4>
-
-<p>The firecracker guide provides a guide on how to build a rootfs based on Alpine
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Build a single-app rootfs for Firecracker MicroVMs | CloudKernels</title><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://cloudkernels.github.io/css/custom.css><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=96x96 href=/favicon-96x96.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel=stylesheet><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel=stylesheet><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/brands.css integrity=sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/solid.css integrity=sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css integrity=sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0 crossorigin=anonymous></head><body><section class=section><div class=container><nav class="nav menu"><div class=nav-left><a class=nav-item href=https://cloudkernels.github.io/><h1 class=brand>CloudKernels</h1></a></div><nav class="nav-item main-nav responsive"><ul class=main-menu><li><a href=/ title=Home class=nav-item><span>Home</span></a></li><li><a href=/about/ title=About class=nav-item><span>About</span></a></li><li><a href=/team/ title=Team class=nav-item><span>Team</span></a></li></ul></nav><div class=nav-right><nav class="nav-item level is-mobile"><a href=# class=main-menu-icon><i class="fas fa-bars"></i></a><div class=social><a class=level-item aria-label=github href=https://github.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0 0 20 4.77 5.07 5.07.0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38.0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 0 0 5 4.77a5.44 5.44.0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 0 0 9 18.13V22"/></svg></i></span></a><a class=level-item aria-label=twitter href=https://twitter.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M23 3a10.9 10.9.0 0 1-3.14 1.53 4.48 4.48.0 0 0-7.86 3v1A10.66 10.66.0 0 1 3 4s-4 9 5 13a11.64 11.64.0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5.0 0 0-.08-.83A7.72 7.72.0 0 0 23 3z"/></svg></i></span></a><a class=level-item aria-label=email href=mailto:team@cloudkernels.net target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6 12 13 2 6"/></svg></i></span></a></div></nav></div></nav><nav class=nav></nav></div></section><section class=section><div class=container><hr class=content-sep><div><span class="subtitle is-6">October 21, 2019</span><ul class=social-share><li class=twitter><a href="https://twitter.com/intent/tweet/?text=Build%20a%20single-app%20rootfs%20for%20Firecracker%20MicroVMs&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2ffc-rootfs%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Twitter"><i class="fab fa-twitter"></i></a></li><li class=twitter><a href="https://reddit.com/submit?title=Build%20a%20single-app%20rootfs%20for%20Firecracker%20MicroVMs&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2ffc-rootfs%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Reddit"><i class="fab fa-reddit"></i></a></li></ul></div><h1 class=title><a href=https://cloudkernels.github.io/posts/fc-rootfs/>Build a single-app rootfs for Firecracker MicroVMs</a></h1><div class=content><p>Spawning applications in the cloud has been made super easy using container frameworks such as docker. For instance running a simple command like the following</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run --rm -v /path/to/nginx-files:/etc/nginx nginx</code></pre></div><p>spawns an NGINX web server, provided you customize config files and the actual HTML files to be served.</p><p>This process, inherits NGINX&rsquo;s stock docker hub rootfs, and spawns it as a docker container in a generic Linux container host.</p><p>However, what happens when someone wants to create the absolute mimimum rootfs for such a process?</p><p>In what follows we describe two straightforward approaches that came up handy when playing with firecraker and qemu rootfs images on low-power devices, where resources are scarse (memory footprint, storage footprint, bw etc.).</p><h4 id=option-1-base-the-rootfs-on-a-minimal-linux-container-distro>Option 1: base the rootfs on a minimal linux container distro</h4><p>The firecracker guide provides a guide on how to build a rootfs based on Alpine
 Linux. We will re-use the same steps for building our rootfs, but to spice it up
-we will create a rootfs that upon boot runs immediately nginx.</p>
-
-<p>We will use the following Dockerfile to build nginx:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#000;font-weight:bold">FROM</span><span style="color:#d14"> alpine:latest</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">MAINTAINER</span><span style="color:#d14"> Babis Chalios &lt;mail@bchalios.io&gt;</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">ENV</span><span style="color:#d14"> NGINX_VERSION nginx-1.17.4</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">WORKDIR</span><span style="color:#d14"> /build</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">RUN</span> apk --update add openssl-dev pcre-dev zlib-dev wget build-base <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    wget http://nginx.org/download/<span style="color:#d14">${</span><span style="color:#008080">NGINX_VERSION</span><span style="color:#d14">}</span>.tar.gz <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    tar -zxvf <span style="color:#d14">${</span><span style="color:#008080">NGINX_VERSION</span><span style="color:#d14">}</span>.tar.gz <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    <span style="color:#0086b3">cd</span> <span style="color:#d14">${</span><span style="color:#008080">NGINX_VERSION</span><span style="color:#d14">}</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    ./configure <span style="color:#d14">\
-</span><span style="color:#d14"></span>        --with-http_ssl_module <span style="color:#d14">\
-</span><span style="color:#d14"></span>        --with-http_gzip_static_module <span style="color:#d14">\
-</span><span style="color:#d14"></span>        --prefix<span style="color:#000;font-weight:bold">=</span>/etc/nginx <span style="color:#d14">\
-</span><span style="color:#d14"></span>        --http-log-path<span style="color:#000;font-weight:bold">=</span>/var/log/nginx/access.log <span style="color:#d14">\
-</span><span style="color:#d14"></span>        --error-log-path<span style="color:#000;font-weight:bold">=</span>/var/log/nginx/error.log <span style="color:#d14">\
-</span><span style="color:#d14"></span>        --sbin-path<span style="color:#000;font-weight:bold">=</span>/usr/local/sbin/nginx <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    make <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    make install <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    apk del build-base <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    rm -rf /tmp/src <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>    rm -rf /var/cache/apk/*<span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2">
-</span><span style="color:#a61717;background-color:#e3d2d2"></span><span style="color:#000;font-weight:bold">WORKDIR</span><span style="color:#d14"> /</span></code></pre></div>
-<p>We build nginx:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker build -t build_static_nginx</code></pre></div>
-<p>and use the container to build our rootfs:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ dd <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">=</span>/dev/zero <span style="color:#008080">of</span><span style="color:#000;font-weight:bold">=</span>nginx_fc.ext4 <span style="color:#008080">bs</span><span style="color:#000;font-weight:bold">=</span>1M <span style="color:#008080">count</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">100</span>
+we will create a rootfs that upon boot runs immediately nginx.</p><p>We will use the following Dockerfile to build nginx:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker><span style=color:#000;font-weight:700>FROM</span><span style=color:#d14> alpine:latest</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#000;font-weight:700>MAINTAINER</span><span style=color:#d14> Babis Chalios &lt;mail@bchalios.io&gt;</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#000;font-weight:700>ENV</span><span style=color:#d14> NGINX_VERSION nginx-1.17.4</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#000;font-weight:700>WORKDIR</span><span style=color:#d14> /build</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#000;font-weight:700>RUN</span> apk --update add openssl-dev pcre-dev zlib-dev wget build-base <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    wget http://nginx.org/download/<span style=color:#d14>${</span><span style=color:teal>NGINX_VERSION</span><span style=color:#d14>}</span>.tar.gz <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    tar -zxvf <span style=color:#d14>${</span><span style=color:teal>NGINX_VERSION</span><span style=color:#d14>}</span>.tar.gz <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    <span style=color:#0086b3>cd</span> <span style=color:#d14>${</span><span style=color:teal>NGINX_VERSION</span><span style=color:#d14>}</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    ./configure <span style=color:#d14>\
+</span><span style=color:#d14></span>        --with-http_ssl_module <span style=color:#d14>\
+</span><span style=color:#d14></span>        --with-http_gzip_static_module <span style=color:#d14>\
+</span><span style=color:#d14></span>        --prefix<span style=color:#000;font-weight:700>=</span>/etc/nginx <span style=color:#d14>\
+</span><span style=color:#d14></span>        --http-log-path<span style=color:#000;font-weight:700>=</span>/var/log/nginx/access.log <span style=color:#d14>\
+</span><span style=color:#d14></span>        --error-log-path<span style=color:#000;font-weight:700>=</span>/var/log/nginx/error.log <span style=color:#d14>\
+</span><span style=color:#d14></span>        --sbin-path<span style=color:#000;font-weight:700>=</span>/usr/local/sbin/nginx <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    make <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    make install <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    apk del build-base <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    rm -rf /tmp/src <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>    rm -rf /var/cache/apk/*<span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#000;font-weight:700>WORKDIR</span><span style=color:#d14> /</span></code></pre></div><p>We build nginx:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ docker build -t build_static_nginx</code></pre></div><p>and use the container to build our rootfs:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ dd <span style=color:#000;font-weight:700>if</span><span style=color:#000;font-weight:700>=</span>/dev/zero <span style=color:teal>of</span><span style=color:#000;font-weight:700>=</span>nginx_fc.ext4 <span style=color:teal>bs</span><span style=color:#000;font-weight:700>=</span>1M <span style=color:teal>count</span><span style=color:#000;font-weight:700>=</span><span style=color:#099>100</span>
 $ mkfs.ext4 nginx_fc.ext4
 $ mkdir mnt
 $ sudo mount nginx_fc.ext4 mnt
-$ docker --rm -ti -v <span style="color:#000;font-weight:bold">$(</span><span style="color:#0086b3">pwd</span><span style="color:#000;font-weight:bold">)</span>/mnt:/my-rootfs build_static_nginx</code></pre></div>
-<p>and in the container:</p>
-
-<pre><code># for d in bin etc lib root sbin usr; do tar c &quot;/$d&quot; | tar x -C /my-rootfs; done
+$ docker --rm -ti -v <span style=color:#000;font-weight:700>$(</span><span style=color:#0086b3>pwd</span><span style=color:#000;font-weight:700>)</span>/mnt:/my-rootfs build_static_nginx</code></pre></div><p>and in the container:</p><pre><code># for d in bin etc lib root sbin usr; do tar c &quot;/$d&quot; | tar x -C /my-rootfs; done
 # for dir in dev proc run sys var; do mkdir /my-rootfs/${dir}; done
 # exit
-</code></pre>
-
-<p>As the final step, we will substitute the <code>/sbin/init</code> binary of our rootfs with
-the following script which launches the nginx binary:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat nginx_init
-<span style="color:#999;font-weight:bold;font-style:italic">#!/bin/sh
-</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+</code></pre><p>As the final step, we will substitute the <code>/sbin/init</code> binary of our rootfs with
+the following script which launches the nginx binary:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cat nginx_init
+<span style=color:#999;font-weight:700;font-style:italic>#!/bin/sh
+</span><span style=color:#999;font-weight:700;font-style:italic></span>
 mkdir -p /var/log/nginx
 
-<span style="color:#998;font-style:italic"># the init process should never exit</span>
-/usr/local/sbin/nginx -g <span style="color:#d14">&#34;daemon off;&#34;</span>
+<span style=color:#998;font-style:italic># the init process should never exit</span>
+/usr/local/sbin/nginx -g <span style=color:#d14>&#34;daemon off;&#34;</span>
 $ sudo mv mnt/sbin/init mnt/sbin/init.old
 $ sudo cp nginx_init mnt/sbin/init
 $ sudo chmod a+x mnt/sbin/init
-$ sudo umount mnt</code></pre></div>
-<h4 id="option-2-ditch-the-rootfs-replace-sbin-init-with-the-application">Option 2: ditch the rootfs, replace /sbin/init with the application</h4>
-
-<p>Well, this is more of a hack than an actual solution, but comes in handy when memory and storage space is critical.</p>
-
-<p>Based on an <a href="http://landley.net/writing/rootfs-howto.html">excellent tutorial</a> by Rob Landley, we come up with a single kernel image that spawns an NGINX web server.</p>
-
-<h5 id="step-1-build-the-application-as-a-static-binary">Step 1: Build the application as a static binary</h5>
-
-<p>There are a couple of tutorials on how to build NGINX statically. We followed <a href="https://gist.github.com/rjeczalik/7057434">this one</a>. After successful compilation, we come up with the following files/dirs:</p>
-
-<pre><code>objs/nginx
+$ sudo umount mnt</code></pre></div><h4 id=option-2-ditch-the-rootfs-replace-sbin-init-with-the-application>Option 2: ditch the rootfs, replace /sbin/init with the application</h4><p>Well, this is more of a hack than an actual solution, but comes in handy when memory and storage space is critical.</p><p>Based on an <a href=http://landley.net/writing/rootfs-howto.html>excellent tutorial</a> by Rob Landley, we come up with a single kernel image that spawns an NGINX web server.</p><h5 id=step-1-build-the-application-as-a-static-binary>Step 1: Build the application as a static binary</h5><p>There are a couple of tutorials on how to build NGINX statically. We followed <a href=https://gist.github.com/rjeczalik/7057434>this one</a>. After successful compilation, we come up with the following files/dirs:</p><pre><code>objs/nginx
 conf/
 html/
-</code></pre>
-
-<h5 id="step-2-generate-the-list-of-files-dirs-for-initramfs">Step 2: generate the list of files/dirs for initramfs</h5>
-
-<p>To embed all files in the Linux kernel build, we use the initramfs option in
+</code></pre><h5 id=step-2-generate-the-list-of-files-dirs-for-initramfs>Step 2: generate the list of files/dirs for initramfs</h5><p>To embed all files in the Linux kernel build, we use the initramfs option in
 the kernel config, where the kernel build process generates the cpio archive to
-be appended to the kernel binary, and used as initramfs.</p>
-
-<p>First step is to create a file that contains the list of all files to be included in the cpio archive:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat &gt;&gt; initramfs_list &lt; EOF
-dir /dev <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-nod /dev/console <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span> c <span style="color:#099">5</span> <span style="color:#099">1</span>
-nod /dev/loop0 <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span> b <span style="color:#099">7</span> <span style="color:#099">0</span>
-dir /bin <span style="color:#099">755</span> <span style="color:#099">1000</span> <span style="color:#099">1000</span>
-dir /proc <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-dir /sys <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-dir /mnt <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /init usr/nginx <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-dir /opt <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-dir /opt/nginx <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-dir /opt/nginx/logs <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-dir /opt/nginx/conf <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-dir /opt/nginx/html <span style="color:#099">755</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/fastcgi.conf usr/conf/fastcgi.conf <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/fastcgi_params usr/conf/fastcgi_params <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/koi-utf usr/conf/koi-utf <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/koi-win usr/conf/koi-win <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/mime.types usr/conf/mime.types <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/nginx.conf usr/conf/nginx.conf <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/scgi_params usr/conf/scgi_params <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/uwsgi_params usr/conf/uwsgi_params <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/conf/win-utf usr/conf/win-utf <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-file /opt/nginx/html/index.html usr/html/index.html <span style="color:#099">644</span> <span style="color:#099">0</span> <span style="color:#099">0</span>
-EOF</code></pre></div>
-<p>We then place all necessary files at the <code>usr/</code> dir in the linux kernel build dir.</p>
-
-<h5 id="step-3-build-the-kernel">Step 3: build the kernel</h5>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/torvalds/linux.git
-$ <span style="color:#0086b3">cd</span> linux
+be appended to the kernel binary, and used as initramfs.</p><p>First step is to create a file that contains the list of all files to be included in the cpio archive:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cat &gt;&gt; initramfs_list &lt; EOF
+dir /dev <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+nod /dev/console <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span> c <span style=color:#099>5</span> <span style=color:#099>1</span>
+nod /dev/loop0 <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span> b <span style=color:#099>7</span> <span style=color:#099>0</span>
+dir /bin <span style=color:#099>755</span> <span style=color:#099>1000</span> <span style=color:#099>1000</span>
+dir /proc <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+dir /sys <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+dir /mnt <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /init usr/nginx <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+dir /opt <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+dir /opt/nginx <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+dir /opt/nginx/logs <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+dir /opt/nginx/conf <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+dir /opt/nginx/html <span style=color:#099>755</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/fastcgi.conf usr/conf/fastcgi.conf <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/fastcgi_params usr/conf/fastcgi_params <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/koi-utf usr/conf/koi-utf <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/koi-win usr/conf/koi-win <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/mime.types usr/conf/mime.types <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/nginx.conf usr/conf/nginx.conf <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/scgi_params usr/conf/scgi_params <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/uwsgi_params usr/conf/uwsgi_params <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/conf/win-utf usr/conf/win-utf <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+file /opt/nginx/html/index.html usr/html/index.html <span style=color:#099>644</span> <span style=color:#099>0</span> <span style=color:#099>0</span>
+EOF</code></pre></div><p>We then place all necessary files at the <code>usr/</code> dir in the linux kernel build dir.</p><h5 id=step-3-build-the-kernel>Step 3: build the kernel</h5><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git clone https://github.com/torvalds/linux.git
+$ <span style=color:#0086b3>cd</span> linux
 $ git checkout v4.14
 $ wget https://raw.githubusercontent.com/firecracker-microvm/firecracker/b1e48beaea7b917fef1e4846f1d75a2c1a136517/resources/microvm-kernel-aarch64-config -O .config
-$ make oldconfig</code></pre></div>
-<p>In this step, we can select any kernel version we want, starting from version
-4.14, e.g. <code>git checkout v4.20</code>.</p>
-
-<p>The only thing left is to add the option <code>CONFIG_INITRAMFS_SOURCE=&quot;usr/initramfs_list&quot;</code> to the kernel config file, and point it to where our <code>initramfs_list</code> file is. A simple <code>make</code> will build the necessary stuff and we end up with <code>arch/arm64/boot/Image</code> which contains the Linux kernel, as well as this initramfs.cpio.gz archive with the files we already specified.</p>
-
-<p>and voila! Here&rsquo;s a dump of this <code>Image</code> booting on firecracker on a Rpi4:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#998;font-style:italic"># ./build/cargo_target/aarch64-unknown-linux-musl/release/firecracker --api-sock /tmp/fireananos.sock</span> 
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.000000<span style="color:#000;font-weight:bold">]</span> Booting Linux on physical CPU 0x0000000000 <span style="color:#000;font-weight:bold">[</span>0x410fd083<span style="color:#000;font-weight:bold">]</span>
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.000000<span style="color:#000;font-weight:bold">]</span> Linux version <span style="color:#099">5</span>.4.0-rc3 <span style="color:#000;font-weight:bold">(</span>root@baremetal.nubificus.com<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span>gcc version <span style="color:#099">6</span>.3.0 <span style="color:#099">20170516</span> <span style="color:#000;font-weight:bold">(</span>Debian <span style="color:#099">6</span>.3.0-18<span style="color:#000;font-weight:bold">))</span> <span style="color:#998;font-style:italic">#2 SMP PREEMPT Sat Oct 19 06:13:48 CDT 2019</span>
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.000000<span style="color:#000;font-weight:bold">]</span> Machine model: linux,dummy-virt
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.000000<span style="color:#000;font-weight:bold">]</span> PCI: Unknown option <span style="color:#d14">`</span>off<span style="color:#d14">&#39;
-</span><span style="color:#d14">[    0.000000] earlycon: uart0 at MMIO 0x0000000040003000 (options &#39;&#39;)
-</span><span style="color:#d14">[    0.000000] printk: bootconsole [uart0] enabled
-</span><span style="color:#d14">[    0.000000] efi: Getting EFI parameters from FDT:
-</span><span style="color:#d14">[    0.000000] efi: UEFI not found.
-</span><span style="color:#d14">[    0.000000] cma: Reserved 16 MiB at 0x0000000086c00000
-</span><span style="color:#d14">[    0.000000] NUMA: No NUMA configuration found
-</span><span style="color:#d14">[    0.000000] NUMA: Faking a node at [mem 0x0000000080000000-0x0000000087ffffff]
-</span><span style="color:#d14">[    0.000000] NUMA: NODE_DATA [mem 0x87fb9800-0x87fbafff]
-</span><span style="color:#d14">[    0.000000] Zone ranges:
-</span><span style="color:#d14">[    0.000000]   DMA32    [mem 0x0000000080000000-0x0000000087ffffff]
-</span><span style="color:#d14">[    0.000000]   Normal   empty
-</span><span style="color:#d14">[    0.000000] Movable zone start for each node
-</span><span style="color:#d14">[    0.000000] Early memory node ranges
-</span><span style="color:#d14">[    0.000000]   node   0: [mem 0x0000000080000000-0x0000000087ffffff]
-</span><span style="color:#d14">[    0.000000] Initmem setup node 0 [mem 0x0000000080000000-0x0000000087ffffff]
-</span><span style="color:#d14">[    0.000000] psci: probing for conduit method from DT.
-</span><span style="color:#d14">[    0.000000] psci: PSCIv1.0 detected in firmware.
-</span><span style="color:#d14">[    0.000000] psci: Using standard PSCI v0.2 function IDs
-</span><span style="color:#d14">[    0.000000] psci: Trusted OS migration not required
-</span><span style="color:#d14">[    0.000000] psci: SMC Calling Convention v1.1
-</span><span style="color:#d14">[    0.000000] percpu: Embedded 22 pages/cpu s52760 r8192 d29160 u90112
-</span><span style="color:#d14">[    0.000000] Detected PIPT I-cache on CPU0
-</span><span style="color:#d14">[    0.000000] CPU features: detected: EL2 vector hardening
-</span><span style="color:#d14">[    0.000000] ARM_SMCCC_ARCH_WORKAROUND_1 missing from firmware
-</span><span style="color:#d14">[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 32256
-</span><span style="color:#d14">[    0.000000] Policy zone: DMA32
-</span><span style="color:#d14">[    0.000000] Kernel command line: console=ttyS0 root=/dev/vda reboot=k panic=1 pci=off ip=10.0.0.2::10.0.0.1:255.255.255.0::eth0:off net.ifnames=0 root=/dev/vda rw earlycon=uart,mmio,0x40003000
-</span><span style="color:#d14">[    0.000000] Dentry cache hash table entries: 16384 (order: 5, 131072 bytes, linear)
-</span><span style="color:#d14">[    0.000000] Inode-cache hash table entries: 8192 (order: 4, 65536 bytes, linear)
-</span><span style="color:#d14">[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
-</span><span style="color:#d14">[    0.000000] Memory: 72448K/131072K available (11004K kernel code, 1588K rwdata, 5552K rodata, 6656K init, 381K bss, 42240K reserved, 16384K cma-reserved)
-</span><span style="color:#d14">[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
-</span><span style="color:#d14">[    0.000000] rcu: Preemptible hierarchical RCU implementation.
-</span><span style="color:#d14">[    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=1.
-</span><span style="color:#d14">[    0.000000] 	Tasks RCU enabled.
-</span><span style="color:#d14">[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
-</span><span style="color:#d14">[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=1
-</span><span style="color:#d14">[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
-</span><span style="color:#d14">[    0.000000] random: get_random_bytes called from start_kernel+0x2bc/0x45c with crng_init=0
-</span><span style="color:#d14">[    0.000000] arch_timer: cp15 timer(s) running at 54.00MHz (virt).
-</span><span style="color:#d14">[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0xc743ce346, max_idle_ns: 440795203123 ns
-</span><span style="color:#d14">[    0.000004] sched_clock: 56 bits at 54MHz, resolution 18ns, wraps every 4398046511102ns
-</span><span style="color:#d14">[    0.003165] Console: colour dummy device 80x25
-</span><span style="color:#d14">[    0.004704] Calibrating delay loop (skipped), value calculated using timer frequency.. 108.00 BogoMIPS (lpj=216000)
-</span><span style="color:#d14">[    0.008179] pid_max: default: 32768 minimum: 301
-</span><span style="color:#d14">[    0.009775] LSM: Security Framework initializing
-</span><span style="color:#d14">[    0.011308] Mount-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
-</span><span style="color:#d14">[    0.013772] Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
-</span><span style="color:#d14">[    0.042261] ASID allocator initialised with 32768 entries
-</span><span style="color:#d14">[    0.055248] rcu: Hierarchical SRCU implementation.
-</span><span style="color:#d14">[    0.068193] EFI services will not be available.
-</span><span style="color:#d14">[    0.080179] smp: Bringing up secondary CPUs ...
-</span><span style="color:#d14">[    0.083868] smp: Brought up 1 node, 1 CPU
-</span><span style="color:#d14">[    0.087308] SMP: Total of 1 processors activated.
-</span><span style="color:#d14">[    0.091120] CPU features: detected: 32-bit EL0 Support
-</span><span style="color:#d14">[    0.093094] CPU features: detected: CRC32 instructions
-</span><span style="color:#d14">[    0.095989] CPU: All CPU(s) started at EL1
-</span><span style="color:#d14">[    0.097545] alternatives: patching kernel code
-</span><span style="color:#d14">[    0.099975] devtmpfs: initialized
-</span><span style="color:#d14">[    0.106349] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
-</span><span style="color:#d14">[    0.109513] futex hash table entries: 256 (order: 2, 16384 bytes, linear)
-</span><span style="color:#d14">[    0.112244] pinctrl core: initialized pinctrl subsystem
-</span><span style="color:#d14">[    0.115499] DMI not present or invalid.
-</span><span style="color:#d14">[    0.121449] NET: Registered protocol family 16
-</span><span style="color:#d14">[    0.125835] DMA: preallocated 256 KiB pool for atomic allocations
-</span><span style="color:#d14">[    0.128200] audit: initializing netlink subsys (disabled)
-</span><span style="color:#d14">[    0.133094] cpuidle: using governor menu
-</span><span style="color:#d14">[    0.134911] audit: type=2000 audit(0.116:1): state=initialized audit_enabled=0 res=1
-</span><span style="color:#d14">[    0.138336] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
-</span><span style="color:#d14">[    0.143418] Serial: AMBA PL011 UART driver
-</span><span style="color:#d14">[    0.190417] HugeTLB registered 1.00 GiB page size, pre-allocated 0 pages
-</span><span style="color:#d14">[    0.192858] HugeTLB registered 32.0 MiB page size, pre-allocated 0 pages
-</span><span style="color:#d14">[    0.196031] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
-</span><span style="color:#d14">[    0.198512] HugeTLB registered 64.0 KiB page size, pre-allocated 0 pages
-</span><span style="color:#d14">[    0.205111] cryptd: max_cpu_qlen set to 1000
-</span><span style="color:#d14">[    0.217815] ACPI: Interpreter disabled.
-</span><span style="color:#d14">[    0.224317] iommu: Default domain type: Translated 
-</span><span style="color:#d14">[    0.227342] vgaarb: loaded
-</span><span style="color:#d14">[    0.228696] SCSI subsystem initialized
-</span><span style="color:#d14">[    0.231005] usbcore: registered new interface driver usbfs
-</span><span style="color:#d14">[    0.233680] usbcore: registered new interface driver hub
-</span><span style="color:#d14">[    0.236052] usbcore: registered new device driver usb
-</span><span style="color:#d14">[    0.238306] pps_core: LinuxPPS API ver. 1 registered
-</span><span style="color:#d14">[    0.240438] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti &lt;giometti@linux.it&gt;
-</span><span style="color:#d14">[    0.243424] PTP clock support registered
-</span><span style="color:#d14">[    0.245042] EDAC MC: Ver: 3.0.0
-</span><span style="color:#d14">[    0.247254] Advanced Linux Sound Architecture Driver Initialized.
-</span><span style="color:#d14">[    0.250766] clocksource: Switched to clocksource arch_sys_counter
-</span><span style="color:#d14">[    0.253053] VFS: Disk quotas dquot_6.6.0
-</span><span style="color:#d14">[    0.254530] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
-</span><span style="color:#d14">[    0.257177] pnp: PnP ACPI: disabled
-</span><span style="color:#d14">[    0.268272] thermal_sys: Registered thermal governor &#39;</span>step_wise<span style="color:#d14">&#39;
-</span><span style="color:#d14">[    0.268275] thermal_sys: Registered thermal governor &#39;</span>power_allocator<span style="color:#d14">&#39;
-</span><span style="color:#d14">[    0.271870] NET: Registered protocol family 2
-</span><span style="color:#d14">[    0.276694] tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes, linear)
-</span><span style="color:#d14">[    0.279823] TCP established hash table entries: 1024 (order: 1, 8192 bytes, linear)
-</span><span style="color:#d14">[    0.282285] TCP bind hash table entries: 1024 (order: 2, 16384 bytes, linear)
-</span><span style="color:#d14">[    0.284760] TCP: Hash tables configured (established 1024 bind 1024)
-</span><span style="color:#d14">[    0.287067] UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
-</span><span style="color:#d14">[    0.289706] UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)
-</span><span style="color:#d14">[    0.292468] NET: Registered protocol family 1
-</span><span style="color:#d14">[    0.307079] RPC: Registered named UNIX socket transport module.
-</span><span style="color:#d14">[    0.313313] RPC: Registered udp transport module.
-</span><span style="color:#d14">[    0.315397] RPC: Registered tcp transport module.
-</span><span style="color:#d14">[    0.317154] RPC: Registered tcp NFSv4.1 backchannel transport module.
-</span><span style="color:#d14">[    0.319655] PCI: CLS 0 bytes, default 64
-</span><span style="color:#d14">[    0.504111] kvm [1]: HYP mode not available
-</span><span style="color:#d14">[    0.507069] Initialise system trusted keyrings
-</span><span style="color:#d14">[    0.510147] workingset: timestamp_bits=44 max_order=15 bucket_order=0
-</span><span style="color:#d14">[    0.526272] squashfs: version 4.0 (2009/01/31) Phillip Lougher
-</span><span style="color:#d14">[    0.530011] NFS: Registering the id_resolver key type
-</span><span style="color:#d14">[    0.532603] Key type id_resolver registered
-</span><span style="color:#d14">[    0.534191] Key type id_legacy registered
-</span><span style="color:#d14">[    0.535985] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
-</span><span style="color:#d14">[    0.538740] 9p: Installing v9fs 9p2000 file system support
-</span><span style="color:#d14">[    0.550468] Key type asymmetric registered
-</span><span style="color:#d14">[    0.552206] Asymmetric key parser &#39;</span>x509<span style="color:#d14">&#39; registered
-</span><span style="color:#d14">[    0.554107] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
-</span><span style="color:#d14">[    0.557229] io scheduler mq-deadline registered
-</span><span style="color:#d14">[    0.558966] io scheduler kyber registered
-</span><span style="color:#d14">[    0.574957] EINJ: ACPI disabled.
-</span><span style="color:#d14">[    0.589178] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-</span><span style="color:#d14">[    0.596662] printk: console [ttyS0] disabled
-</span><span style="color:#d14">[    0.599695] 40003000.uart: ttyS0 at MMIO 0x40003000 (irq = 7, base_baud = 1500000) is a 16550A
-</span><span style="color:#d14">[    0.603515] printk: console [ttyS0] enabled
-</span><span style="color:#d14">[    0.603515] printk: console [ttyS0] enabled
-</span><span style="color:#d14">[    0.607076] printk: bootconsole [uart0] disabled
-</span><span style="color:#d14">[    0.607076] printk: bootconsole [uart0] disabled
-</span><span style="color:#d14">[    0.611276] SuperH (H)SCI(F) driver initialized
-</span><span style="color:#d14">[    0.613660] msm_serial: driver initialized
-</span><span style="color:#d14">[    0.615984] cacheinfo: Unable to detect cache hierarchy for CPU 0
-</span><span style="color:#d14">[    0.631690] loop: module loaded
-</span><span style="color:#d14">[    0.634019] virtio_blk virtio0: [vda] 204800 512-byte logical blocks (105 MB/100 MiB)
-</span><span style="color:#d14">[    0.648631] libphy: Fixed MDIO Bus: probed
-</span><span style="color:#d14">[    0.652999] tun: Universal TUN/TAP device driver, 1.6
-</span><span style="color:#d14">[    0.658605] thunder_xcv, ver 1.0
-</span><span style="color:#d14">[    0.660878] thunder_bgx, ver 1.0
-</span><span style="color:#d14">[    0.662279] nicpf, ver 1.0
-</span><span style="color:#d14">[    0.664058] e1000e: Intel(R) PRO/1000 Network Driver - 3.2.6-k
-</span><span style="color:#d14">[    0.666284] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-</span><span style="color:#d14">[    0.669114] igb: Intel(R) Gigabit Ethernet Network Driver - version 5.6.0-k
-</span><span style="color:#d14">[    0.671961] igb: Copyright (c) 2007-2014 Intel Corporation.
-</span><span style="color:#d14">[    0.674176] igbvf: Intel(R) Gigabit Virtual Function Network Driver - version 2.4.0-k
-</span><span style="color:#d14">[    0.677465] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
-</span><span style="color:#d14">[    0.680142] sky2: driver version 1.30
-</span><span style="color:#d14">[    0.682282] VFIO - User Level meta-driver version: 0.3
-</span><span style="color:#d14">[    0.690342] ehci_hcd: USB 2.0 &#39;</span>Enhanced<span style="color:#d14">&#39; Host Controller (EHCI) Driver
-</span><span style="color:#d14">[    0.693832] ehci-pci: EHCI PCI platform driver
-</span><span style="color:#d14">[    0.695936] ehci-platform: EHCI generic platform driver
-</span><span style="color:#d14">[    0.698111] ehci-orion: EHCI orion driver
-</span><span style="color:#d14">[    0.700178] ehci-exynos: EHCI EXYNOS driver
-</span><span style="color:#d14">[    0.701992] ohci_hcd: USB 1.1 &#39;</span>Open<span style="color:#a61717;background-color:#e3d2d2">&#39;</span> Host Controller <span style="color:#000;font-weight:bold">(</span>OHCI<span style="color:#000;font-weight:bold">)</span> Driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.704917<span style="color:#000;font-weight:bold">]</span> ohci-pci: OHCI PCI platform driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.706835<span style="color:#000;font-weight:bold">]</span> ohci-platform: OHCI generic platform driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.709036<span style="color:#000;font-weight:bold">]</span> ohci-exynos: OHCI EXYNOS driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.711184<span style="color:#000;font-weight:bold">]</span> usbcore: registered new interface driver usb-storage
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.716697<span style="color:#000;font-weight:bold">]</span> rtc-pl031 <span style="color:#099">40004000</span>.rtc: registered as rtc0
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.720525<span style="color:#000;font-weight:bold">]</span> i2c /dev entries driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.725890<span style="color:#000;font-weight:bold">]</span> sdhci: Secure Digital Host Controller Interface driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.729845<span style="color:#000;font-weight:bold">]</span> sdhci: Copyright<span style="color:#000;font-weight:bold">(</span>c<span style="color:#000;font-weight:bold">)</span> Pierre Ossman
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.732261<span style="color:#000;font-weight:bold">]</span> Synopsys Designware Multimedia Card Interface Driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.735862<span style="color:#000;font-weight:bold">]</span> sdhci-pltfm: SDHCI platform and OF driver helper
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.739259<span style="color:#000;font-weight:bold">]</span> ledtrig-cpu: registered to indicate activity on CPUs
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.743495<span style="color:#000;font-weight:bold">]</span> usbcore: registered new interface driver usbhid
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.745688<span style="color:#000;font-weight:bold">]</span> usbhid: USB HID core driver
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.751079<span style="color:#000;font-weight:bold">]</span> NET: Registered protocol family <span style="color:#099">17</span>
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.754152<span style="color:#000;font-weight:bold">]</span> 9pnet: Installing 9P2000 support
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.756397<span style="color:#000;font-weight:bold">]</span> Key <span style="color:#0086b3">type</span> dns_resolver registered
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.758475<span style="color:#000;font-weight:bold">]</span> registered taskstats version <span style="color:#099">1</span>
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.760525<span style="color:#000;font-weight:bold">]</span> Loading compiled-in X.509 certificates
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.763104<span style="color:#000;font-weight:bold">]</span> rtc-pl031 <span style="color:#099">40004000</span>.rtc: setting system clock to <span style="color:#099">2019</span>-10-19T14:46:13 UTC <span style="color:#000;font-weight:bold">(</span><span style="color:#099">1571496373</span><span style="color:#000;font-weight:bold">)</span>
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.786860<span style="color:#000;font-weight:bold">]</span> IP-Config: Complete:
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.790000<span style="color:#000;font-weight:bold">]</span>      <span style="color:#008080">device</span><span style="color:#000;font-weight:bold">=</span>eth0, <span style="color:#008080">hwaddr</span><span style="color:#000;font-weight:bold">=</span>c2:6b:5f:69:cc:12, <span style="color:#008080">ipaddr</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">10</span>.0.0.2, <span style="color:#008080">mask</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">255</span>.255.255.0, <span style="color:#008080">gw</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">10</span>.0.0.1
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.800389<span style="color:#000;font-weight:bold">]</span>      <span style="color:#008080">host</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">10</span>.0.0.2, <span style="color:#008080">domain</span><span style="color:#000;font-weight:bold">=</span>, nis-domain<span style="color:#000;font-weight:bold">=(</span>none<span style="color:#000;font-weight:bold">)</span>
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.802853<span style="color:#000;font-weight:bold">]</span>      <span style="color:#008080">bootserver</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">255</span>.255.255.255, <span style="color:#008080">rootserver</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">255</span>.255.255.255, <span style="color:#008080">rootpath</span><span style="color:#000;font-weight:bold">=</span>
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.806010<span style="color:#000;font-weight:bold">]</span> ALSA device list:
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.807295<span style="color:#000;font-weight:bold">]</span>   No soundcards found.
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.816070<span style="color:#000;font-weight:bold">]</span> Freeing unused kernel memory: 6656K
-<span style="color:#000;font-weight:bold">[</span>    <span style="color:#099">0</span>.817939<span style="color:#000;font-weight:bold">]</span> Run /init as init process</code></pre></div>
-<p>and from a GET / command:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">curl 172.16.0.42
-<span style="color:#999;font-weight:bold;font-style:italic">&lt;!DOCTYPE html&gt;</span>
-&lt;<span style="color:#000080">html</span>&gt;
-&lt;<span style="color:#000080">head</span>&gt;
-&lt;<span style="color:#000080">title</span>&gt;Welcome to nginx!&lt;/<span style="color:#000080">title</span>&gt;
-&lt;<span style="color:#000080">style</span>&gt;
-    <span style="color:#000080">body</span> {
-        <span style="color:#000;font-weight:bold">width</span>: <span style="color:#099">35</span><span style="color:#458;font-weight:bold">em</span>;
-        <span style="color:#000;font-weight:bold">margin</span>: <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">auto</span>;
-        <span style="color:#000;font-weight:bold">font-family</span>: Tahoma, Verdana, Arial, <span style="color:#000;font-weight:bold">sans-serif</span>;
+$ make oldconfig</code></pre></div><p>In this step, we can select any kernel version we want, starting from version
+4.14, e.g. <code>git checkout v4.20</code>.</p><p>The only thing left is to add the option <code>CONFIG_INITRAMFS_SOURCE=&quot;usr/initramfs_list&quot;</code> to the kernel config file, and point it to where our <code>initramfs_list</code> file is. A simple <code>make</code> will build the necessary stuff and we end up with <code>arch/arm64/boot/Image</code> which contains the Linux kernel, as well as this initramfs.cpio.gz archive with the files we already specified.</p><p>and voila! Here&rsquo;s a dump of this <code>Image</code> booting on firecracker on a Rpi4:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#998;font-style:italic># ./build/cargo_target/aarch64-unknown-linux-musl/release/firecracker --api-sock /tmp/fireananos.sock</span> 
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.000000<span style=color:#000;font-weight:700>]</span> Booting Linux on physical CPU 0x0000000000 <span style=color:#000;font-weight:700>[</span>0x410fd083<span style=color:#000;font-weight:700>]</span>
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.000000<span style=color:#000;font-weight:700>]</span> Linux version <span style=color:#099>5</span>.4.0-rc3 <span style=color:#000;font-weight:700>(</span>root@baremetal.nubificus.com<span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>(</span>gcc version <span style=color:#099>6</span>.3.0 <span style=color:#099>20170516</span> <span style=color:#000;font-weight:700>(</span>Debian <span style=color:#099>6</span>.3.0-18<span style=color:#000;font-weight:700>))</span> <span style=color:#998;font-style:italic>#2 SMP PREEMPT Sat Oct 19 06:13:48 CDT 2019</span>
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.000000<span style=color:#000;font-weight:700>]</span> Machine model: linux,dummy-virt
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.000000<span style=color:#000;font-weight:700>]</span> PCI: Unknown option <span style=color:#d14>`</span>off<span style=color:#d14>&#39;
+</span><span style=color:#d14>[    0.000000] earlycon: uart0 at MMIO 0x0000000040003000 (options &#39;&#39;)
+</span><span style=color:#d14>[    0.000000] printk: bootconsole [uart0] enabled
+</span><span style=color:#d14>[    0.000000] efi: Getting EFI parameters from FDT:
+</span><span style=color:#d14>[    0.000000] efi: UEFI not found.
+</span><span style=color:#d14>[    0.000000] cma: Reserved 16 MiB at 0x0000000086c00000
+</span><span style=color:#d14>[    0.000000] NUMA: No NUMA configuration found
+</span><span style=color:#d14>[    0.000000] NUMA: Faking a node at [mem 0x0000000080000000-0x0000000087ffffff]
+</span><span style=color:#d14>[    0.000000] NUMA: NODE_DATA [mem 0x87fb9800-0x87fbafff]
+</span><span style=color:#d14>[    0.000000] Zone ranges:
+</span><span style=color:#d14>[    0.000000]   DMA32    [mem 0x0000000080000000-0x0000000087ffffff]
+</span><span style=color:#d14>[    0.000000]   Normal   empty
+</span><span style=color:#d14>[    0.000000] Movable zone start for each node
+</span><span style=color:#d14>[    0.000000] Early memory node ranges
+</span><span style=color:#d14>[    0.000000]   node   0: [mem 0x0000000080000000-0x0000000087ffffff]
+</span><span style=color:#d14>[    0.000000] Initmem setup node 0 [mem 0x0000000080000000-0x0000000087ffffff]
+</span><span style=color:#d14>[    0.000000] psci: probing for conduit method from DT.
+</span><span style=color:#d14>[    0.000000] psci: PSCIv1.0 detected in firmware.
+</span><span style=color:#d14>[    0.000000] psci: Using standard PSCI v0.2 function IDs
+</span><span style=color:#d14>[    0.000000] psci: Trusted OS migration not required
+</span><span style=color:#d14>[    0.000000] psci: SMC Calling Convention v1.1
+</span><span style=color:#d14>[    0.000000] percpu: Embedded 22 pages/cpu s52760 r8192 d29160 u90112
+</span><span style=color:#d14>[    0.000000] Detected PIPT I-cache on CPU0
+</span><span style=color:#d14>[    0.000000] CPU features: detected: EL2 vector hardening
+</span><span style=color:#d14>[    0.000000] ARM_SMCCC_ARCH_WORKAROUND_1 missing from firmware
+</span><span style=color:#d14>[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 32256
+</span><span style=color:#d14>[    0.000000] Policy zone: DMA32
+</span><span style=color:#d14>[    0.000000] Kernel command line: console=ttyS0 root=/dev/vda reboot=k panic=1 pci=off ip=10.0.0.2::10.0.0.1:255.255.255.0::eth0:off net.ifnames=0 root=/dev/vda rw earlycon=uart,mmio,0x40003000
+</span><span style=color:#d14>[    0.000000] Dentry cache hash table entries: 16384 (order: 5, 131072 bytes, linear)
+</span><span style=color:#d14>[    0.000000] Inode-cache hash table entries: 8192 (order: 4, 65536 bytes, linear)
+</span><span style=color:#d14>[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+</span><span style=color:#d14>[    0.000000] Memory: 72448K/131072K available (11004K kernel code, 1588K rwdata, 5552K rodata, 6656K init, 381K bss, 42240K reserved, 16384K cma-reserved)
+</span><span style=color:#d14>[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+</span><span style=color:#d14>[    0.000000] rcu: Preemptible hierarchical RCU implementation.
+</span><span style=color:#d14>[    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=1.
+</span><span style=color:#d14>[    0.000000] 	Tasks RCU enabled.
+</span><span style=color:#d14>[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+</span><span style=color:#d14>[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=1
+</span><span style=color:#d14>[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+</span><span style=color:#d14>[    0.000000] random: get_random_bytes called from start_kernel+0x2bc/0x45c with crng_init=0
+</span><span style=color:#d14>[    0.000000] arch_timer: cp15 timer(s) running at 54.00MHz (virt).
+</span><span style=color:#d14>[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0xc743ce346, max_idle_ns: 440795203123 ns
+</span><span style=color:#d14>[    0.000004] sched_clock: 56 bits at 54MHz, resolution 18ns, wraps every 4398046511102ns
+</span><span style=color:#d14>[    0.003165] Console: colour dummy device 80x25
+</span><span style=color:#d14>[    0.004704] Calibrating delay loop (skipped), value calculated using timer frequency.. 108.00 BogoMIPS (lpj=216000)
+</span><span style=color:#d14>[    0.008179] pid_max: default: 32768 minimum: 301
+</span><span style=color:#d14>[    0.009775] LSM: Security Framework initializing
+</span><span style=color:#d14>[    0.011308] Mount-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
+</span><span style=color:#d14>[    0.013772] Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
+</span><span style=color:#d14>[    0.042261] ASID allocator initialised with 32768 entries
+</span><span style=color:#d14>[    0.055248] rcu: Hierarchical SRCU implementation.
+</span><span style=color:#d14>[    0.068193] EFI services will not be available.
+</span><span style=color:#d14>[    0.080179] smp: Bringing up secondary CPUs ...
+</span><span style=color:#d14>[    0.083868] smp: Brought up 1 node, 1 CPU
+</span><span style=color:#d14>[    0.087308] SMP: Total of 1 processors activated.
+</span><span style=color:#d14>[    0.091120] CPU features: detected: 32-bit EL0 Support
+</span><span style=color:#d14>[    0.093094] CPU features: detected: CRC32 instructions
+</span><span style=color:#d14>[    0.095989] CPU: All CPU(s) started at EL1
+</span><span style=color:#d14>[    0.097545] alternatives: patching kernel code
+</span><span style=color:#d14>[    0.099975] devtmpfs: initialized
+</span><span style=color:#d14>[    0.106349] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+</span><span style=color:#d14>[    0.109513] futex hash table entries: 256 (order: 2, 16384 bytes, linear)
+</span><span style=color:#d14>[    0.112244] pinctrl core: initialized pinctrl subsystem
+</span><span style=color:#d14>[    0.115499] DMI not present or invalid.
+</span><span style=color:#d14>[    0.121449] NET: Registered protocol family 16
+</span><span style=color:#d14>[    0.125835] DMA: preallocated 256 KiB pool for atomic allocations
+</span><span style=color:#d14>[    0.128200] audit: initializing netlink subsys (disabled)
+</span><span style=color:#d14>[    0.133094] cpuidle: using governor menu
+</span><span style=color:#d14>[    0.134911] audit: type=2000 audit(0.116:1): state=initialized audit_enabled=0 res=1
+</span><span style=color:#d14>[    0.138336] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+</span><span style=color:#d14>[    0.143418] Serial: AMBA PL011 UART driver
+</span><span style=color:#d14>[    0.190417] HugeTLB registered 1.00 GiB page size, pre-allocated 0 pages
+</span><span style=color:#d14>[    0.192858] HugeTLB registered 32.0 MiB page size, pre-allocated 0 pages
+</span><span style=color:#d14>[    0.196031] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
+</span><span style=color:#d14>[    0.198512] HugeTLB registered 64.0 KiB page size, pre-allocated 0 pages
+</span><span style=color:#d14>[    0.205111] cryptd: max_cpu_qlen set to 1000
+</span><span style=color:#d14>[    0.217815] ACPI: Interpreter disabled.
+</span><span style=color:#d14>[    0.224317] iommu: Default domain type: Translated 
+</span><span style=color:#d14>[    0.227342] vgaarb: loaded
+</span><span style=color:#d14>[    0.228696] SCSI subsystem initialized
+</span><span style=color:#d14>[    0.231005] usbcore: registered new interface driver usbfs
+</span><span style=color:#d14>[    0.233680] usbcore: registered new interface driver hub
+</span><span style=color:#d14>[    0.236052] usbcore: registered new device driver usb
+</span><span style=color:#d14>[    0.238306] pps_core: LinuxPPS API ver. 1 registered
+</span><span style=color:#d14>[    0.240438] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti &lt;giometti@linux.it&gt;
+</span><span style=color:#d14>[    0.243424] PTP clock support registered
+</span><span style=color:#d14>[    0.245042] EDAC MC: Ver: 3.0.0
+</span><span style=color:#d14>[    0.247254] Advanced Linux Sound Architecture Driver Initialized.
+</span><span style=color:#d14>[    0.250766] clocksource: Switched to clocksource arch_sys_counter
+</span><span style=color:#d14>[    0.253053] VFS: Disk quotas dquot_6.6.0
+</span><span style=color:#d14>[    0.254530] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+</span><span style=color:#d14>[    0.257177] pnp: PnP ACPI: disabled
+</span><span style=color:#d14>[    0.268272] thermal_sys: Registered thermal governor &#39;</span>step_wise<span style=color:#d14>&#39;
+</span><span style=color:#d14>[    0.268275] thermal_sys: Registered thermal governor &#39;</span>power_allocator<span style=color:#d14>&#39;
+</span><span style=color:#d14>[    0.271870] NET: Registered protocol family 2
+</span><span style=color:#d14>[    0.276694] tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes, linear)
+</span><span style=color:#d14>[    0.279823] TCP established hash table entries: 1024 (order: 1, 8192 bytes, linear)
+</span><span style=color:#d14>[    0.282285] TCP bind hash table entries: 1024 (order: 2, 16384 bytes, linear)
+</span><span style=color:#d14>[    0.284760] TCP: Hash tables configured (established 1024 bind 1024)
+</span><span style=color:#d14>[    0.287067] UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
+</span><span style=color:#d14>[    0.289706] UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)
+</span><span style=color:#d14>[    0.292468] NET: Registered protocol family 1
+</span><span style=color:#d14>[    0.307079] RPC: Registered named UNIX socket transport module.
+</span><span style=color:#d14>[    0.313313] RPC: Registered udp transport module.
+</span><span style=color:#d14>[    0.315397] RPC: Registered tcp transport module.
+</span><span style=color:#d14>[    0.317154] RPC: Registered tcp NFSv4.1 backchannel transport module.
+</span><span style=color:#d14>[    0.319655] PCI: CLS 0 bytes, default 64
+</span><span style=color:#d14>[    0.504111] kvm [1]: HYP mode not available
+</span><span style=color:#d14>[    0.507069] Initialise system trusted keyrings
+</span><span style=color:#d14>[    0.510147] workingset: timestamp_bits=44 max_order=15 bucket_order=0
+</span><span style=color:#d14>[    0.526272] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+</span><span style=color:#d14>[    0.530011] NFS: Registering the id_resolver key type
+</span><span style=color:#d14>[    0.532603] Key type id_resolver registered
+</span><span style=color:#d14>[    0.534191] Key type id_legacy registered
+</span><span style=color:#d14>[    0.535985] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+</span><span style=color:#d14>[    0.538740] 9p: Installing v9fs 9p2000 file system support
+</span><span style=color:#d14>[    0.550468] Key type asymmetric registered
+</span><span style=color:#d14>[    0.552206] Asymmetric key parser &#39;</span>x509<span style=color:#d14>&#39; registered
+</span><span style=color:#d14>[    0.554107] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
+</span><span style=color:#d14>[    0.557229] io scheduler mq-deadline registered
+</span><span style=color:#d14>[    0.558966] io scheduler kyber registered
+</span><span style=color:#d14>[    0.574957] EINJ: ACPI disabled.
+</span><span style=color:#d14>[    0.589178] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+</span><span style=color:#d14>[    0.596662] printk: console [ttyS0] disabled
+</span><span style=color:#d14>[    0.599695] 40003000.uart: ttyS0 at MMIO 0x40003000 (irq = 7, base_baud = 1500000) is a 16550A
+</span><span style=color:#d14>[    0.603515] printk: console [ttyS0] enabled
+</span><span style=color:#d14>[    0.603515] printk: console [ttyS0] enabled
+</span><span style=color:#d14>[    0.607076] printk: bootconsole [uart0] disabled
+</span><span style=color:#d14>[    0.607076] printk: bootconsole [uart0] disabled
+</span><span style=color:#d14>[    0.611276] SuperH (H)SCI(F) driver initialized
+</span><span style=color:#d14>[    0.613660] msm_serial: driver initialized
+</span><span style=color:#d14>[    0.615984] cacheinfo: Unable to detect cache hierarchy for CPU 0
+</span><span style=color:#d14>[    0.631690] loop: module loaded
+</span><span style=color:#d14>[    0.634019] virtio_blk virtio0: [vda] 204800 512-byte logical blocks (105 MB/100 MiB)
+</span><span style=color:#d14>[    0.648631] libphy: Fixed MDIO Bus: probed
+</span><span style=color:#d14>[    0.652999] tun: Universal TUN/TAP device driver, 1.6
+</span><span style=color:#d14>[    0.658605] thunder_xcv, ver 1.0
+</span><span style=color:#d14>[    0.660878] thunder_bgx, ver 1.0
+</span><span style=color:#d14>[    0.662279] nicpf, ver 1.0
+</span><span style=color:#d14>[    0.664058] e1000e: Intel(R) PRO/1000 Network Driver - 3.2.6-k
+</span><span style=color:#d14>[    0.666284] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+</span><span style=color:#d14>[    0.669114] igb: Intel(R) Gigabit Ethernet Network Driver - version 5.6.0-k
+</span><span style=color:#d14>[    0.671961] igb: Copyright (c) 2007-2014 Intel Corporation.
+</span><span style=color:#d14>[    0.674176] igbvf: Intel(R) Gigabit Virtual Function Network Driver - version 2.4.0-k
+</span><span style=color:#d14>[    0.677465] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+</span><span style=color:#d14>[    0.680142] sky2: driver version 1.30
+</span><span style=color:#d14>[    0.682282] VFIO - User Level meta-driver version: 0.3
+</span><span style=color:#d14>[    0.690342] ehci_hcd: USB 2.0 &#39;</span>Enhanced<span style=color:#d14>&#39; Host Controller (EHCI) Driver
+</span><span style=color:#d14>[    0.693832] ehci-pci: EHCI PCI platform driver
+</span><span style=color:#d14>[    0.695936] ehci-platform: EHCI generic platform driver
+</span><span style=color:#d14>[    0.698111] ehci-orion: EHCI orion driver
+</span><span style=color:#d14>[    0.700178] ehci-exynos: EHCI EXYNOS driver
+</span><span style=color:#d14>[    0.701992] ohci_hcd: USB 1.1 &#39;</span>Open<span style=color:#a61717;background-color:#e3d2d2>&#39;</span> Host Controller <span style=color:#000;font-weight:700>(</span>OHCI<span style=color:#000;font-weight:700>)</span> Driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.704917<span style=color:#000;font-weight:700>]</span> ohci-pci: OHCI PCI platform driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.706835<span style=color:#000;font-weight:700>]</span> ohci-platform: OHCI generic platform driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.709036<span style=color:#000;font-weight:700>]</span> ohci-exynos: OHCI EXYNOS driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.711184<span style=color:#000;font-weight:700>]</span> usbcore: registered new interface driver usb-storage
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.716697<span style=color:#000;font-weight:700>]</span> rtc-pl031 <span style=color:#099>40004000</span>.rtc: registered as rtc0
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.720525<span style=color:#000;font-weight:700>]</span> i2c /dev entries driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.725890<span style=color:#000;font-weight:700>]</span> sdhci: Secure Digital Host Controller Interface driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.729845<span style=color:#000;font-weight:700>]</span> sdhci: Copyright<span style=color:#000;font-weight:700>(</span>c<span style=color:#000;font-weight:700>)</span> Pierre Ossman
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.732261<span style=color:#000;font-weight:700>]</span> Synopsys Designware Multimedia Card Interface Driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.735862<span style=color:#000;font-weight:700>]</span> sdhci-pltfm: SDHCI platform and OF driver helper
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.739259<span style=color:#000;font-weight:700>]</span> ledtrig-cpu: registered to indicate activity on CPUs
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.743495<span style=color:#000;font-weight:700>]</span> usbcore: registered new interface driver usbhid
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.745688<span style=color:#000;font-weight:700>]</span> usbhid: USB HID core driver
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.751079<span style=color:#000;font-weight:700>]</span> NET: Registered protocol family <span style=color:#099>17</span>
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.754152<span style=color:#000;font-weight:700>]</span> 9pnet: Installing 9P2000 support
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.756397<span style=color:#000;font-weight:700>]</span> Key <span style=color:#0086b3>type</span> dns_resolver registered
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.758475<span style=color:#000;font-weight:700>]</span> registered taskstats version <span style=color:#099>1</span>
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.760525<span style=color:#000;font-weight:700>]</span> Loading compiled-in X.509 certificates
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.763104<span style=color:#000;font-weight:700>]</span> rtc-pl031 <span style=color:#099>40004000</span>.rtc: setting system clock to <span style=color:#099>2019</span>-10-19T14:46:13 UTC <span style=color:#000;font-weight:700>(</span><span style=color:#099>1571496373</span><span style=color:#000;font-weight:700>)</span>
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.786860<span style=color:#000;font-weight:700>]</span> IP-Config: Complete:
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.790000<span style=color:#000;font-weight:700>]</span>      <span style=color:teal>device</span><span style=color:#000;font-weight:700>=</span>eth0, <span style=color:teal>hwaddr</span><span style=color:#000;font-weight:700>=</span>c2:6b:5f:69:cc:12, <span style=color:teal>ipaddr</span><span style=color:#000;font-weight:700>=</span><span style=color:#099>10</span>.0.0.2, <span style=color:teal>mask</span><span style=color:#000;font-weight:700>=</span><span style=color:#099>255</span>.255.255.0, <span style=color:teal>gw</span><span style=color:#000;font-weight:700>=</span><span style=color:#099>10</span>.0.0.1
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.800389<span style=color:#000;font-weight:700>]</span>      <span style=color:teal>host</span><span style=color:#000;font-weight:700>=</span><span style=color:#099>10</span>.0.0.2, <span style=color:teal>domain</span><span style=color:#000;font-weight:700>=</span>, nis-domain<span style=color:#000;font-weight:700>=(</span>none<span style=color:#000;font-weight:700>)</span>
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.802853<span style=color:#000;font-weight:700>]</span>      <span style=color:teal>bootserver</span><span style=color:#000;font-weight:700>=</span><span style=color:#099>255</span>.255.255.255, <span style=color:teal>rootserver</span><span style=color:#000;font-weight:700>=</span><span style=color:#099>255</span>.255.255.255, <span style=color:teal>rootpath</span><span style=color:#000;font-weight:700>=</span>
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.806010<span style=color:#000;font-weight:700>]</span> ALSA device list:
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.807295<span style=color:#000;font-weight:700>]</span>   No soundcards found.
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.816070<span style=color:#000;font-weight:700>]</span> Freeing unused kernel memory: 6656K
+<span style=color:#000;font-weight:700>[</span>    <span style=color:#099>0</span>.817939<span style=color:#000;font-weight:700>]</span> Run /init as init process</code></pre></div><p>and from a GET / command:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>curl 172.16.0.42
+<span style=color:#999;font-weight:700;font-style:italic>&lt;!DOCTYPE html&gt;</span>
+&lt;<span style=color:navy>html</span>&gt;
+&lt;<span style=color:navy>head</span>&gt;
+&lt;<span style=color:navy>title</span>&gt;Welcome to nginx!&lt;/<span style=color:navy>title</span>&gt;
+&lt;<span style=color:navy>style</span>&gt;
+    <span style=color:navy>body</span> {
+        <span style=color:#000;font-weight:700>width</span>: <span style=color:#099>35</span><span style=color:#458;font-weight:700>em</span>;
+        <span style=color:#000;font-weight:700>margin</span>: <span style=color:#099>0</span> <span style=color:#000;font-weight:700>auto</span>;
+        <span style=color:#000;font-weight:700>font-family</span>: Tahoma, Verdana, Arial, <span style=color:#000;font-weight:700>sans-serif</span>;
     }
-&lt;/<span style="color:#000080">style</span>&gt;
-&lt;/<span style="color:#000080">head</span>&gt;
-&lt;<span style="color:#000080">body</span>&gt;
-&lt;<span style="color:#000080">h1</span>&gt;Welcome to nginx!&lt;/<span style="color:#000080">h1</span>&gt;
-&lt;<span style="color:#000080">p</span>&gt;If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.&lt;/<span style="color:#000080">p</span>&gt;
+&lt;/<span style=color:navy>style</span>&gt;
+&lt;/<span style=color:navy>head</span>&gt;
+&lt;<span style=color:navy>body</span>&gt;
+&lt;<span style=color:navy>h1</span>&gt;Welcome to nginx!&lt;/<span style=color:navy>h1</span>&gt;
+&lt;<span style=color:navy>p</span>&gt;If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.&lt;/<span style=color:navy>p</span>&gt;
 
-&lt;<span style="color:#000080">p</span>&gt;For online documentation and support please refer to
-&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;http://nginx.org/&#34;</span>&gt;nginx.org&lt;/<span style="color:#000080">a</span>&gt;.&lt;<span style="color:#000080">br</span>/&gt;
+&lt;<span style=color:navy>p</span>&gt;For online documentation and support please refer to
+&lt;<span style=color:navy>a</span> <span style=color:teal>href</span><span style=color:#000;font-weight:700>=</span><span style=color:#d14>&#34;http://nginx.org/&#34;</span>&gt;nginx.org&lt;/<span style=color:navy>a</span>&gt;.&lt;<span style=color:navy>br</span>/&gt;
 Commercial support is available at
-&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;http://nginx.com/&#34;</span>&gt;nginx.com&lt;/<span style="color:#000080">a</span>&gt;.&lt;/<span style="color:#000080">p</span>&gt;
+&lt;<span style=color:navy>a</span> <span style=color:teal>href</span><span style=color:#000;font-weight:700>=</span><span style=color:#d14>&#34;http://nginx.com/&#34;</span>&gt;nginx.com&lt;/<span style=color:navy>a</span>&gt;.&lt;/<span style=color:navy>p</span>&gt;
 
-&lt;<span style="color:#000080">p</span>&gt;&lt;<span style="color:#000080">em</span>&gt;Thank you for using nginx.&lt;/<span style="color:#000080">em</span>&gt;&lt;/<span style="color:#000080">p</span>&gt;
-&lt;/<span style="color:#000080">body</span>&gt;
-&lt;/<span style="color:#000080">html</span>&gt;</code></pre></div>
-      
-    </div>
-    
-
-  </div>
-</section>
-
-
-<section class="section footer">
-  <div class="container">
-	  <p><small>&copy; CloudKernels 2019-2022</small></p>
-    
-  </div>
-</section>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-121797730-2', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="/js/social-share.js"></script>
-<script src="/js/nav-responsive.js"></script>
-</body>
-</html>
-
+&lt;<span style=color:navy>p</span>&gt;&lt;<span style=color:navy>em</span>&gt;Thank you for using nginx.&lt;/<span style=color:navy>em</span>&gt;&lt;/<span style=color:navy>p</span>&gt;
+&lt;/<span style=color:navy>body</span>&gt;
+&lt;/<span style=color:navy>html</span>&gt;</code></pre></div></div></div></section><section class="section footer"><div class=container><p><small>&copy; CloudKernels 2019-2022</small></p></div></section><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-121797730-2','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://code.jquery.com/jquery-3.3.1.min.js></script><script src=/js/social-share.js></script><script src=/js/nav-responsive.js></script></body></html>

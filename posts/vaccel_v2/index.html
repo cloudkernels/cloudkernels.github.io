@@ -1,292 +1,60 @@
-<!DOCTYPE html>
-<html  lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<title>Hardware acceleration in the Age of Functions (vol II) | CloudKernels</title>
-
-
-
-<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
-</head>
-<body>
-
-<section class="section">
-  <div class="container">
-    <nav class="nav menu">
-      <div class="nav-left">
-        <a class="nav-item" href="https://cloudkernels.github.io/">
-          <h1 class="brand">CloudKernels</h1>
-        </a>
-      </div>
-        
-        <nav class="nav-item main-nav responsive">
-        <ul class="main-menu">
-          
-          <li>
-            <a href="/" title="Home"
-                 class="nav-item">
-               
-                <span>Home</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/about/" title="About"
-                 class="nav-item">
-               
-                <span>About</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/team/" title="Team"
-                 class="nav-item">
-               
-                <span>Team</span>
-            </a>
-          </li>
-		  
-	    </ul>
-		</nav>
-      <div class="nav-right">
-        <nav class="nav-item level is-mobile">
-        <a href="#" class="main-menu-icon">
-          <i class="fas fa-bars"></i>
-        </a>
-		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-    
-  </svg></i>
-            </span>
-          </a></div>
-        </nav>
-      </div>
-    </nav>
-    <nav class="nav">
-      
-
-      
-    </nav>
-
-  </div>
-</section>
-
-
-
-<section class="section">
-  <div class="container">
-    <hr class="content-sep">
-	
-    
-	<div>
-    
-	<span class="subtitle is-6">
-      December 4, 2020
-      
-	</span>
-	<ul class="social-share">
-  <li class="twitter">
-    <a href="https://twitter.com/intent/tweet/?text=Hardware%20acceleration%20in%20the%20Age%20of%20Functions%20%28vol%20II%29&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fvaccel_v2%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
-      <i class="fab fa-twitter"></i>
-    </a>
-  </li>
-  <li class="twitter">
-    <a href="https://reddit.com/submit?title=Hardware%20acceleration%20in%20the%20Age%20of%20Functions%20%28vol%20II%29&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fvaccel_v2%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
-      <i class="fab fa-reddit"></i>
-    </a>
-  </li>
-</ul>
-
-	</div>
-	<h1 class="title">
-      <a href="https://cloudkernels.github.io/posts/vaccel_v2/">Hardware acceleration in the Age of Functions (vol II)</a>
-	  
-	</h1>
-    
-    <div class="content">
-      
-
-<p>In our <a href="https://blog.cloudkernels.net/posts/vaccel/">previous post</a> we spoke about the potential solutions for
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Hardware acceleration in the Age of Functions (vol II) | CloudKernels</title><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://cloudkernels.github.io/css/custom.css><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=96x96 href=/favicon-96x96.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel=stylesheet><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel=stylesheet><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/brands.css integrity=sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/solid.css integrity=sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css integrity=sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0 crossorigin=anonymous></head><body><section class=section><div class=container><nav class="nav menu"><div class=nav-left><a class=nav-item href=https://cloudkernels.github.io/><h1 class=brand>CloudKernels</h1></a></div><nav class="nav-item main-nav responsive"><ul class=main-menu><li><a href=/ title=Home class=nav-item><span>Home</span></a></li><li><a href=/about/ title=About class=nav-item><span>About</span></a></li><li><a href=/team/ title=Team class=nav-item><span>Team</span></a></li></ul></nav><div class=nav-right><nav class="nav-item level is-mobile"><a href=# class=main-menu-icon><i class="fas fa-bars"></i></a><div class=social><a class=level-item aria-label=github href=https://github.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0 0 20 4.77 5.07 5.07.0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38.0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 0 0 5 4.77a5.44 5.44.0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 0 0 9 18.13V22"/></svg></i></span></a><a class=level-item aria-label=twitter href=https://twitter.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M23 3a10.9 10.9.0 0 1-3.14 1.53 4.48 4.48.0 0 0-7.86 3v1A10.66 10.66.0 0 1 3 4s-4 9 5 13a11.64 11.64.0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5.0 0 0-.08-.83A7.72 7.72.0 0 0 23 3z"/></svg></i></span></a><a class=level-item aria-label=email href=mailto:team@cloudkernels.net target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6 12 13 2 6"/></svg></i></span></a></div></nav></div></nav><nav class=nav></nav></div></section><section class=section><div class=container><hr class=content-sep><div><span class="subtitle is-6">December 4, 2020</span><ul class=social-share><li class=twitter><a href="https://twitter.com/intent/tweet/?text=Hardware%20acceleration%20in%20the%20Age%20of%20Functions%20%28vol%20II%29&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fvaccel_v2%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Twitter"><i class="fab fa-twitter"></i></a></li><li class=twitter><a href="https://reddit.com/submit?title=Hardware%20acceleration%20in%20the%20Age%20of%20Functions%20%28vol%20II%29&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fvaccel_v2%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Reddit"><i class="fab fa-reddit"></i></a></li></ul></div><h1 class=title><a href=https://cloudkernels.github.io/posts/vaccel_v2/>Hardware acceleration in the Age of Functions (vol II)</a></h1><div class=content><p>In our <a href=https://blog.cloudkernels.net/posts/vaccel/>previous post</a> we spoke about the potential solutions for
 deploying serverless offerings with hardware acceleration support. With the
 increasing adoption of the serverless and FaaS paradigms, providers will need
-to offer some form of hardware acceleration semantics.</p>
-
-<p>For some time now, Amazon has <a href="https://github.com/firecracker-microvm/firecracker/issues/1179">identifed</a> this as a &ldquo;compelling use
+to offer some form of hardware acceleration semantics.</p><p>For some time now, Amazon has <a href=https://github.com/firecracker-microvm/firecracker/issues/1179>identifed</a> this as a &ldquo;compelling use
 case&rdquo; for their AWS Firecracker hypervisor which powers the Amazon Lambda
 service. What is more, they identify traditional techniques for GPU support in
 VMs such as GPU passthrough comes with limitations and significantly increases
-the attack surface of the hypervisor.</p>
-
-<p>As an alternative to passing through the accelerator device inside the guest,
+the attack surface of the hypervisor.</p><p>As an alternative to passing through the accelerator device inside the guest,
 paravirtual interfaces can expose hardware acceleration capabilities inside
 the VM with minimal overhead and offering a simple user interface for
-offloading code to the host for acceleration.</p>
-
-<p>In fact, such interfaces already exist. <code>virtio-crypto</code> is an example, where
+offloading code to the host for acceleration.</p><p>In fact, such interfaces already exist. <code>virtio-crypto</code> is an example, where
 the guest VM uses a simple crypto API while the actual computation is
-offloaded, through the paravirtual driver, to the host.</p>
-
-<p>We believe that the same paradigm can be applied to any kind of computation
+offloaded, through the paravirtual driver, to the host.</p><p>We believe that the same paradigm can be applied to any kind of computation
 that can benefit from acceleration. Whether that is crypto operations, Machine
 Learning or linear algebra operators, the workflow from the point of view of
 the developer these days is the same; You will use a framework such as
 cryptodev, Jetson Inference or the BLAS library, to write your applications and
 you will not deal with the low-level complexities of the actual accelerator.
 Moreover, that workflow should not be different whether your application runs
-on baremetal or inside a VM.</p>
-
-<p>In the rest of this post we present  <em>vAccel</em>, an acceleration framework that
+on baremetal or inside a VM.</p><p>In the rest of this post we present <em>vAccel</em>, an acceleration framework that
 enables <strong>portable</strong> and <strong>hardware agnostic</strong> acceleration for cloud
-and edge applications.</p>
-
-<h2 id="vaccel-design">vAccel design</h2>
-
-<p>In simple terms, vAccel is an accleration API. It offers support for a set of
+and edge applications.</p><h2 id=vaccel-design>vAccel design</h2><p>In simple terms, vAccel is an accleration API. It offers support for a set of
 operators that commonly use hardware acceleration to increase performance,
-such as machine learning and linear algebra operators.</p>
-
-<p>The API is implemented by <em>VaccelRT</em> a thin and efficient runtime system that links
+such as machine learning and linear algebra operators.</p><p>The API is implemented by <em>VaccelRT</em> a thin and efficient runtime system that links
 against the user application and is responsible for dispatching operations to
 the relevant hardware accelerators. The interaction with the hardware itself is
 mediated by plugins which implement the API for the specific hardware
-accelerator.</p>
-
-<p>This design is driven by our requirements for high degree of portability, an
+accelerator.</p><p>This design is driven by our requirements for high degree of portability, an
 application that consumes the vAccel API can run without modification or even
-re-compilation to any platform for which there is suitable back-end plugin.</p>
-
-<p>In fact, this opens up the way to enable the vAccel API inside a VM guest. The missing
+re-compilation to any platform for which there is suitable back-end plugin.</p><p>In fact, this opens up the way to enable the vAccel API inside a VM guest. The missing
 bits are a virtio driver that implements the vAccel API and a backend plugin that
 speaks with the virtio device. Once you have this components in place, you can
 run your existing vAccel application inside a VM, just by using the virtio-plugin at
-runtime.</p>
-
-<p><img src="/static/vaccel_v2/vaccelrt.png#center" alt="vAccel runtime" title="VaccelRT" /></p>
-
-<h2 id="vaccel-support-in-aws-firecracker">vAccel support in AWS Firecracker</h2>
-
-<p>Once we implemented the frontend vAccel-virtio driver and virtio plugin for VaccelRT,
+runtime.</p><p><img src=/static/vaccel_v2/vaccelrt.png#center alt="vAccel runtime" title=VaccelRT></p><h2 id=vaccel-support-in-aws-firecracker>vAccel support in AWS Firecracker</h2><p>Once we implemented the frontend vAccel-virtio driver and virtio plugin for VaccelRT,
 we need a hypervisor to test this on. We already showed, in the previous post some
 initial vAccel results with QEMU as the target hypervisor. In this post, we will focus
-on AWS Firecracker.</p>
-
-<p>AWS Firecracker has been designed having in mind really small boot times and small attack
+on AWS Firecracker.</p><p>AWS Firecracker has been designed having in mind really small boot times and small attack
 surface, which makes it a compelling choice for cloud and edge deployments.
 Moreover, it powers up Lambda, Amazon&rsquo;s serverless platform, which we see as a
-paradigm for which vAccel&rsquo;s hardware abstraction level is a perfect fit.</p>
-
-<p>AWS Firecracker already implements virtio backend drivers for net, block and vsock. That
+paradigm for which vAccel&rsquo;s hardware abstraction level is a perfect fit.</p><p>AWS Firecracker already implements virtio backend drivers for net, block and vsock. That
 was good news for us, we have all the required virtio machinery. All we had to do, was
-add a new device for vAccel and link the hypervisor with VaccelRT.</p>
-
-<p>The last bit required us to create the necessary Rust bindings for calling C from AWS Firecracker
+add a new device for vAccel and link the hypervisor with VaccelRT.</p><p>The last bit required us to create the necessary Rust bindings for calling C from AWS Firecracker
 which is written in Rust. This was actually a good exercise for us, since we plan to anyway
-provide bindings for the vAccel API in more high-level languages.</p>
-
-<p>With all the components in place our stack looks like this:</p>
-
-<p><img src="/static/vaccel_v2/vaccele2e.png#center" alt="vAccel VM execution" title="vaccel-e2e" /></p>
-
-<p>The user application is consumes the vAccel API and links against VaccelRT. Inside the VM
+provide bindings for the vAccel API in more high-level languages.</p><p>With all the components in place our stack looks like this:</p><p><img src=/static/vaccel_v2/vaccele2e.png#center alt="vAccel VM execution" title=vaccel-e2e></p><p>The user application is consumes the vAccel API and links against VaccelRT. Inside the VM
 the application uses the vAccel-virtio backend plugin. When a vAccel function is called, the
 plugin will offload the request to <code>/dev/accel</code> device which is the interface of the virtio
 driver. Next, the virtio driver will forward the request to the vAccel-enabled AWS Firecracker
 instance which will the host-residing VaccelRT. Finally, in the host side, VaccelRT will use
-one of the available plugins, to execute the operation on the hardware accelerator.</p>
-
-<p>But how does this perform?</p>
-
-<p>We first grabbed a copy of jetson-inference, a rich repo full of ML inference models and example applications based on TensorRT. We patched it to be able to run on an x86 GPU (we had an NVIDIA RTX 2060 SUPER handy), and we built the vAccelRT backend for an image classification operation. To compare vAccel on AWS firecracker we patched the example imagenet-console application to properly calculate the time of execution and to account for more than 1 iteration. The average execution time for image classification on two sets of Image files (set &ldquo;*_0.jpg&rdquo; and &ldquo;*_1.jpg) are shown below:</p>
-
-<p><img src="/static/vaccel_v2/vaccel_bf_0.png#center" alt="vAccel VM execution" title="vaccel-bf-0" /></p>
-
-<p>The set above is sorted by the overhead percentage (GUEST vs HOST), while the set below, is sorted by Image size (in KB). One thing to note is that on all cases, the overhead of running an image classification operation in the guest compared to the host is less than 5%.</p>
-
-<p><img src="/static/vaccel_v2/vaccel_bf_1.png#center" alt="vAccel VM execution" title="vaccel-bf-1" /></p>
-
-<h2 id="putting-it-all-together">Putting it all together</h2>
-
-<p>So, are you brave (or curious) enough to try it out yourself ? Full disclosure, vAccel is WiP, in terms of software development terms, the project should be considered in a pre-alpha phase. However, since we think the idea is useful, there might be someone willing to try it out. So here we go:</p>
-
-<p>TL;DR
-The easy way to try vAccel on AWS Firecracker is to run the docker container bundled with all necessary libraries/tools etc. The only prerequisite is [Docker][<a href="https://github.com/NVIDIA/nvidia-container-runtime">https://github.com/NVIDIA/nvidia-container-runtime</a>] &amp; nvidia-container-runtime[<a href="https://github.com/NVIDIA/nvidia-container-runtime">https://github.com/NVIDIA/nvidia-container-runtime</a>] installed.</p>
-
-<p>To fire a VM up try running:</p>
-
-<pre><code>docker run -e LD_LIBRARY_PATH=/usr/local/lib -e VACCEL_BACKENDS=/usr/local/lib/libvaccel-jetson.so --rm -it --gpus all --privileged nubificus/jetson-runtime
-</code></pre>
-
-<p>Now what the above command does is the following:
+one of the available plugins, to execute the operation on the hardware accelerator.</p><p>But how does this perform?</p><p>We first grabbed a copy of jetson-inference, a rich repo full of ML inference models and example applications based on TensorRT. We patched it to be able to run on an x86 GPU (we had an NVIDIA RTX 2060 SUPER handy), and we built the vAccelRT backend for an image classification operation. To compare vAccel on AWS firecracker we patched the example imagenet-console application to properly calculate the time of execution and to account for more than 1 iteration. The average execution time for image classification on two sets of Image files (set &ldquo;*_0.jpg&rdquo; and &ldquo;*_1.jpg) are shown below:</p><p><img src=/static/vaccel_v2/vaccel_bf_0.png#center alt="vAccel VM execution" title=vaccel-bf-0></p><p>The set above is sorted by the overhead percentage (GUEST vs HOST), while the set below, is sorted by Image size (in KB). One thing to note is that on all cases, the overhead of running an image classification operation in the guest compared to the host is less than 5%.</p><p><img src=/static/vaccel_v2/vaccel_bf_1.png#center alt="vAccel VM execution" title=vaccel-bf-1></p><h2 id=putting-it-all-together>Putting it all together</h2><p>So, are you brave (or curious) enough to try it out yourself ? Full disclosure, vAccel is WiP, in terms of software development terms, the project should be considered in a pre-alpha phase. However, since we think the idea is useful, there might be someone willing to try it out. So here we go:</p><p>TL;DR
+The easy way to try vAccel on AWS Firecracker is to run the docker container bundled with all necessary libraries/tools etc. The only prerequisite is [Docker][<a href=https://github.com/NVIDIA/nvidia-container-runtime>https://github.com/NVIDIA/nvidia-container-runtime</a>] &amp; nvidia-container-runtime[<a href=https://github.com/NVIDIA/nvidia-container-runtime>https://github.com/NVIDIA/nvidia-container-runtime</a>] installed.</p><p>To fire a VM up try running:</p><pre><code>docker run -e LD_LIBRARY_PATH=/usr/local/lib -e VACCEL_BACKENDS=/usr/local/lib/libvaccel-jetson.so --rm -it --gpus all --privileged nubificus/jetson-runtime
+</code></pre><p>Now what the above command does is the following:
 - sets up a couple of env vars to let the container know where to find the necessary libraries
 - runs in a privileged mode so that /dev/kvm is available to the container instance (we need to boot a VM in there ;))
-- provides access to the GPU from the container.</p>
-
-<p>The entrypoint for the above container image (<code>nubificus/jetson-runtime</code>) simply starts a firecracker VM with a pre-built kernel &amp; rootfs.img, available <a href="https://github.com/nubificus/fc-x86-guest-build">here</a>. This repository contains the dockerfile from which these binaries have been produced. You can download ready-made binaries from the <a href="https://github.com/nubificus/fc-x86-guest-build/releases/latest">releases</a> page.</p>
-
-<p>If (for any reason) you want to try out jetson-inference, without the AWS Firecracker VM boot, then just run the container with /bin/bash as an entrypoint, using the following command:</p>
-
-<pre><code>docker run --network=host --rm -it --gpus all --privileged -v nubificus/jetson-runtime /bin/bash
-</code></pre>
-
-<h3 id="host">Host</h3>
-
-<p>The current available version of vAccelRT supports the jetson-inference plugin. Adding a new plugin is as easy as linking with vAccelRT and writing the glue code in the plugin directory &ndash; more information should be available in the coming weeks!</p>
-
-<p>To use this plugin, the Host machine should have an NVIDIA GPU (supporting CUDA), the relevant drivers installed, as well as <a href="https://github.com/dusty-nv/jetson-inference">jetson-inference</a> installed.</p>
-
-<p>The next step is to build &amp; install <a href="https://github.com/cloudkernels/vaccelrt">vAccelRT</a>, the glue that ties everything together. You can build it from source, or just install the binaries available from the <a href="https://github.com/cloudkernels/vaccelrt/releases/latest">releases</a> page. Make sure you specify <code>LD_LIBRARY_PATH</code> to the folder where libvaccel.so is located, as well as to choose the necessary backend by setting <code>VACCEL_BACKENDS</code> to <code>libvaccel-jetson.so</code>.</p>
-
-<pre><code>export LD_LIBRARY_PATH=/usr/local/lib
+- provides access to the GPU from the container.</p><p>The entrypoint for the above container image (<code>nubificus/jetson-runtime</code>) simply starts a firecracker VM with a pre-built kernel &amp; rootfs.img, available <a href=https://github.com/nubificus/fc-x86-guest-build>here</a>. This repository contains the dockerfile from which these binaries have been produced. You can download ready-made binaries from the <a href=https://github.com/nubificus/fc-x86-guest-build/releases/latest>releases</a> page.</p><p>If (for any reason) you want to try out jetson-inference, without the AWS Firecracker VM boot, then just run the container with /bin/bash as an entrypoint, using the following command:</p><pre><code>docker run --network=host --rm -it --gpus all --privileged -v nubificus/jetson-runtime /bin/bash
+</code></pre><h3 id=host>Host</h3><p>The current available version of vAccelRT supports the jetson-inference plugin. Adding a new plugin is as easy as linking with vAccelRT and writing the glue code in the plugin directory &ndash; more information should be available in the coming weeks!</p><p>To use this plugin, the Host machine should have an NVIDIA GPU (supporting CUDA), the relevant drivers installed, as well as <a href=https://github.com/dusty-nv/jetson-inference>jetson-inference</a> installed.</p><p>The next step is to build &amp; install <a href=https://github.com/cloudkernels/vaccelrt>vAccelRT</a>, the glue that ties everything together. You can build it from source, or just install the binaries available from the <a href=https://github.com/cloudkernels/vaccelrt/releases/latest>releases</a> page. Make sure you specify <code>LD_LIBRARY_PATH</code> to the folder where libvaccel.so is located, as well as to choose the necessary backend by setting <code>VACCEL_BACKENDS</code> to <code>libvaccel-jetson.so</code>.</p><pre><code>export LD_LIBRARY_PATH=/usr/local/lib
 export VACCEL_BACKENDS=/usr/local/lib/libvaccel-jetson.so
-</code></pre>
-
-<h3 id="vm">VM</h3>
-
-<p>To run a vAccel-enabled VM, we need four basic components:</p>
-
-<ul>
-<li>the AWS firecracker VMM (with the vAccel backend patch) <a href="https://github.com/cloudkernels/firecracker">github</a> <a href="https://github.com/cloudkernels/firecracker/releases/latest">releases</a></li>
-<li>a firecracker guest Linux kernel supporting modules + the virtio-accel module <a href="https://github.com/nubificus/fc-x86-guest-build">github</a> <a href="https://github.com/nubificus/fc-x86-guest-build/releases/latest">releases</a></li>
-<li>the vAccel runtime system (vAccelRT) for the Host and the guest <a href="https://github.com/cloudkernels/vaccelrt">github</a> <a href="https://github.com/cloudkernels/vaccelrt/releases/latest">releases</a></li>
-</ul>
-
-<p>To facilitate the process of packing all these software components, we include links to binaries built from the respective github repositories.</p>
-
-<p>Grab, or build <code>vmlinux</code> &amp; the <code>rootfs.img</code> from the links above, and use a template config for firecracker like the following:</p>
-
-<pre><code>{
+</code></pre><h3 id=vm>VM</h3><p>To run a vAccel-enabled VM, we need four basic components:</p><ul><li>the AWS firecracker VMM (with the vAccel backend patch) <a href=https://github.com/cloudkernels/firecracker>github</a> <a href=https://github.com/cloudkernels/firecracker/releases/latest>releases</a></li><li>a firecracker guest Linux kernel supporting modules + the virtio-accel module <a href=https://github.com/nubificus/fc-x86-guest-build>github</a> <a href=https://github.com/nubificus/fc-x86-guest-build/releases/latest>releases</a></li><li>the vAccel runtime system (vAccelRT) for the Host and the guest <a href=https://github.com/cloudkernels/vaccelrt>github</a> <a href=https://github.com/cloudkernels/vaccelrt/releases/latest>releases</a></li></ul><p>To facilitate the process of packing all these software components, we include links to binaries built from the respective github repositories.</p><p>Grab, or build <code>vmlinux</code> &amp; the <code>rootfs.img</code> from the links above, and use a template config for firecracker like the following:</p><pre><code>{
 	&quot;boot-source&quot;: {
 		&quot;kernel_image_path&quot;: &quot;vmlinux&quot;,
 		&quot;boot_args&quot;: &quot;console=ttyS0 reboot=k panic=1 pci=off loglevel=0 root=/dev/vda quiet&quot;
@@ -316,23 +84,9 @@ export VACCEL_BACKENDS=/usr/local/lib/libvaccel-jetson.so
 		&quot;ht_enabled&quot;: false
 	}
 }
-</code></pre>
-
-<p>Make sure vmlinux, rootfs.img are in the same directory as the invocation of the firecracker command. Also, ensure that you have set <code>LD_LIBRARY_PATH</code> and <code>VACCEL_BACKENDS</code> correctly, and that you&rsquo;ve downloaded the ML networks needed for inference. This step can be done using <a href="https://github.com/dusty-nv/jetson-inference/blob/master/tools/download-models.sh">this script</a>. Just get this script and run:</p>
-
-<pre><code>./download-models.sh NO
-</code></pre>
-
-<p>and the models will be placed by default at <code>../data/networks</code>. Change the path in the script if you need to. For the AWS Firecracker backend to work, we need the models in the same directory as the invocation of the firecracker binary, in a folder called networks.</p>
-
-<p>Now, we&rsquo;re ready to fire up our VM:</p>
-
-<pre><code>firecracker --api-sock /tmp/fc.sock --config-file config_vaccel.json --seccomp-level 0
-</code></pre>
-
-<p>aaand we get the following:</p>
-
-<pre><code>2020-12-04T14:39:02.363414625 [anonymous-instance:WARN:src/devices/src/legacy/i8042.rs:126] Failed to trigger i8042 kbd interrupt (disabled by guest OS)
+</code></pre><p>Make sure vmlinux, rootfs.img are in the same directory as the invocation of the firecracker command. Also, ensure that you have set <code>LD_LIBRARY_PATH</code> and <code>VACCEL_BACKENDS</code> correctly, and that you&rsquo;ve downloaded the ML networks needed for inference. This step can be done using <a href=https://github.com/dusty-nv/jetson-inference/blob/master/tools/download-models.sh>this script</a>. Just get this script and run:</p><pre><code>./download-models.sh NO
+</code></pre><p>and the models will be placed by default at <code>../data/networks</code>. Change the path in the script if you need to. For the AWS Firecracker backend to work, we need the models in the same directory as the invocation of the firecracker binary, in a folder called networks.</p><p>Now, we&rsquo;re ready to fire up our VM:</p><pre><code>firecracker --api-sock /tmp/fc.sock --config-file config_vaccel.json --seccomp-level 0
+</code></pre><p>aaand we get the following:</p><pre><code>2020-12-04T14:39:02.363414625 [anonymous-instance:WARN:src/devices/src/legacy/i8042.rs:126] Failed to trigger i8042 kbd interrupt (disabled by guest OS)
 2020-12-04T14:39:02.369542154 [anonymous-instance:WARN:src/devices/src/legacy/i8042.rs:126] Failed to trigger i8042 kbd interrupt (disabled by guest OS)
 SELinux:  Could not open policy file &lt;= /etc/selinux/targeted/policy/policy.32:  No such file or directory
 [    0.970330] systemd[1]: Failed to find module 'autofs4'
@@ -341,11 +95,7 @@ SELinux:  Could not open policy file &lt;= /etc/selinux/targeted/policy/policy.3
 Ubuntu 20.04.1 LTS vaccel-guest.nubificus.co.uk ttyS0
 
 vaccel-guest login: 
-</code></pre>
-
-<p>Some harmless messages and a login prompt! Try <code>root</code> for username (no password).</p>
-
-<pre><code>vaccel-guest login: root
+</code></pre><p>Some harmless messages and a login prompt! Try <code>root</code> for username (no password).</p><pre><code>vaccel-guest login: root
 Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 4.20.0 x86_64)
 
  * Documentation:  https://help.ubuntu.com
@@ -365,63 +115,12 @@ Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
 applicable law.
 
 root@vaccel-guest:~#
-</code></pre>
-
-<p>Bear in mind, the rootfs.img is based on docker hub&rsquo;s ubuntu latest.</p>
-
-<p>Now lets do some image classification! Try running the following:</p>
-
-<pre><code>root@vaccel-guest:~# ./classify images/airplane_1.jpg 1
+</code></pre><p>Bear in mind, the rootfs.img is based on docker hub&rsquo;s ubuntu latest.</p><p>Now lets do some image classification! Try running the following:</p><pre><code>root@vaccel-guest:~# ./classify images/airplane_1.jpg 1
 Initialized session with id: 1
 Image size: 115835B
 classification tags: 21.973% warplane, military plane
-</code></pre>
-
-<p>The first time the execution might take longer, but any consecutive run will be significantly faster. This is because the acceleration backend (jetson-inference) needs to examine the hardware available, generate and load the necessary components for the model to run correctly.</p>
-
-<p>That&rsquo;s it! you just ran an image classification example for a JPG image, in an AWS Firecracker VM, talking vAccelRT, which, in turn, forwards this request to AWS Firecracker vAccel backend, calling vAccelRT, jetson-inference, talking to the GPU and voila!</p>
-
-<h2 id="future-steps">Future steps</h2>
-
-<p>Argh! you made it this far? :D If you enjoyed playing with hardware
+</code></pre><p>The first time the execution might take longer, but any consecutive run will be significantly faster. This is because the acceleration backend (jetson-inference) needs to examine the hardware available, generate and load the necessary components for the model to run correctly.</p><p>That&rsquo;s it! you just ran an image classification example for a JPG image, in an AWS Firecracker VM, talking vAccelRT, which, in turn, forwards this request to AWS Firecracker vAccel backend, calling vAccelRT, jetson-inference, talking to the GPU and voila!</p><h2 id=future-steps>Future steps</h2><p>Argh! you made it this far? :D If you enjoyed playing with hardware
 acceleration &amp; Firecracker stay tuned to enjoy some more of this on aarch64
 devices (yeap, the NVIDIA Jetson Nano!). Last but not least, we are in the
 process of integrating vAccel-enabled AWS Firecracker instances to k8s and k3s
-to facilitate deployment and scaling.</p>
-
-<p>Give us a shout at team@cloudkernels.net if you liked it, or visit the <a href="https://vaccel.org">vAccel</a> website and drop us a note at vaccel@nubificus.co.uk for more info!</p>
-
-      
-    </div>
-    
-
-  </div>
-</section>
-
-
-<section class="section footer">
-  <div class="container">
-	  <p><small>&copy; CloudKernels 2019-2022</small></p>
-    
-  </div>
-</section>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-121797730-2', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="/js/social-share.js"></script>
-<script src="/js/nav-responsive.js"></script>
-</body>
-</html>
-
+to facilitate deployment and scaling.</p><p>Give us a shout at team@cloudkernels.net if you liked it, or visit the <a href=https://vaccel.org>vAccel</a> website and drop us a note at vaccel@nubificus.co.uk for more info!</p></div></div></section><section class="section footer"><div class=container><p><small>&copy; CloudKernels 2019-2022</small></p></div></section><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-121797730-2','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://code.jquery.com/jquery-3.3.1.min.js></script><script src=/js/social-share.js></script><script src=/js/nav-responsive.js></script></body></html>

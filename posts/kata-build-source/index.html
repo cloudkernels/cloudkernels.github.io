@@ -1,359 +1,102 @@
-<!DOCTYPE html>
-<html  lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<title>Build Kata Containers from source on x86 and arm64 | CloudKernels</title>
-
-
-
-<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
-</head>
-<body>
-
-<section class="section">
-  <div class="container">
-    <nav class="nav menu">
-      <div class="nav-left">
-        <a class="nav-item" href="https://cloudkernels.github.io/">
-          <h1 class="brand">CloudKernels</h1>
-        </a>
-      </div>
-        
-        <nav class="nav-item main-nav responsive">
-        <ul class="main-menu">
-          
-          <li>
-            <a href="/" title="Home"
-                 class="nav-item">
-               
-                <span>Home</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/about/" title="About"
-                 class="nav-item">
-               
-                <span>About</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/team/" title="Team"
-                 class="nav-item">
-               
-                <span>Team</span>
-            </a>
-          </li>
-		  
-	    </ul>
-		</nav>
-      <div class="nav-right">
-        <nav class="nav-item level is-mobile">
-        <a href="#" class="main-menu-icon">
-          <i class="fas fa-bars"></i>
-        </a>
-		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-    
-  </svg></i>
-            </span>
-          </a></div>
-        </nav>
-      </div>
-    </nav>
-    <nav class="nav">
-      
-
-      
-    </nav>
-
-  </div>
-</section>
-
-
-
-<section class="section">
-  <div class="container">
-    <hr class="content-sep">
-	
-    
-	<div>
-    
-	<span class="subtitle is-6">
-      March 24, 2022
-      
-	</span>
-	<ul class="social-share">
-  <li class="twitter">
-    <a href="https://twitter.com/intent/tweet/?text=Build%20Kata%20Containers%20from%20source%20on%20x86%20and%20arm64&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fkata-build-source%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
-      <i class="fab fa-twitter"></i>
-    </a>
-  </li>
-  <li class="twitter">
-    <a href="https://reddit.com/submit?title=Build%20Kata%20Containers%20from%20source%20on%20x86%20and%20arm64&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fkata-build-source%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
-      <i class="fab fa-reddit"></i>
-    </a>
-  </li>
-</ul>
-
-	</div>
-	<h1 class="title">
-      <a href="https://cloudkernels.github.io/posts/kata-build-source/">Build Kata Containers from source on x86 and arm64</a>
-	  
-	</h1>
-    
-    <div class="content">
-      
-
-<p><a href="https://katacontainers.io">Kata Containers</a> enable containers to be seamlessly
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Build Kata Containers from source on x86 and arm64 | CloudKernels</title><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://cloudkernels.github.io/css/custom.css><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=96x96 href=/favicon-96x96.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel=stylesheet><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel=stylesheet><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/brands.css integrity=sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/solid.css integrity=sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css integrity=sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0 crossorigin=anonymous></head><body><section class=section><div class=container><nav class="nav menu"><div class=nav-left><a class=nav-item href=https://cloudkernels.github.io/><h1 class=brand>CloudKernels</h1></a></div><nav class="nav-item main-nav responsive"><ul class=main-menu><li><a href=/ title=Home class=nav-item><span>Home</span></a></li><li><a href=/about/ title=About class=nav-item><span>About</span></a></li><li><a href=/team/ title=Team class=nav-item><span>Team</span></a></li></ul></nav><div class=nav-right><nav class="nav-item level is-mobile"><a href=# class=main-menu-icon><i class="fas fa-bars"></i></a><div class=social><a class=level-item aria-label=github href=https://github.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0 0 20 4.77 5.07 5.07.0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38.0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 0 0 5 4.77a5.44 5.44.0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 0 0 9 18.13V22"/></svg></i></span></a><a class=level-item aria-label=twitter href=https://twitter.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M23 3a10.9 10.9.0 0 1-3.14 1.53 4.48 4.48.0 0 0-7.86 3v1A10.66 10.66.0 0 1 3 4s-4 9 5 13a11.64 11.64.0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5.0 0 0-.08-.83A7.72 7.72.0 0 0 23 3z"/></svg></i></span></a><a class=level-item aria-label=email href=mailto:team@cloudkernels.net target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6 12 13 2 6"/></svg></i></span></a></div></nav></div></nav><nav class=nav></nav></div></section><section class=section><div class=container><hr class=content-sep><div><span class="subtitle is-6">March 24, 2022</span><ul class=social-share><li class=twitter><a href="https://twitter.com/intent/tweet/?text=Build%20Kata%20Containers%20from%20source%20on%20x86%20and%20arm64&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fkata-build-source%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Twitter"><i class="fab fa-twitter"></i></a></li><li class=twitter><a href="https://reddit.com/submit?title=Build%20Kata%20Containers%20from%20source%20on%20x86%20and%20arm64&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fkata-build-source%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Reddit"><i class="fab fa-reddit"></i></a></li></ul></div><h1 class=title><a href=https://cloudkernels.github.io/posts/kata-build-source/>Build Kata Containers from source on x86 and arm64</a></h1><div class=content><p><a href=https://katacontainers.io>Kata Containers</a> enable containers to be seamlessly
 executed in Virtual Machines. Kata Containers are as light and fast as
 containers and integrate with the container management layers, while also
 delivering the security advantages of VMs. Kata Containers is the result of
 merging two existing open source projects: Intel Clear Containers and Hyper
-runV.</p>
-
-<p>Kata Containers consist of several components. For amd64 machines, binaries are
+runV.</p><p>Kata Containers consist of several components. For amd64 machines, binaries are
 provided through the formal release process. However, for arm64, binary files
-are not available (<a href="https://github.com/kata-containers/kata-containers/issues/2639">just
-yet</a>).</p>
-
-<p>In this post, we will be going through the steps to build kata containers from
-source, both for amd64 and arm64 architectures.</p>
-
-<h3 id="install-requirements">Install requirements</h3>
-
-<p>To build Kata Containers we need to install Rust v1.58.1, Go v1.16.10, Docker and some apt/snap packages. The specific versions may change,
-so make sure to check the <a href="https://github.com/kata-containers/kata-containers/blob/main/versions.yaml">versions database</a>.</p>
-
-<h4 id="apt-snap-packages">Apt/Snap Packages:</h4>
-
-<p>We need to install <code>gcc</code>, <code>make</code> and <code>yq v3</code>. <code>containerd</code> and <code>runc</code> are installed by the Docker install script, in the following steps.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt update <span style="color:#000;font-weight:bold">&amp;&amp;</span> sudo apt upgrade -y
+are not available (<a href=https://github.com/kata-containers/kata-containers/issues/2639>just
+yet</a>).</p><p>In this post, we will be going through the steps to build kata containers from
+source, both for amd64 and arm64 architectures.</p><h3 id=install-requirements>Install requirements</h3><p>To build Kata Containers we need to install Rust v1.58.1, Go v1.16.10, Docker and some apt/snap packages. The specific versions may change,
+so make sure to check the <a href=https://github.com/kata-containers/kata-containers/blob/main/versions.yaml>versions database</a>.</p><h4 id=apt-snap-packages>Apt/Snap Packages:</h4><p>We need to install <code>gcc</code>, <code>make</code> and <code>yq v3</code>. <code>containerd</code> and <code>runc</code> are installed by the Docker install script, in the following steps.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo apt update <span style=color:#000;font-weight:700>&amp;&amp;</span> sudo apt upgrade -y
 sudo apt install gcc make snapd -y
-sudo snap install yq --channel<span style="color:#000;font-weight:bold">=</span>v3/stable</code></pre></div>
-<h4 id="rust-version-1-58-1">Rust (version 1.58.1):</h4>
-
-<p>We will use <code>rustup</code> to install and set Rust 1.58.1 as our default toolchain:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008080">down_dir</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>mktemp -d<span style="color:#000;font-weight:bold">)</span>
-<span style="color:#0086b3">pushd</span> <span style="color:#008080">$down_dir</span>
-wget -q https://static.rust-lang.org/rustup/dist/<span style="color:#000;font-weight:bold">$(</span>uname -p<span style="color:#000;font-weight:bold">)</span>-unknown-linux-gnu/rustup-init
+sudo snap install yq --channel<span style=color:#000;font-weight:700>=</span>v3/stable</code></pre></div><h4 id=rust-version-1-58-1>Rust (version 1.58.1):</h4><p>We will use <code>rustup</code> to install and set Rust 1.58.1 as our default toolchain:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:teal>down_dir</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>mktemp -d<span style=color:#000;font-weight:700>)</span>
+<span style=color:#0086b3>pushd</span> <span style=color:teal>$down_dir</span>
+wget -q https://static.rust-lang.org/rustup/dist/<span style=color:#000;font-weight:700>$(</span>uname -p<span style=color:#000;font-weight:700>)</span>-unknown-linux-gnu/rustup-init
 sudo chmod +x rustup-init
-./rustup-init -q -y --default-toolchain <span style="color:#099">1</span>.58.1
-<span style="color:#0086b3">source</span> <span style="color:#008080">$HOME</span>/.cargo/env
-<span style="color:#0086b3">popd</span>
-rm -rf <span style="color:#008080">$down_dir</span></code></pre></div>
-<h4 id="go-version-1-16-10">Go (version 1.16.10)</h4>
-
-<p>We will download the appropriate Go binaries and add them to the <code>PATH</code> environment variable:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008080">down_dir</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>mktemp -d<span style="color:#000;font-weight:bold">)</span>
-<span style="color:#0086b3">pushd</span> <span style="color:#008080">$down_dir</span>
-wget -q https://go.dev/dl/go1.16.10.linux-<span style="color:#000;font-weight:bold">$(</span>dpkg --print-architecture<span style="color:#000;font-weight:bold">)</span>.tar.gz
+./rustup-init -q -y --default-toolchain <span style=color:#099>1</span>.58.1
+<span style=color:#0086b3>source</span> <span style=color:teal>$HOME</span>/.cargo/env
+<span style=color:#0086b3>popd</span>
+rm -rf <span style=color:teal>$down_dir</span></code></pre></div><h4 id=go-version-1-16-10>Go (version 1.16.10)</h4><p>We will download the appropriate Go binaries and add them to the <code>PATH</code> environment variable:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:teal>down_dir</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>mktemp -d<span style=color:#000;font-weight:700>)</span>
+<span style=color:#0086b3>pushd</span> <span style=color:teal>$down_dir</span>
+wget -q https://go.dev/dl/go1.16.10.linux-<span style=color:#000;font-weight:700>$(</span>dpkg --print-architecture<span style=color:#000;font-weight:700>)</span>.tar.gz
 sudo mkdir -p /usr/local/go1.16
-sudo tar -C /usr/local/go1.16 -xzf go1.16.10.linux-<span style="color:#000;font-weight:bold">$(</span>dpkg --print-architecture<span style="color:#000;font-weight:bold">)</span>.tar.gz
-<span style="color:#0086b3">echo</span> <span style="color:#d14">&#39;export PATH=$PATH:/usr/local/go1.16/go/bin&#39;</span> &gt;&gt; <span style="color:#008080">$HOME</span>/.profile
-<span style="color:#0086b3">source</span> <span style="color:#008080">$HOME</span>/.profile
-<span style="color:#0086b3">popd</span>
-rm -rf <span style="color:#008080">$down_dir</span></code></pre></div>
-<h4 id="docker">Docker</h4>
-
-<p>We will install Docker using the provided convenience script:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get remove docker docker-engine docker.io containerd runc -y &gt; /dev/null <span style="color:#099">2</span>&gt;&amp;<span style="color:#099">1</span>
+sudo tar -C /usr/local/go1.16 -xzf go1.16.10.linux-<span style=color:#000;font-weight:700>$(</span>dpkg --print-architecture<span style=color:#000;font-weight:700>)</span>.tar.gz
+<span style=color:#0086b3>echo</span> <span style=color:#d14>&#39;export PATH=$PATH:/usr/local/go1.16/go/bin&#39;</span> &gt;&gt; <span style=color:teal>$HOME</span>/.profile
+<span style=color:#0086b3>source</span> <span style=color:teal>$HOME</span>/.profile
+<span style=color:#0086b3>popd</span>
+rm -rf <span style=color:teal>$down_dir</span></code></pre></div><h4 id=docker>Docker</h4><p>We will install Docker using the provided convenience script:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo apt-get remove docker docker-engine docker.io containerd runc -y &gt; /dev/null <span style=color:#099>2</span>&gt;&amp;<span style=color:#099>1</span>
 sudo rm -rf /var/lib/docker/
-<span style="color:#008080">down_dir</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>mktemp -d<span style="color:#000;font-weight:bold">)</span>
-<span style="color:#0086b3">pushd</span> <span style="color:#008080">$down_dir</span>
+<span style=color:teal>down_dir</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>mktemp -d<span style=color:#000;font-weight:700>)</span>
+<span style=color:#0086b3>pushd</span> <span style=color:teal>$down_dir</span>
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
-<span style="color:#998;font-style:italic"># Optionally add user to docker group to run docker without sudo</span>
-<span style="color:#998;font-style:italic"># sudo usermod -aG docker $USER</span>
-<span style="color:#0086b3">popd</span>
-rm -rf <span style="color:#008080">$down_dir</span></code></pre></div>
-<h3 id="build-kata-components">Build Kata components</h3>
-
-<h4 id="build-kata-runtime">Build kata-runtime</h4>
-
-<p>First, we need to set the correct Go environment variables:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">export</span> <span style="color:#008080">PATH</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$PATH</span>:<span style="color:#000;font-weight:bold">$(</span>go env GOPATH<span style="color:#000;font-weight:bold">)</span>/bin <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#0086b3">export</span> <span style="color:#008080">GOPATH</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>go env GOPATH<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#0086b3">export</span> <span style="color:#008080">GO111MODULE</span><span style="color:#000;font-weight:bold">=</span>off</code></pre></div>
-<p>We will use <code>go get</code> to download kata-containers source code:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">go get -d -u github.com/kata-containers/kata-containers</code></pre></div>
-<p>We are now ready to build the <code>kata-runtime</code>:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">pushd</span> <span style="color:#008080">$GOPATH</span>/src/github.com/kata-containers/kata-containers/src/runtime
-<span style="color:#0086b3">export</span> <span style="color:#008080">GO111MODULE</span><span style="color:#000;font-weight:bold">=</span>on
-<span style="color:#0086b3">export</span> <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span>/opt/kata
+<span style=color:#998;font-style:italic># Optionally add user to docker group to run docker without sudo</span>
+<span style=color:#998;font-style:italic># sudo usermod -aG docker $USER</span>
+<span style=color:#0086b3>popd</span>
+rm -rf <span style=color:teal>$down_dir</span></code></pre></div><h3 id=build-kata-components>Build Kata components</h3><h4 id=build-kata-runtime>Build kata-runtime</h4><p>First, we need to set the correct Go environment variables:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>export</span> <span style=color:teal>PATH</span><span style=color:#000;font-weight:700>=</span><span style=color:teal>$PATH</span>:<span style=color:#000;font-weight:700>$(</span>go env GOPATH<span style=color:#000;font-weight:700>)</span>/bin <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:#0086b3>export</span> <span style=color:teal>GOPATH</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>go env GOPATH<span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:#0086b3>export</span> <span style=color:teal>GO111MODULE</span><span style=color:#000;font-weight:700>=</span>off</code></pre></div><p>We will use <code>go get</code> to download kata-containers source code:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go get -d -u github.com/kata-containers/kata-containers</code></pre></div><p>We are now ready to build the <code>kata-runtime</code>:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>pushd</span> <span style=color:teal>$GOPATH</span>/src/github.com/kata-containers/kata-containers/src/runtime
+<span style=color:#0086b3>export</span> <span style=color:teal>GO111MODULE</span><span style=color:#000;font-weight:700>=</span>on
+<span style=color:#0086b3>export</span> <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span>/opt/kata
 make
-popd</code></pre></div>
-<p>To install the binaries to a specific path (say <code>/opt/kata</code>) we need to specify
-the <code>PREFIX</code> environment variable prior to installing:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">pushd</span> <span style="color:#008080">$GOPATH</span>/src/github.com/kata-containers/kata-containers/src/runtime
-<span style="color:#0086b3">export</span> <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span>/opt/kata
-sudo -E <span style="color:#008080">PATH</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$PATH</span> -E <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$PREFIX</span> make install
-popd</code></pre></div>
-<p>Kata binaries are now installed in <code>/opt/kata/bin</code> and configs are installed in
-<code>/opt/kata/share/defaults/kata-containers/</code>.</p>
-
-<p>It is recommended you add a symbolic link to /opt/kata/bin/kata-runtime and
+popd</code></pre></div><p>To install the binaries to a specific path (say <code>/opt/kata</code>) we need to specify
+the <code>PREFIX</code> environment variable prior to installing:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>pushd</span> <span style=color:teal>$GOPATH</span>/src/github.com/kata-containers/kata-containers/src/runtime
+<span style=color:#0086b3>export</span> <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span>/opt/kata
+sudo -E <span style=color:teal>PATH</span><span style=color:#000;font-weight:700>=</span><span style=color:teal>$PATH</span> -E <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span><span style=color:teal>$PREFIX</span> make install
+popd</code></pre></div><p>Kata binaries are now installed in <code>/opt/kata/bin</code> and configs are installed in
+<code>/opt/kata/share/defaults/kata-containers/</code>.</p><p>It is recommended you add a symbolic link to /opt/kata/bin/kata-runtime and
 /opt/kata/bin/containerd-shim-kata-v2 in order for containerd to reach these
-binaries from the default system <code>PATH</code>.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo ln -s /opt/kata/bin/kata-runtime /usr/local/bin
-sudo ln -s /opt/kata/bin/containerd-shim-kata-v2 /usr/local/bin</code></pre></div>
-<h4 id="create-a-rootfs-initrd-image">Create a rootfs &amp; initrd image</h4>
-
-<p>We can use either a rootfs or initrd image to launch Kata Containers with Qemu.
+binaries from the default system <code>PATH</code>.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo ln -s /opt/kata/bin/kata-runtime /usr/local/bin
+sudo ln -s /opt/kata/bin/containerd-shim-kata-v2 /usr/local/bin</code></pre></div><h4 id=create-a-rootfs-initrd-image>Create a rootfs &amp; initrd image</h4><p>We can use either a rootfs or initrd image to launch Kata Containers with Qemu.
 However, AWS Firecracker does not work with initrd images, so we will be using a
 rootfs image for Kata with Firecracker. If you do not want to use QEMU or QEMU
-with initrd, you can skip building the initrd image.</p>
-
-<p>Create the rootfs base image:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">export</span> <span style="color:#008080">ROOTFS_DIR</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">${</span><span style="color:#008080">GOPATH</span><span style="color:#d14">}</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder/rootfs
-<span style="color:#0086b3">cd</span> <span style="color:#008080">$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder
-<span style="color:#998;font-style:italic"># you may change the distro (in this case we used ubuntu). to get supported distros list, run ./rootfs.sh -l</span>
-script -fec <span style="color:#d14">&#39;sudo -E GOPATH=$GOPATH AGENT_INIT=yes USE_DOCKER=true ./rootfs.sh ubuntu&#39;</span></code></pre></div>
-<p><strong>Note for arm64</strong>:</p>
-
-<p>We noticed that in some instances the kata-agent compilation failed.
+with initrd, you can skip building the initrd image.</p><p>Create the rootfs base image:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>export</span> <span style=color:teal>ROOTFS_DIR</span><span style=color:#000;font-weight:700>=</span><span style=color:#d14>${</span><span style=color:teal>GOPATH</span><span style=color:#d14>}</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder/rootfs
+<span style=color:#0086b3>cd</span> <span style=color:teal>$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder
+<span style=color:#998;font-style:italic># you may change the distro (in this case we used ubuntu). to get supported distros list, run ./rootfs.sh -l</span>
+script -fec <span style=color:#d14>&#39;sudo -E GOPATH=$GOPATH AGENT_INIT=yes USE_DOCKER=true ./rootfs.sh ubuntu&#39;</span></code></pre></div><p><strong>Note for arm64</strong>:</p><p>We noticed that in some instances the kata-agent compilation failed.
 A possible workaround was to remove the USE_DOCKER variable. This requires <code>qemu-img</code> command to be available on your system.
-You can install it with <code>sudo apt install -y qemu-utils</code>.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">export</span> <span style="color:#008080">ROOTFS_DIR</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#d14">${</span><span style="color:#008080">GOPATH</span><span style="color:#d14">}</span><span style="color:#d14">/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder/rootfs&#34;</span>
-sudo rm -rf <span style="color:#d14">${</span><span style="color:#008080">ROOTFS_DIR</span><span style="color:#d14">}</span>
-<span style="color:#0086b3">cd</span> <span style="color:#008080">$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder
-script -fec <span style="color:#d14">&#39;sudo -E GOPATH=$GOPATH AGENT_INIT=yes ./rootfs.sh ubuntu&#39;</span></code></pre></div>
-<p>Build a kata rootfs image:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">cd</span> <span style="color:#008080">$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/image-builder <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  script -fec <span style="color:#d14">&#39;sudo -E USE_DOCKER=true -E AGENT_INIT=yes ./image_builder.sh ${ROOTFS_DIR}&#39;</span></code></pre></div>
-<p>Install the kata rootfs image:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">export</span> <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span>/opt/kata
-<span style="color:#008080">commit</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>git log --format<span style="color:#000;font-weight:bold">=</span>%h -1 HEAD<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#008080">date</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>date +%Y-%m-%d-%T.%N%z<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#008080">image</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;kata-containers-</span><span style="color:#d14">${</span><span style="color:#008080">date</span><span style="color:#d14">}</span><span style="color:#d14">-</span><span style="color:#d14">${</span><span style="color:#008080">commit</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  sudo install -o root -g root -m <span style="color:#099">0640</span> -D kata-containers.img <span style="color:#d14">&#34;</span><span style="color:#008080">$PREFIX</span><span style="color:#d14">/share/kata-containers/</span><span style="color:#d14">${</span><span style="color:#008080">image</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#000;font-weight:bold">(</span><span style="color:#0086b3">cd</span> <span style="color:#008080">$PREFIX</span>/share/kata-containers <span style="color:#000;font-weight:bold">&amp;&amp;</span> sudo ln -sf <span style="color:#d14">&#34;</span><span style="color:#008080">$image</span><span style="color:#d14">&#34;</span> kata-containers.img<span style="color:#000;font-weight:bold">)</span></code></pre></div>
-<p>(OPTIONAL) Next we will build an initrd image:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">cd</span> <span style="color:#008080">$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/initrd-builder
-script -fec <span style="color:#d14">&#39;sudo -E AGENT_INIT=yes USE_DOCKER=true ./initrd_builder.sh ${ROOTFS_DIR}&#39;</span></code></pre></div>
-<p>(OPTIONAL) Once the image is built, we install it:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">export</span> <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span>/opt/kata
-<span style="color:#008080">commit</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>git log --format<span style="color:#000;font-weight:bold">=</span>%h -1 HEAD<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#008080">date</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>date +%Y-%m-%d-%T.%N%z<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#008080">image</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;kata-containers-initrd-</span><span style="color:#d14">${</span><span style="color:#008080">date</span><span style="color:#d14">}</span><span style="color:#d14">-</span><span style="color:#d14">${</span><span style="color:#008080">commit</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  sudo install -o root -g root -m <span style="color:#099">0640</span> -D kata-containers-initrd.img <span style="color:#d14">&#34;</span><span style="color:#008080">$PREFIX</span><span style="color:#d14">/share/kata-containers/</span><span style="color:#d14">${</span><span style="color:#008080">image</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#d14">\
-</span><span style="color:#d14"></span>  <span style="color:#000;font-weight:bold">(</span><span style="color:#0086b3">cd</span> <span style="color:#008080">$PREFIX</span>/share/kata-containers <span style="color:#000;font-weight:bold">&amp;&amp;</span> sudo ln -sf <span style="color:#d14">&#34;</span><span style="color:#008080">$image</span><span style="color:#d14">&#34;</span> kata-containers-initrd.img<span style="color:#000;font-weight:bold">)</span></code></pre></div>
-<h4 id="build-kata-containers-kernel">Build Kata Containers kernel</h4>
-
-<p>First, we need some additional packages to build the kernel:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install -y libelf-dev bison flex</code></pre></div>
-<p>Setup the kernel source code:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">cd</span> <span style="color:#008080">$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/packaging/kernel
-./build-kernel.sh -d setup</code></pre></div>
-<p>Build the kernel:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./build-kernel.sh -d build</code></pre></div>
-<p>Install the kernel in the default path for Kata:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#0086b3">export</span> <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span>/opt/kata
-sudo -E <span style="color:#008080">PATH</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$PATH</span> -E <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$PREFIX</span> ./build-kernel.sh -d install</code></pre></div>
-<p><strong>Note</strong>:</p>
-
-<p>We noticed that in some instances the installation or build process failed with the following error: <code>ERROR: path to kernel does not exist, use build-kernel.sh setup</code>. We mitigated this problem by specifying the version:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./build-kernel.sh -d -v <span style="color:#099">5</span>.15.26 build
-<span style="color:#0086b3">export</span> <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span>/opt/kata
-sudo -E <span style="color:#008080">PATH</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$PATH</span> -E <span style="color:#008080">PREFIX</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$PREFIX</span> ./build-kernel.sh -d -v <span style="color:#099">5</span>.15.26 install</code></pre></div>
-<h3 id="next-steps">Next steps</h3>
-
-<p>At this point we have succesfully built all the Kata components. All the binaries we built are stored under the <code>/opt/kata/bin</code> dir:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ls -l /opt/kata/bin/
-total <span style="color:#099">142296</span>
--rwxr-xr-x <span style="color:#099">1</span> root root <span style="color:#099">50919312</span> Mar  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 containerd-shim-kata-v2
--rwxr-xr-x <span style="color:#099">1</span> root root    <span style="color:#099">16691</span> Mar  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 kata-collect-data.sh
--rwxr-xr-x <span style="color:#099">1</span> root root <span style="color:#099">42093616</span> Mar  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 kata-monitor
--rwxr-xr-x <span style="color:#099">1</span> root root <span style="color:#099">52673784</span> Mar  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 kata-runtime</code></pre></div>
-<p>The rootfs image, the initrd image and the kernel are stored under the <code>/opt/kata/share/defaults/kata-containers</code> dir:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ls -l /opt/kata/share/kata-containers/
-total <span style="color:#099">221972</span>
--rw-r--r-- <span style="color:#099">1</span> root root     <span style="color:#099">72480</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:51 config-5.15.26
--rw-r----- <span style="color:#099">1</span> root root <span style="color:#099">134217728</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:41 kata-containers-2022-03-25-15:41:55.534872004+0200-486322a0
-lrwxrwxrwx <span style="color:#099">1</span> root root        <span style="color:#099">59</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:41 kata-containers.img -&gt; kata-containers-2022-03-25-15:41:55.534872004+0200-486322a0
--rw-r----- <span style="color:#099">1</span> root root  <span style="color:#099">27627256</span> Μαρ  <span style="color:#099">24</span> <span style="color:#099">14</span>:43 kata-containers-initrd-2022-03-24-14:43:59.501993241+0200-853dd98b
--rw-r----- <span style="color:#099">1</span> root root  <span style="color:#099">27626874</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:42 kata-containers-initrd-2022-03-25-15:42:28.034074480+0200-486322a0
-lrwxrwxrwx <span style="color:#099">1</span> root root        <span style="color:#099">66</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:42 kata-containers-initrd.img -&gt; kata-containers-initrd-2022-03-25-15:42:28.034074480+0200-486322a0
--rw-r--r-- <span style="color:#099">1</span> root root  <span style="color:#099">38736168</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:51 vmlinux-5.15.26-90
-lrwxrwxrwx <span style="color:#099">1</span> root root        <span style="color:#099">18</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:51 vmlinux.container -&gt; vmlinux-5.15.26-90
--rw-r--r-- <span style="color:#099">1</span> root root   <span style="color:#099">5795664</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:51 vmlinuz-5.15.26-90
-lrwxrwxrwx <span style="color:#099">1</span> root root        <span style="color:#099">18</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:51 vmlinuz.container -&gt; vmlinuz-5.15.26-90</code></pre></div>
-<p>The configuration files are stored under the <code>/opt/kata/share/defaults/kata-containers</code> dir:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ls -l /opt/kata/share/defaults/kata-containers
-total <span style="color:#099">72</span>
--rw-r--r-- <span style="color:#099">1</span> root root  <span style="color:#099">9717</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 configuration-acrn.toml
--rw-r--r-- <span style="color:#099">1</span> root root <span style="color:#099">13535</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 configuration-clh.toml
--rw-r--r-- <span style="color:#099">1</span> root root <span style="color:#099">15364</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 configuration-fc.toml
--rw-r--r-- <span style="color:#099">1</span> root root <span style="color:#099">25701</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 configuration-qemu.toml
-lrwxrwxrwx <span style="color:#099">1</span> root root    <span style="color:#099">23</span> Μαρ  <span style="color:#099">25</span> <span style="color:#099">15</span>:32 configuration.toml -&gt; configuration-qemu.toml</code></pre></div>
-<p>Now, we need to install a hypervisor (eg QEMU or Firecracker) and configure Kata Containers and containerd accordingly.
+You can install it with <code>sudo apt install -y qemu-utils</code>.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>export</span> <span style=color:teal>ROOTFS_DIR</span><span style=color:#000;font-weight:700>=</span><span style=color:#d14>&#34;</span><span style=color:#d14>${</span><span style=color:teal>GOPATH</span><span style=color:#d14>}</span><span style=color:#d14>/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder/rootfs&#34;</span>
+sudo rm -rf <span style=color:#d14>${</span><span style=color:teal>ROOTFS_DIR</span><span style=color:#d14>}</span>
+<span style=color:#0086b3>cd</span> <span style=color:teal>$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/rootfs-builder
+script -fec <span style=color:#d14>&#39;sudo -E GOPATH=$GOPATH AGENT_INIT=yes ./rootfs.sh ubuntu&#39;</span></code></pre></div><p>Build a kata rootfs image:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>cd</span> <span style=color:teal>$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/image-builder <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  script -fec <span style=color:#d14>&#39;sudo -E USE_DOCKER=true -E AGENT_INIT=yes ./image_builder.sh ${ROOTFS_DIR}&#39;</span></code></pre></div><p>Install the kata rootfs image:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>export</span> <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span>/opt/kata
+<span style=color:teal>commit</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>git log --format<span style=color:#000;font-weight:700>=</span>%h -1 HEAD<span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:teal>date</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>date +%Y-%m-%d-%T.%N%z<span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:teal>image</span><span style=color:#000;font-weight:700>=</span><span style=color:#d14>&#34;kata-containers-</span><span style=color:#d14>${</span><span style=color:teal>date</span><span style=color:#d14>}</span><span style=color:#d14>-</span><span style=color:#d14>${</span><span style=color:teal>commit</span><span style=color:#d14>}</span><span style=color:#d14>&#34;</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  sudo install -o root -g root -m <span style=color:#099>0640</span> -D kata-containers.img <span style=color:#d14>&#34;</span><span style=color:teal>$PREFIX</span><span style=color:#d14>/share/kata-containers/</span><span style=color:#d14>${</span><span style=color:teal>image</span><span style=color:#d14>}</span><span style=color:#d14>&#34;</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:#000;font-weight:700>(</span><span style=color:#0086b3>cd</span> <span style=color:teal>$PREFIX</span>/share/kata-containers <span style=color:#000;font-weight:700>&amp;&amp;</span> sudo ln -sf <span style=color:#d14>&#34;</span><span style=color:teal>$image</span><span style=color:#d14>&#34;</span> kata-containers.img<span style=color:#000;font-weight:700>)</span></code></pre></div><p>(OPTIONAL) Next we will build an initrd image:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>cd</span> <span style=color:teal>$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/osbuilder/initrd-builder
+script -fec <span style=color:#d14>&#39;sudo -E AGENT_INIT=yes USE_DOCKER=true ./initrd_builder.sh ${ROOTFS_DIR}&#39;</span></code></pre></div><p>(OPTIONAL) Once the image is built, we install it:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>export</span> <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span>/opt/kata
+<span style=color:teal>commit</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>git log --format<span style=color:#000;font-weight:700>=</span>%h -1 HEAD<span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:teal>date</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>date +%Y-%m-%d-%T.%N%z<span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:teal>image</span><span style=color:#000;font-weight:700>=</span><span style=color:#d14>&#34;kata-containers-initrd-</span><span style=color:#d14>${</span><span style=color:teal>date</span><span style=color:#d14>}</span><span style=color:#d14>-</span><span style=color:#d14>${</span><span style=color:teal>commit</span><span style=color:#d14>}</span><span style=color:#d14>&#34;</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  sudo install -o root -g root -m <span style=color:#099>0640</span> -D kata-containers-initrd.img <span style=color:#d14>&#34;</span><span style=color:teal>$PREFIX</span><span style=color:#d14>/share/kata-containers/</span><span style=color:#d14>${</span><span style=color:teal>image</span><span style=color:#d14>}</span><span style=color:#d14>&#34;</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> <span style=color:#d14>\
+</span><span style=color:#d14></span>  <span style=color:#000;font-weight:700>(</span><span style=color:#0086b3>cd</span> <span style=color:teal>$PREFIX</span>/share/kata-containers <span style=color:#000;font-weight:700>&amp;&amp;</span> sudo ln -sf <span style=color:#d14>&#34;</span><span style=color:teal>$image</span><span style=color:#d14>&#34;</span> kata-containers-initrd.img<span style=color:#000;font-weight:700>)</span></code></pre></div><h4 id=build-kata-containers-kernel>Build Kata Containers kernel</h4><p>First, we need some additional packages to build the kernel:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo apt install -y libelf-dev bison flex</code></pre></div><p>Setup the kernel source code:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>cd</span> <span style=color:teal>$GOPATH</span>/src/github.com/kata-containers/kata-containers/tools/packaging/kernel
+./build-kernel.sh -d setup</code></pre></div><p>Build the kernel:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>./build-kernel.sh -d build</code></pre></div><p>Install the kernel in the default path for Kata:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#0086b3>export</span> <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span>/opt/kata
+sudo -E <span style=color:teal>PATH</span><span style=color:#000;font-weight:700>=</span><span style=color:teal>$PATH</span> -E <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span><span style=color:teal>$PREFIX</span> ./build-kernel.sh -d install</code></pre></div><p><strong>Note</strong>:</p><p>We noticed that in some instances the installation or build process failed with the following error: <code>ERROR: path to kernel does not exist, use build-kernel.sh setup</code>. We mitigated this problem by specifying the version:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>./build-kernel.sh -d -v <span style=color:#099>5</span>.15.26 build
+<span style=color:#0086b3>export</span> <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span>/opt/kata
+sudo -E <span style=color:teal>PATH</span><span style=color:#000;font-weight:700>=</span><span style=color:teal>$PATH</span> -E <span style=color:teal>PREFIX</span><span style=color:#000;font-weight:700>=</span><span style=color:teal>$PREFIX</span> ./build-kernel.sh -d -v <span style=color:#099>5</span>.15.26 install</code></pre></div><h3 id=next-steps>Next steps</h3><p>At this point we have succesfully built all the Kata components. All the binaries we built are stored under the <code>/opt/kata/bin</code> dir:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ls -l /opt/kata/bin/
+total <span style=color:#099>142296</span>
+-rwxr-xr-x <span style=color:#099>1</span> root root <span style=color:#099>50919312</span> Mar  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 containerd-shim-kata-v2
+-rwxr-xr-x <span style=color:#099>1</span> root root    <span style=color:#099>16691</span> Mar  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 kata-collect-data.sh
+-rwxr-xr-x <span style=color:#099>1</span> root root <span style=color:#099>42093616</span> Mar  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 kata-monitor
+-rwxr-xr-x <span style=color:#099>1</span> root root <span style=color:#099>52673784</span> Mar  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 kata-runtime</code></pre></div><p>The rootfs image, the initrd image and the kernel are stored under the <code>/opt/kata/share/defaults/kata-containers</code> dir:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ls -l /opt/kata/share/kata-containers/
+total <span style=color:#099>221972</span>
+-rw-r--r-- <span style=color:#099>1</span> root root     <span style=color:#099>72480</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:51 config-5.15.26
+-rw-r----- <span style=color:#099>1</span> root root <span style=color:#099>134217728</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:41 kata-containers-2022-03-25-15:41:55.534872004+0200-486322a0
+lrwxrwxrwx <span style=color:#099>1</span> root root        <span style=color:#099>59</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:41 kata-containers.img -&gt; kata-containers-2022-03-25-15:41:55.534872004+0200-486322a0
+-rw-r----- <span style=color:#099>1</span> root root  <span style=color:#099>27627256</span> Μαρ  <span style=color:#099>24</span> <span style=color:#099>14</span>:43 kata-containers-initrd-2022-03-24-14:43:59.501993241+0200-853dd98b
+-rw-r----- <span style=color:#099>1</span> root root  <span style=color:#099>27626874</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:42 kata-containers-initrd-2022-03-25-15:42:28.034074480+0200-486322a0
+lrwxrwxrwx <span style=color:#099>1</span> root root        <span style=color:#099>66</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:42 kata-containers-initrd.img -&gt; kata-containers-initrd-2022-03-25-15:42:28.034074480+0200-486322a0
+-rw-r--r-- <span style=color:#099>1</span> root root  <span style=color:#099>38736168</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:51 vmlinux-5.15.26-90
+lrwxrwxrwx <span style=color:#099>1</span> root root        <span style=color:#099>18</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:51 vmlinux.container -&gt; vmlinux-5.15.26-90
+-rw-r--r-- <span style=color:#099>1</span> root root   <span style=color:#099>5795664</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:51 vmlinuz-5.15.26-90
+lrwxrwxrwx <span style=color:#099>1</span> root root        <span style=color:#099>18</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:51 vmlinuz.container -&gt; vmlinuz-5.15.26-90</code></pre></div><p>The configuration files are stored under the <code>/opt/kata/share/defaults/kata-containers</code> dir:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ls -l /opt/kata/share/defaults/kata-containers
+total <span style=color:#099>72</span>
+-rw-r--r-- <span style=color:#099>1</span> root root  <span style=color:#099>9717</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration-acrn.toml
+-rw-r--r-- <span style=color:#099>1</span> root root <span style=color:#099>13535</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration-clh.toml
+-rw-r--r-- <span style=color:#099>1</span> root root <span style=color:#099>15364</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration-fc.toml
+-rw-r--r-- <span style=color:#099>1</span> root root <span style=color:#099>25701</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration-qemu.toml
+lrwxrwxrwx <span style=color:#099>1</span> root root    <span style=color:#099>23</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration.toml -&gt; configuration-qemu.toml</code></pre></div><p>Now, we need to install a hypervisor (eg QEMU or Firecracker) and configure Kata Containers and containerd accordingly.
 In our upcoming posts we will go through the process of building and configuring both QEMU and Firecracker for x86 and arm64 hosts.
-Stay tuned!</p>
-
-      
-    </div>
-    
-
-  </div>
-</section>
-
-
-<section class="section footer">
-  <div class="container">
-	  <p><small>&copy; CloudKernels 2019-2022</small></p>
-    
-  </div>
-</section>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-121797730-2', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="/js/social-share.js"></script>
-<script src="/js/nav-responsive.js"></script>
-</body>
-</html>
-
+Stay tuned!</p></div></div></section><section class="section footer"><div class=container><p><small>&copy; CloudKernels 2019-2022</small></p></div></section><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-121797730-2','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://code.jquery.com/jquery-3.3.1.min.js></script><script src=/js/social-share.js></script><script src=/js/nav-responsive.js></script></body></html>

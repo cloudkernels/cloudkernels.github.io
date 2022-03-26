@@ -1,166 +1,17 @@
-<!DOCTYPE html>
-<html  lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<title>How to build a python snippet for running in a Nabla container | CloudKernels</title>
-
-
-
-<link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cloudkernels.github.io/css/custom.css'><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
-</head>
-<body>
-
-<section class="section">
-  <div class="container">
-    <nav class="nav menu">
-      <div class="nav-left">
-        <a class="nav-item" href="https://cloudkernels.github.io/">
-          <h1 class="brand">CloudKernels</h1>
-        </a>
-      </div>
-        
-        <nav class="nav-item main-nav responsive">
-        <ul class="main-menu">
-          
-          <li>
-            <a href="/" title="Home"
-                 class="nav-item">
-               
-                <span>Home</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/about/" title="About"
-                 class="nav-item">
-               
-                <span>About</span>
-            </a>
-          </li>
-		  
-          <li>
-            <a href="/team/" title="Team"
-                 class="nav-item">
-               
-                <span>Team</span>
-            </a>
-          </li>
-		  
-	    </ul>
-		</nav>
-      <div class="nav-right">
-        <nav class="nav-item level is-mobile">
-        <a href="#" class="main-menu-icon">
-          <i class="fas fa-bars"></i>
-        </a>
-		<div class="social"><a class="level-item" aria-label="github" href='https://github.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="twitter" href='https://twitter.com/cloudkernels'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
-    
-  </svg></i>
-            </span>
-          </a><a class="level-item" aria-label="email" href='mailto:team@cloudkernels.net'
-            target='_blank' rel='noopener'>
-            <span class="icon">
-              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-    
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-    
-  </svg></i>
-            </span>
-          </a></div>
-        </nav>
-      </div>
-    </nav>
-    <nav class="nav">
-      
-
-      
-    </nav>
-
-  </div>
-</section>
-
-
-
-<section class="section">
-  <div class="container">
-    <hr class="content-sep">
-	
-    
-	<div>
-    
-	<span class="subtitle is-6">
-      February 23, 2019
-      | <span class="font-italic">Last update: Feb 24, 2019</span>
-	</span>
-	<ul class="social-share">
-  <li class="twitter">
-    <a href="https://twitter.com/intent/tweet/?text=How%20to%20build%20a%20python%20snippet%20for%20running%20in%20a%20Nabla%20container&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fbuilding-python-snippets-for-nabla%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Twitter">
-      <i class="fab fa-twitter"></i>
-    </a>
-  </li>
-  <li class="twitter">
-    <a href="https://reddit.com/submit?title=How%20to%20build%20a%20python%20snippet%20for%20running%20in%20a%20Nabla%20container&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fbuilding-python-snippets-for-nabla%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target="_share" title="Share on Reddit">
-      <i class="fab fa-reddit"></i>
-    </a>
-  </li>
-</ul>
-
-	</div>
-	<h1 class="title">
-      <a href="https://cloudkernels.github.io/posts/building-python-snippets-for-nabla/">How to build a python snippet for running in a Nabla container</a>
-	  
-	</h1>
-    
-    <div class="content">
-      
-
-<p>In our previous posts, we saw how to <a href="/posts/building-nabla-aarch64/">build the toolchain for a Nabla container</a>, and also how we can use this toolchain to
-<a href="/posts/nabla-containers-aarch64/">run applications as unikernels using Nabla</a>.</p>
-
-<p>In this post, we will be focusing on the steps we need to take into running something
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>How to build a python snippet for running in a Nabla container | CloudKernels</title><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://cloudkernels.github.io/css/custom.css><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=96x96 href=/favicon-96x96.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel=stylesheet><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel=stylesheet><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/brands.css integrity=sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/solid.css integrity=sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css integrity=sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0 crossorigin=anonymous></head><body><section class=section><div class=container><nav class="nav menu"><div class=nav-left><a class=nav-item href=https://cloudkernels.github.io/><h1 class=brand>CloudKernels</h1></a></div><nav class="nav-item main-nav responsive"><ul class=main-menu><li><a href=/ title=Home class=nav-item><span>Home</span></a></li><li><a href=/about/ title=About class=nav-item><span>About</span></a></li><li><a href=/team/ title=Team class=nav-item><span>Team</span></a></li></ul></nav><div class=nav-right><nav class="nav-item level is-mobile"><a href=# class=main-menu-icon><i class="fas fa-bars"></i></a><div class=social><a class=level-item aria-label=github href=https://github.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0 0 20 4.77 5.07 5.07.0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38.0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 0 0 5 4.77a5.44 5.44.0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 0 0 9 18.13V22"/></svg></i></span></a><a class=level-item aria-label=twitter href=https://twitter.com/cloudkernels target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M23 3a10.9 10.9.0 0 1-3.14 1.53 4.48 4.48.0 0 0-7.86 3v1A10.66 10.66.0 0 1 3 4s-4 9 5 13a11.64 11.64.0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5.0 0 0-.08-.83A7.72 7.72.0 0 0 23 3z"/></svg></i></span></a><a class=level-item aria-label=email href=mailto:team@cloudkernels.net target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6 12 13 2 6"/></svg></i></span></a></div></nav></div></nav><nav class=nav></nav></div></section><section class=section><div class=container><hr class=content-sep><div><span class="subtitle is-6">February 23, 2019
+| <span class=font-italic>Last update: Feb 24, 2019</span></span><ul class=social-share><li class=twitter><a href="https://twitter.com/intent/tweet/?text=How%20to%20build%20a%20python%20snippet%20for%20running%20in%20a%20Nabla%20container&url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fbuilding-python-snippets-for-nabla%2f?utm_source=twitter%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Twitter"><i class="fab fa-twitter"></i></a></li><li class=twitter><a href="https://reddit.com/submit?title=How%20to%20build%20a%20python%20snippet%20for%20running%20in%20a%20Nabla%20container&amp;url=https%3a%2f%2fcloudkernels.github.io%2fposts%2fbuilding-python-snippets-for-nabla%2f?utm_source=reddit%26utm_medium=social%26utm_campaign=share_buttons" target=_share title="Share on Reddit"><i class="fab fa-reddit"></i></a></li></ul></div><h1 class=title><a href=https://cloudkernels.github.io/posts/building-python-snippets-for-nabla/>How to build a python snippet for running in a Nabla container</a></h1><div class=content><p>In our previous posts, we saw how to <a href=/posts/building-nabla-aarch64/>build the toolchain for a Nabla container</a>, and also how we can use this toolchain to
+<a href=/posts/nabla-containers-aarch64/>run applications as unikernels using Nabla</a>.</p><p>In this post, we will be focusing on the steps we need to take into running something
 actually useful using Nabla. More specifically, we will go through all the steps for
-building Python3 into a <a href="http://rumpkernel.org">Rumprun</a> unikernel, suitable for running in a Nabla container,
-and cooking a filesystem that includes a Python script that we wish to run within.</p>
-
-<p>We will be using the <a href="https://github.com/cloudkernels/rumprun-packages">rumprun-packages</a> git repository, which contains a collection
+building Python3 into a <a href=http://rumpkernel.org>Rumprun</a> unikernel, suitable for running in a Nabla container,
+and cooking a filesystem that includes a Python script that we wish to run within.</p><p>We will be using the <a href=https://github.com/cloudkernels/rumprun-packages>rumprun-packages</a> git repository, which contains a collection
 of frameworks and applications that we can build on top of the Rumprun infrastructure.
 We have started doing some work on updating rumprun-packages, so that we can build
-and bake applications using the <a href="https://github.com/nabla-containers/rumprun/commits/solo5">recent updates</a>
+and bake applications using the <a href=https://github.com/nabla-containers/rumprun/commits/solo5>recent updates</a>
 done by the Nabla people for Solo5 support in Rumprun and more specifically
 the <code>spt</code> and <code>hvt</code> Solo5 tenders. This is work in progress and we will be porting
 more packages from rumprun-packages to work on top of the upstream toolchain, both
-for x86 and <a href="/posts/nabla-containers-aarch64/">aarch64</a>.</p>
-
-<h3 id="building-python3-5-as-a-unikernel">Building Python3.5 as a unikernel</h3>
-
-<p>Once we have <a href="/posts/building-nabla-aarch64/">built</a> the rumprun toolchain
-we can build and bake Python3.5 in a Rumprun unikernel following these steps:</p>
-
-<pre><code>git clone https://github.com/cloudkernels/rumprun-packages.git
+for x86 and <a href=/posts/nabla-containers-aarch64/>aarch64</a>.</p><h3 id=building-python3-5-as-a-unikernel>Building Python3.5 as a unikernel</h3><p>Once we have <a href=/posts/building-nabla-aarch64/>built</a> the rumprun toolchain
+we can build and bake Python3.5 in a Rumprun unikernel following these steps:</p><pre><code>git clone https://github.com/cloudkernels/rumprun-packages.git
 cd rumprun-packages
 
 # Setting up the rumprun-packages build environment
@@ -176,30 +27,11 @@ make python.spt
 
 # Build for the hvt target
 make python.hvt
-</code></pre>
-
-<h3 id="packing-our-python-script">Packing our Python script</h3>
-
-<p>We still need to be able to pack our python script so that we can run it within the
-unikernel, i.e. the equivalent of doing <code>python my_script.py</code>?</p>
-
-<p>Remember, in the world of unikernels we do not have access to a terminal,
-our application <em>is</em> our Linux box / VM / container.</p>
-
-<p>We have two problems to solve:</p>
-
-<ol>
-<li>Make our script available within the unikernel</li>
-<li>Pre-setup our environment with all the package dependencies our script needs in
-order to execute.</li>
-</ol>
-
-<p>We will solve these issues by packing our script along with all its dependencies
-inside a disk image which we will later provide to the unikernel at run time.</p>
-
-<p>Here&rsquo;s how we do this:</p>
-
-<pre><code># We 're sill under rumprun-packages/python3.
+</code></pre><h3 id=packing-our-python-script>Packing our Python script</h3><p>We still need to be able to pack our python script so that we can run it within the
+unikernel, i.e. the equivalent of doing <code>python my_script.py</code>?</p><p>Remember, in the world of unikernels we do not have access to a terminal,
+our application <em>is</em> our Linux box / VM / container.</p><p>We have two problems to solve:</p><ol><li>Make our script available within the unikernel</li><li>Pre-setup our environment with all the package dependencies our script needs in
+order to execute.</li></ol><p>We will solve these issues by packing our script along with all its dependencies
+inside a disk image which we will later provide to the unikernel at run time.</p><p>Here&rsquo;s how we do this:</p><pre><code># We 're sill under rumprun-packages/python3.
 
 # this will be were we will install the python environment and our script
 mkdir -p python/lib
@@ -220,49 +52,21 @@ cp -r newpackage-env/lib/python3.5/site-packages/* python/lib/python3.5/site-pac
 
 # Now we have everything we need under 'python', so we create the disk image
 genisoimage -l -r -o disk.iso python
-</code></pre>
-
-<p>That&rsquo;s it! disk.iso contains all the necessary environment to run our script.</p>
-
-<pre><code>solo5-spt --disk=disk.iso --net=tap0 python.spt \
+</code></pre><p>That&rsquo;s it! disk.iso contains all the necessary environment to run our script.</p><pre><code>solo5-spt --disk=disk.iso --net=tap0 python.spt \
 '{&quot;cmdline&quot;:&quot;python.spt -m myscript&quot;,&quot;env&quot;:&quot;PYTHONHOME=/python&quot;,&quot;net&quot;:{&quot;if&quot;:&quot;ukvmif0&quot;,&quot;cloner&quot;:&quot;True&quot;,&quot;type&quot;:&quot;inet&quot;,&quot;method&quot;:&quot;static&quot;,&quot;addr&quot;:&quot;10.0.0.2&quot;,&quot;mask&quot;:&quot;16&quot;},&quot;blk&quot;:{&quot;source&quot;:&quot;etfs&quot;,&quot;path&quot;:&quot;/dev/ld0a&quot;,&quot;fstype&quot;:&quot;blk&quot;,&quot;mountpoint&quot;:&quot;/python&quot;}}
-</code></pre>
-
-<p>We have created a Docker image in order to automate the previous procedure of
+</code></pre><p>We have created a Docker image in order to automate the previous procedure of
 building Python as a unikernel and preparing the disk iso with our script and its
 dependencies, so that instead of running the following steps you can simply do
-something like:</p>
-
-<pre><code>docker run --rm -v $(pwd):/build cloudkernels/python3-build disk.iso myscript.py requirements.txt
-</code></pre>
-
-<p>where <code>requirements.txt</code> includes the dependencies of <code>myscript.py</code> in the form of one
+something like:</p><pre><code>docker run --rm -v $(pwd):/build cloudkernels/python3-build disk.iso myscript.py requirements.txt
+</code></pre><p>where <code>requirements.txt</code> includes the dependencies of <code>myscript.py</code> in the form of one
 package per line (this is, essentially, whatever running <code>pip freeze</code> on your python
-project directory would produce).</p>
-
-<p>You can find the Docker image on <a href="https://hub.docker.com/r/cloudkernels/python3-build">Docker hub</a> and on <a href="https://github.com/cloudkernels/python3-build">github</a>.</p>
-
-<p>A working example is found below. Please note that this version includes a hack to hardcode the dns server in the dummy rootfs as we haven&rsquo;t yet patched the config part of rumprun to include a cmdline option for dns.</p>
-
-<p>We will use a simple requests example. The files needed are the python snippet and requirements.txt.</p>
-
-<p>requests_main.py:</p>
-
-<pre><code>import requests
+project directory would produce).</p><p>You can find the Docker image on <a href=https://hub.docker.com/r/cloudkernels/python3-build>Docker hub</a> and on <a href=https://github.com/cloudkernels/python3-build>github</a>.</p><p>A working example is found below. Please note that this version includes a hack to hardcode the dns server in the dummy rootfs as we haven&rsquo;t yet patched the config part of rumprun to include a cmdline option for dns.</p><p>We will use a simple requests example. The files needed are the python snippet and requirements.txt.</p><p>requests_main.py:</p><pre><code>import requests
 
 r = requests.get('https://www.example.com')
 print(r.status_code)
 print(r.text)
-</code></pre>
-
-<p>requirements.txt:</p>
-
-<pre><code>requests
-</code></pre>
-
-<p>Now run the command to bake the necessary python dependencies:</p>
-
-<pre><code># docker run --rm -v $(pwd):/build cloudkernels/python3-build:x86_64_dns disk.iso requests_main.py requirements.txt
+</code></pre><p>requirements.txt:</p><pre><code>requests
+</code></pre><p>Now run the command to bake the necessary python dependencies:</p><pre><code># docker run --rm -v $(pwd):/build cloudkernels/python3-build:x86_64_dns disk.iso requests_main.py requirements.txt
 [...]
   7.12% done, estimate finish Sat Feb 23 18:56:49 2019
  14.25% done, estimate finish Sat Feb 23 18:56:49 2019
@@ -285,11 +89,7 @@ Path table size(bytes): 4710
 Max brk space used 678000
 70274 extents written (137 MB)
 
-</code></pre>
-
-<p>And invoke the unikernel using the following command:</p>
-
-<pre><code># ./solo5-hvt --mem=64 --disk=disk.iso --net=tap0 python.hvt '{&quot;cmdline&quot;:&quot;python.hvt -m requests_main&quot;,&quot;env&quot;:&quot;PYTHONHOME=/python&quot;,&quot;net&quot;:{&quot;if&quot;:&quot;ukvmif0&quot;,&quot;cloner&quot;:&quot;True&quot;,&quot;type&quot;:&quot;inet&quot;,&quot;method&quot;:&quot;static&quot;,&quot;addr&quot;:&quot;10.0.0.2&quot;,&quot;mask&quot;:&quot;16&quot;, &quot;gw&quot;:&quot;10.0.0.1&quot;},&quot;blk&quot;:{&quot;source&quot;:&quot;etfs&quot;,&quot;path&quot;:&quot;/dev/ld0a&quot;,&quot;fstype&quot;:&quot;blk&quot;,&quot;mountpoint&quot;:&quot;/&quot;}}'
+</code></pre><p>And invoke the unikernel using the following command:</p><pre><code># ./solo5-hvt --mem=64 --disk=disk.iso --net=tap0 python.hvt '{&quot;cmdline&quot;:&quot;python.hvt -m requests_main&quot;,&quot;env&quot;:&quot;PYTHONHOME=/python&quot;,&quot;net&quot;:{&quot;if&quot;:&quot;ukvmif0&quot;,&quot;cloner&quot;:&quot;True&quot;,&quot;type&quot;:&quot;inet&quot;,&quot;method&quot;:&quot;static&quot;,&quot;addr&quot;:&quot;10.0.0.2&quot;,&quot;mask&quot;:&quot;16&quot;, &quot;gw&quot;:&quot;10.0.0.1&quot;},&quot;blk&quot;:{&quot;source&quot;:&quot;etfs&quot;,&quot;path&quot;:&quot;/dev/ld0a&quot;,&quot;fstype&quot;:&quot;blk&quot;,&quot;mountpoint&quot;:&quot;/&quot;}}'
 solo5-hvt: python.hvt: Warning: phdr[0] requests WRITE and EXEC permissions
 solo5-hvt: WARNING: Tender is configured with HVT_DROP_PRIVILEGES=0. Not dropping any privileges.
 solo5-hvt: WARNING: This is not recommended for production use.
@@ -392,86 +192,17 @@ rumprun: call to ``sigaction'' ignored
 [   1.9967528] unmounting done
 halted
 Solo5: solo5_exit(0) called
-</code></pre>
-
-<p>Please note that for this to work, we have setup tap0 with an ip address of
-10.0.0.1 and have setup NAT in the host for the guest to access the network.</p>
-
-<h3 id="building-the-nabla-container">Building the Nabla container</h3>
-
-<p>Now baking the nabla container is a walk in the park after the above steps. You
-can have a look in our <a href="/posts/build-a-nabla-docker-image/">previous</a>
-post or the relevant <a href="https://github.com/cloudkernels/nabla-base">repo</a>, or if you&rsquo;re a bit lazy here&rsquo;s a quick summary:</p>
-
-<p>Just clone <a href="https://github.com/cloudkernels/nabla-base">this</a> repo:</p>
-
-<pre><code>git clone https://github.com/cloudkernels/nabla-base
-</code></pre>
-
-<p>add the needed files in the rootfs directory:</p>
-
-<pre><code>mount -o loop disk.iso /mnt
+</code></pre><p>Please note that for this to work, we have setup tap0 with an ip address of
+10.0.0.1 and have setup NAT in the host for the guest to access the network.</p><h3 id=building-the-nabla-container>Building the Nabla container</h3><p>Now baking the nabla container is a walk in the park after the above steps. You
+can have a look in our <a href=/posts/build-a-nabla-docker-image/>previous</a>
+post or the relevant <a href=https://github.com/cloudkernels/nabla-base>repo</a>, or if you&rsquo;re a bit lazy here&rsquo;s a quick summary:</p><p>Just clone <a href=https://github.com/cloudkernels/nabla-base>this</a> repo:</p><pre><code>git clone https://github.com/cloudkernels/nabla-base
+</code></pre><p>add the needed files in the rootfs directory:</p><pre><code>mount -o loop disk.iso /mnt
 cp -avf /mnt/* nabla-base/rootfs/
 umount /mnt
-</code></pre>
-
-<p>add the seccomp tender binary:</p>
-
-<pre><code>cp python.spt nabla-base/python.nabla
-</code></pre>
-
-<p>Replace myprog.nabla with python.nabla in the Dockerfile (careful, the runtime
+</code></pre><p>add the seccomp tender binary:</p><pre><code>cp python.spt nabla-base/python.nabla
+</code></pre><p>Replace myprog.nabla with python.nabla in the Dockerfile (careful, the runtime
 expects to find a file ending in .nabla so make sure to keep the extension
-name).</p>
-
-<p>And build your nabla container image using the following command:</p>
-
-<pre><code>cd nabla-base
+name).</p><p>And build your nabla container image using the following command:</p><pre><code>cd nabla-base
 docker build -f Dockerfile -t python3-requests-nabla .
-</code></pre>
-
-<p>Assuming you have setup runnc correctly, spawning the container is as easy as:</p>
-
-<pre><code>docker run --rm --runtime=runnc python3-requests-nabla -m requests_main
-</code></pre>
-
-<p>Note the boot command line &ndash; it has to match the &lsquo;cmdline&rsquo;:&rdquo; parameter in the json string used above.</p>
-
-<p>That&rsquo;s it folks!</p>
-
-<p>Give it a try and let us know what you think!</p>
-
-      
-    </div>
-    
-
-  </div>
-</section>
-
-
-<section class="section footer">
-  <div class="container">
-	  <p><small>&copy; CloudKernels 2019-2022</small></p>
-    
-  </div>
-</section>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-121797730-2', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="/js/social-share.js"></script>
-<script src="/js/nav-responsive.js"></script>
-</body>
-</html>
-
+</code></pre><p>Assuming you have setup runnc correctly, spawning the container is as easy as:</p><pre><code>docker run --rm --runtime=runnc python3-requests-nabla -m requests_main
+</code></pre><p>Note the boot command line &ndash; it has to match the &lsquo;cmdline&rsquo;:&rdquo; parameter in the json string used above.</p><p>That&rsquo;s it folks!</p><p>Give it a try and let us know what you think!</p></div></div></section><section class="section footer"><div class=container><p><small>&copy; CloudKernels 2019-2022</small></p></div></section><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-121797730-2','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://code.jquery.com/jquery-3.3.1.min.js></script><script src=/js/social-share.js></script><script src=/js/nav-responsive.js></script></body></html>
