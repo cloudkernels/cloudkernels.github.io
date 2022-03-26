@@ -3,9 +3,11 @@ executed in Virtual Machines. Kata Containers are as light and fast as
 containers and integrate with the container management layers, while also
 delivering the security advantages of VMs. Kata Containers is the result of
 merging two existing open source projects: Intel Clear Containers and Hyper
-runV.</p><p>Kata Containers consist of several components. For amd64 machines, binaries are
-provided through the formal release process. However, for arm64, binary files
-are not available (<a href=https://github.com/kata-containers/kata-containers/issues/2639>just
+runV.</p><p>Kata Containers consist of several components. For amd64 machines,
+<a href=https://github.com/kata-containers/kata-containers/releases>binaries</a> are
+provided through the
+<a href=https://github.com/kata-containers/kata-containers/blob/main/docs/Release-Process.md>formal</a>
+release process. However, for arm64, binary files are not available (<a href=https://github.com/kata-containers/kata-containers/issues/2639>just
 yet</a>).</p><p>In this post, we will be going through the steps to build kata containers from
 source, both for amd64 and arm64 architectures.</p><h3 id=install-requirements>Install requirements</h3><p>To build Kata Containers we need to install Rust v1.58.1, Go v1.16.10, Docker and some apt/snap packages. The specific versions may change,
 so make sure to check the <a href=https://github.com/kata-containers/kata-containers/blob/main/versions.yaml>versions database</a>.</p><h4 id=apt-snap-packages>Apt/Snap Packages:</h4><p>We need to install <code>gcc</code>, <code>make</code> and <code>yq v3</code>. <code>containerd</code> and <code>runc</code> are installed by the Docker install script, in the following steps.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo apt update <span style=color:#000;font-weight:700>&amp;&amp;</span> sudo apt upgrade -y
