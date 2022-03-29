@@ -9,7 +9,12 @@ provided through the
 <a href=https://github.com/kata-containers/kata-containers/blob/main/docs/Release-Process.md>formal</a>
 release process. However, for arm64, binary files are not available (<a href=https://github.com/kata-containers/kata-containers/issues/2639>just
 yet</a>).</p><p>In this post, we will be going through the steps to build kata containers from
-source, both for amd64 and arm64 architectures.</p><h3 id=install-requirements>Install requirements</h3><p>To build Kata Containers we need to install Rust v1.58.1, Go v1.16.10, Docker and some apt/snap packages. The specific versions may change,
+source, both for amd64 and arm64 architectures. In
+<a href=https://cloudkernels.github.io/posts/kata-build-configure-qemu/>follow-up</a>
+<a href=https://cloudkernels.github.io/posts/kata-build-configure-fc/>posts</a>, we go
+through the steps to build and configure <a href=https://github.com/qemu/qemu>QEMU</a>
+and <a href=https://github.com/firecracker-microvm/firecracker>AWS Firecracker</a> as
+VMMs for Kata Containers.</p><h3 id=install-requirements>Install requirements</h3><p>To build Kata Containers we need to install Rust v1.58.1, Go v1.16.10, Docker and some apt/snap packages. The specific versions may change,
 so make sure to check the <a href=https://github.com/kata-containers/kata-containers/blob/main/versions.yaml>versions database</a>.</p><h4 id=apt-snap-packages>Apt/Snap Packages:</h4><p>We need to install <code>gcc</code>, <code>make</code> and <code>yq v3</code>. <code>containerd</code> and <code>runc</code> are installed by the Docker install script, in the following steps.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo apt update <span style=color:#000;font-weight:700>&amp;&amp;</span> sudo apt upgrade -y
 sudo apt install gcc make snapd -y
 sudo snap install yq --channel<span style=color:#000;font-weight:700>=</span>v3/stable</code></pre></div><h4 id=rust-version-1-58-1>Rust (version 1.58.1):</h4><p>We will use <code>rustup</code> to install and set Rust 1.58.1 as our default toolchain:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:teal>down_dir</span><span style=color:#000;font-weight:700>=</span><span style=color:#000;font-weight:700>$(</span>mktemp -d<span style=color:#000;font-weight:700>)</span>
@@ -99,6 +104,10 @@ total <span style=color:#099>72</span>
 -rw-r--r-- <span style=color:#099>1</span> root root <span style=color:#099>13535</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration-clh.toml
 -rw-r--r-- <span style=color:#099>1</span> root root <span style=color:#099>15364</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration-fc.toml
 -rw-r--r-- <span style=color:#099>1</span> root root <span style=color:#099>25701</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration-qemu.toml
-lrwxrwxrwx <span style=color:#099>1</span> root root    <span style=color:#099>23</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration.toml -&gt; configuration-qemu.toml</code></pre></div><p>Now, we need to install a hypervisor (eg QEMU or Firecracker) and configure Kata Containers and containerd accordingly.
-In our upcoming posts we will go through the process of building and configuring both QEMU and Firecracker for x86 and arm64 hosts.
-Stay tuned!</p></div></div></section><section class="section footer"><div class=container><p><small>&copy; CloudKernels 2019-2022</small></p></div></section><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-121797730-2','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://code.jquery.com/jquery-3.3.1.min.js></script><script src=/js/social-share.js></script><script src=/js/nav-responsive.js></script></body></html>
+lrwxrwxrwx <span style=color:#099>1</span> root root    <span style=color:#099>23</span> Μαρ  <span style=color:#099>25</span> <span style=color:#099>15</span>:32 configuration.toml -&gt; configuration-qemu.toml</code></pre></div><p>Now, we need to install a hypervisor (eg QEMU or Firecracker) and configure
+Kata Containers and containerd accordingly. In our upcoming posts we will go
+through the process of building and configuring both
+<a href=https://cloudkernels.github.io/posts/kata-build-configure-qemu/>QEMU</a> and
+<a href=https://cloudkernels.github.io/posts/kata-build-configure-fc/>AWS
+Firecracker</a> for
+x86 and arm64 hosts. Happy hacking!</p></div></div></section><section class="section footer"><div class=container><p><small>&copy; CloudKernels 2019-2022</small></p></div></section><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-121797730-2','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://code.jquery.com/jquery-3.3.1.min.js></script><script src=/js/social-share.js></script><script src=/js/nav-responsive.js></script></body></html>
