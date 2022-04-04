@@ -14,8 +14,8 @@ guide</a>
 from docker, we can set it up using the following scripts:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#999;font-weight:700;font-style:italic>#!/bin/bash
 </span><span style=color:#999;font-weight:700;font-style:italic></span><span style=color:#0086b3>set</span> -ex
 
-<span style=color:teal>DATA_DIR</span><span style=color:#000;font-weight:700>=</span>/var/lib/containerd/devmapper
-<span style=color:teal>POOL_NAME</span><span style=color:#000;font-weight:700>=</span>devpool
+<span style=color:teal>DATA_DIR</span><span style=color:#000;font-weight:700>=</span>/var/lib/containerd/io.containerd.snapshotter.v1.devmapper
+<span style=color:teal>POOL_NAME</span><span style=color:#000;font-weight:700>=</span>containerd-pool
 
 mkdir -p <span style=color:#d14>${</span><span style=color:teal>DATA_DIR</span><span style=color:#d14>}</span>
 
